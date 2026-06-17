@@ -4,6 +4,7 @@
     },
     "inbounds": [
         {
+            "listen": "0.0.0.0",
             "port": 8080,
             "protocol": "vless",
             "settings": {
@@ -16,8 +17,8 @@
                 "decryption": "none"
             },
             "streamSettings": {
-                "network": "httpupgrade",
-                "httpupgradeSettings": {
+                "network": "ws",
+                "wsSettings": {
                     "path": "/julpone"
                 }
             }
