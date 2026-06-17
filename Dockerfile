@@ -1,24 +1,20 @@
 FROM teddysun/xray:latest
 
+# IMPORTANT: Lumipat sa ROOT user para payagan ang pag-install at pag-kopya
 USER root
 
-# Install Nginx, certificates, and system configuration tools
-RUN apk update && apk add --no-cache nginx ca-certificates sysctl-utils
+# I-install ang Nginx at mga kinakailangang certificates sa Alpine Linux
+RUN apk update && apk add --no-cache nginx ca-certificates
 
+# Kopyahin ang iyong config.json at nginx.conf sa kanilang tamang direktoryo
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Rename executable
+# I-customize ang pangalan ng executable patungong 'panares' nang walang permission error
 RUN cp /usr/bin/xray /usr/bin/panares
 
-# Open Port 8080
+# Buksan ang Port 8080 para sa Cloud Run
 EXPOSE 8080
 
-# Pangmalakasang Startup with Advanced Kernel TCP Tweaks for high-concurrency tunneling
-CMD sh -c "\
-    sysctl -w net.core.somaxconn=10000 && \
-    sysctl -w net.ipv4.tcp_max_syn_backlog=10000 && \
-    sysctl -w net.ipv4.tcp_fin_timeout=15 && \
-    sysctl -w net.ipv4.tcp_tw_reuse=1 && \
-    sysctl -w net.ipv4.tcp_max_tw_buckets=2000000 && \
-    panares -config /etc/xray/config.json & nginx -g 'daemon off;'"
+# Patakbuhin ang panares at panatilihing buhay ang Nginx sa foreground
+CMD ["sh", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
