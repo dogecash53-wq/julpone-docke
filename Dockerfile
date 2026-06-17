@@ -1,14 +1,20 @@
-FROM openresty/openresty:alpine
-RUN apk add --no-cache ca-certificates wget unzip netcat-openbsd
+FROM teddysun/xray:latest
 
-RUN wget -qO /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip && \
-    unzip -p /tmp/xray.zip xray > /usr/local/bin/xray && \
-    chmod +x /usr/local/bin/xray && rm -rf /tmp/xray.zip
+# IMPORTANT: Lumipat sa ROOT user para payagan ang pag-install at pag-kopya
+USER root
 
-COPY config.json /etc/xray.json
-COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
-COPY index.html /usr/local/openresty/nginx/html/index.html
+# I-install ang Nginx at mga kinakailangang certificates sa Alpine Linux
+RUN apk update && apk add --no-cache nginx ca-certificates
+
+# Kopyahin ang iyong config.json at nginx.conf sa kanilang tamang direktoryo
+COPY config.json /etc/xray/config.json
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# I-customize ang pangalan ng executable patungong 'panares' nang walang permission error
+RUN cp /usr/bin/xray /usr/bin/panares
+
+# Buksan ang Port 8080 para sa Cloud Run
 EXPOSE 8080
 
-# Starts xray immediately in background, then hands over foreground thread control to OpenResty
-CMD /usr/local/bin/xray run -c /etc/xray.json & exec /usr/local/openresty/bin/openresty -g "daemon off;"
+# Patakbuhin ang panares at panatilihing buhay ang Nginx sa foreground
+CMD ["sh", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
