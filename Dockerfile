@@ -1,22 +1,14 @@
-FROM teddysun/xray:latest
+FROM openresty/openresty:alpine
+RUN apk add --no-cache ca-certificates wget unzip netcat-openbsd
 
-USER root
+RUN wget -qO /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip && \
+    unzip -p /tmp/xray.zip xray > /usr/local/bin/xray && \
+    chmod +x /usr/local/bin/xray && rm -rf /tmp/xray.zip
 
-# 1. I-install ang Nginx at mga kinakailangang certificates
-RUN apk update && apk add --no-cache nginx ca-certificates
-
-# 2. Siguraduhing may tamang folder para sa runtime pid ng Nginx
-RUN mkdir -p /run/nginx
-
-# 3. Kopyahin ang iyong mga configs at ang webpage dashboard papunta sa container
-COPY config.json /etc/xray/config.json
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY index.html /usr/share/nginx/html/index.html
-
-# 4. Palitan ang pangalan ng executable process patungong 'panares'
-RUN cp /usr/bin/xray /usr/bin/panares
-
+COPY config.json /etc/xray.json
+COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+COPY index.html /usr/local/openresty/nginx/html/index.html
 EXPOSE 8080
 
-# 5. Patakbuhin ang panares at panatilihing buhay ang Nginx sa foreground
-CMD ["sh", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
+# Starts xray immediately in background, then hands over foreground thread control to OpenResty
+CMD /usr/local/bin/xray run -c /etc/xray.json & exec /usr/local/openresty/bin/openresty -g "daemon off;"
