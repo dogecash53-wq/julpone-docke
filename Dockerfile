@@ -9,6 +9,7 @@ RUN apk update && apk add --no-cache nginx ca-certificates
 # Kopyahin ang iyong config.json at nginx.conf sa kanilang tamang direktoryo
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY index.html /usr/share/nginx/html/index.html
 
 # I-customize ang pangalan ng executable patungong 'panares' nang walang permission error
 RUN cp /usr/bin/xray /usr/bin/panares
