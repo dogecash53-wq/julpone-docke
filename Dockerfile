@@ -12,7 +12,7 @@ RUN rm -rf /etc/nginx/* && mkdir -p /etc/nginx /run/nginx
 # 2. Kopyahin ang iyong mga configs at ang webpage dashboard papunta sa container
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY index.html /usr/share/nginx/html/index.html
+COPY index.html /usr/local/teddysun/nginx/html/index.html
 
 # 3. Palitan ang pangalan ng executable process patungong 'panares'
 RUN cp /usr/bin/xray /usr/bin/panares
