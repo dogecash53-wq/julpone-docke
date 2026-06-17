@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ JULPONE MAIN MATRIX ⚡</title>
+    <style>
+        :root {
+            --bg: #07020d;
+            --panel: #0d0614;
+            --panel-accent: #190e25;
+            --border: #381a52;
+            --neon-red: #ff0055;
+            --neon-violet: #a020f0;
+            --neon-cyan: #00f3ff;
+            --text-bright: #ffffff;
+            --text-muted: #72528d;
+            --font-cyber: 'Segoe UI', -apple-system, sans-serif;
+            --font-code: 'Consolas', 'Courier New', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text-bright);
+            font-family: var(--font-cyber);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 24px 12px;
+            background-image: linear-gradient(rgba(16, 4, 28, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 4, 28, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Ambient scanline effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 34, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            opacity: 0.4;
+            pointer-events: none;
+            background-size: 100% 4px, 6px 100%;
+        }
+
+        .matrix-box {
+            width: 100%;
+            max-width: 680px;
+            background: var(--panel);
+            border: 2px solid var(--border);
+            box-shadow: 0 0 30px rgba(160, 32, 240, 0.15), inset 0 0 15px rgba(255, 0, 85, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .matrix-header {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 16px;
+        }
+
+        .matrix-title {
+            font-size: clamp(20px, 6vw, 32px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(to right, var(--neon-red), var(--neon-violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+        }
+
+        .domain-field {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            color: var(--neon-cyan);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: var(--font-code);
+            text-align: center;
+            font-size: 14px;
+            outline: none;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .domain-field:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .grid-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .grid-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .selector-row {
+            display: grid;
+            grid-template-cols: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        @media(min-width: 480px) {
+            .selector-row.four-cols { grid-template-cols: repeat(4, 1fr); }
+            .selector-row.three-cols { grid-template-cols: repeat(3, 1fr); }
+        }
+
+        .m-btn {
+            background: var(--panel-accent);
+            border: 1px solid var(--border);
+            color: var(--text-bright);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: var(--font-cyber);
+            transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .m-btn:hover {
+            border-color: var(--neon-violet);
+            background: #221233;
+        }
+        .m-btn.active {
+            background: linear-gradient(135deg, var(--neon-violet), #511080);
+            border-color: #df94ff;
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
+            transform: scale(0.98);
+        }
+
+        .output-box {
+            position: relative;
+            background: #040108;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            padding-top: 48px;
+            margin-top: 10px;
+        }
+
+        .output-text {
+            font-family: var(--font-code);
+            font-size: 13px;
+            color: #d1bfff;
+            word-break: break-all;
+            white-space: pre-wrap;
+            min-height: 70px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .copy-trigger {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            font-weight: 800;
+            font-size: 11px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .copy-trigger:hover {
+            background: var(--neon-red);
+            color: #000;
+            box-shadow: 0 0 12px var(--neon-red);
+        }
+
+        .spec-container {
+            display: grid;
+            grid-template-cols: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .spec-tile {
+            background: var(--panel-accent);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .spec-title { font-size: 10px; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
+        .spec-data { font-family: var(--font-code); font-size: 13px; margin-top: 2px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="matrix-box">
+        
+        <div class="matrix-header">
+            <div class="matrix-title">🧬 Julpone Core Core Node 🧬</div>
+            <input type="text" id="domainInput" class="domain-field" placeholder="System Domain Resolution">
+        </div>
+
+        <!-- Protocol Section -->
+        <div class="grid-label">System Protocols</div>
+        <div class="selector-row four-cols">
+            <button class="m-btn active" id="p-vless" onclick="updateConfigProtocol('vless')">VLESS</button>
+            <button class="m-btn" id="p-trojan" onclick="updateConfigProtocol('trojan')">TROJAN</button>
+            <button class="m-btn" id="p-vmess" onclick="updateConfigProtocol('vmess')">VMESS</button>
+            <button class="m-btn" id="p-ss" onclick="updateConfigProtocol('ss')">SHADOWSOCKS</button>
+        </div>
+
+        <!-- Pipeline Section -->
+        <div class="grid-label">Transport Medium</div>
+        <div class="selector-row three-cols">
+            <button class="m-btn active" id="t-ws" onclick="updateConfigTransport('ws')">WebSocket</button>
+            <button class="m-btn" id="t-hu" onclick="updateConfigTransport('hu')">HTTPUpgrade</button>
+            <button class="m-btn" id="t-xh" onclick="updateConfigTransport('xh')">XHTTP</button>
+        </div>
+
+        <!-- Output Terminal Display -->
+        <div class="grid-label">Terminal Buffer Output</div>
+        <div class="output-box">
+            <button class="copy-trigger" onclick="copyNetworkString()" id="copyBtn">INTERCEPT LINK</button>
+            <div class="output-text" id="outputCode">Processing infrastructure lines...</div>
+        </div>
+
+        <!-- Infrastructure Meta Data Configurations -->
+        <div class="spec-container">
+            <div class="spec-tile">
+                <div class="spec-title">ROUTING INTERNAL PORT</div>
+                <div class="spec-data" id="metaPort" style="color: var(--neon-cyan);">10006</div>
+            </div>
+            <div class="spec-tile">
+                <div class="spec-title">EXTERNAL PORT / SECURITY</div>
+                <div class="spec-data" style="color: #00ff66;">443 / TLS ON</div>
+            </div>
+            <div class="spec-tile">
+                <div class="spec-title">BALANCER EXPOSED PATH</div>
+                <div class="spec-data" id="metaPath" style="color: var(--neon-violet);">/vless-julpone-freenet</div>
+            </div>
+            <div class="spec-tile">
+                <div class="spec-title">ACCESS CREDENTIAL SECURITY KEY</div>
+                <div class="spec-data" style="color: #fff;">julpone-freenet</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // High-Tech Procedural Audio Synth Engine
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSynthBeep(frequency, duration, type, volume) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
