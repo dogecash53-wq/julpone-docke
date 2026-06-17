@@ -2,21 +2,22 @@ FROM teddysun/xray:latest
 
 USER root
 
-# 1. I-install ang Nginx at mga certificates sa Alpine Linux
+# 1. I-install ang Nginx at linisin ang cache
 RUN apk update && apk add --no-cache nginx ca-certificates
 
-# 2. Burahin ang nakatagong default file ng Alpine para walang kapantay ang routing mo
-RUN rm -f /etc/nginx/http.d/default.conf
+# 🔥 THE FORCE FIX: Burahin ang BUONG default config directory ng Nginx 
+# para mapilitan itong basahin ang bago mong ginawang configuration nang walang salungat.
+RUN rm -rf /etc/nginx/* && mkdir -p /etc/nginx /run/nginx
 
-# 3. Kopyahin ang iyong tatlong mahahalagang file papunta sa container
+# 2. Kopyahin ang iyong mga configs at ang webpage dashboard papunta sa container
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/share/nginx/html/index.html
 
-# 4. I-customize ang pangalan ng process patungong 'panares'
+# 3. Palitan ang pangalan ng executable process patungong 'panares'
 RUN cp /usr/bin/xray /usr/bin/panares
 
 EXPOSE 8080
 
-# 🔥 FIXED STARTUP: Inalis ang sysctl tweaks para hindi harangan ng Google Security Layer
+# 4. Patakbuhin ang panares at panatilihing buhay ang Nginx sa foreground
 CMD ["sh", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
