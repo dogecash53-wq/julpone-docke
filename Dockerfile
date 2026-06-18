@@ -1,4 +1,4 @@
-FROM teddysun/julpone-net:latest
+FROM teddysun/xray:latest
 
 # Lumipat sa ROOT user para magkaroon ng ganap na kapangyarihan sa pag-install
 USER root
