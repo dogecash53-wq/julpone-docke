@@ -2,277 +2,157 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⚡ JULPONE MAIN MATRIX ⚡</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANARES CORE V2RAY GATEWAY</title>
+    <!-- Tailwind CSS para sa mabilis at magandang UI -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- FontAwesome para sa mga Icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        :root {
-            --bg: #07020d;
-            --panel: #0d0614;
-            --panel-accent: #190e25;
-            --border: #381a52;
-            --neon-red: #ff0055;
-            --neon-violet: #a020f0;
-            --neon-cyan: #00f3ff;
-            --text-bright: #ffffff;
-            --text-muted: #72528d;
-            --font-cyber: 'Segoe UI', -apple-system, sans-serif;
-            --font-code: 'Consolas', 'Courier New', monospace;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        @import url('https://googleapis.com');
         body {
-            background: var(--bg);
-            color: var(--text-bright);
-            font-family: var(--font-cyber);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            background: radial-gradient(circle at center, #0d1117 0%, #07090e 100%);
             overflow-x: hidden;
-            padding: 24px 12px;
-            background-image: linear-gradient(rgba(16, 4, 28, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 4, 28, 0.3) 1px, transparent 1px);
-            background-size: 20px 20px;
         }
-
-        /* Ambient scanline effect */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 34, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 99999;
-            opacity: 0.4;
-            pointer-events: none;
-            background-size: 100% 4px, 6px 100%;
+        .cyber-font { font-family: 'Orbitron', sans-serif; }
+        .neon-glow { text-shadow: 0 0 10px rgba(0, 242, 254, 0.6), 0 0 20px rgba(0, 242, 254, 0.4); }
+        .cyber-card {
+            background: rgba(13, 17, 23, 0.75);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.05);
         }
-
-        .matrix-box {
-            width: 100%;
-            max-width: 680px;
-            background: var(--panel);
-            border: 2px solid var(--border);
-            box-shadow: 0 0 30px rgba(160, 32, 240, 0.15), inset 0 0 15px rgba(255, 0, 85, 0.05);
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-            margin-top: 10px;
+        .cyber-card:hover {
+            border-color: rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
+            transition: all 0.4s ease;
         }
-
-        .matrix-header {
-            text-align: center;
-            margin-bottom: 24px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 16px;
-        }
-
-        .matrix-title {
-            font-size: clamp(20px, 6vw, 32px);
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: transparent;
-            background: linear-gradient(to right, var(--neon-red), var(--neon-violet));
-            -webkit-background-clip: text;
-            background-clip: text;
-            text-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
-        }
-
-        .domain-field {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--border);
-            color: var(--neon-cyan);
-            padding: 12px;
-            border-radius: 8px;
-            font-family: var(--font-code);
-            text-align: center;
-            font-size: 14px;
-            outline: none;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        .domain-field:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
-
-        .grid-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .grid-label::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .selector-row {
-            display: grid;
-            grid-template-cols: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        @media(min-width: 480px) {
-            .selector-row.four-cols { grid-template-cols: repeat(4, 1fr); }
-            .selector-row.three-cols { grid-template-cols: repeat(3, 1fr); }
-        }
-
-        .m-btn {
-            background: var(--panel-accent);
-            border: 1px solid var(--border);
-            color: var(--text-bright);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: var(--font-cyber);
-            transition: all 0.15s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .m-btn:hover {
-            border-color: var(--neon-violet);
-            background: #221233;
-        }
-        .m-btn.active {
-            background: linear-gradient(135deg, var(--neon-violet), #511080);
-            border-color: #df94ff;
-            box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
-            transform: scale(0.98);
-        }
-
-        .output-box {
-            position: relative;
-            background: #040108;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 16px;
-            padding-top: 48px;
-            margin-top: 10px;
-        }
-
-        .output-text {
-            font-family: var(--font-code);
-            font-size: 13px;
-            color: #d1bfff;
-            word-break: break-all;
-            white-space: pre-wrap;
-            min-height: 70px;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .copy-trigger {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: transparent;
-            border: 1px solid var(--neon-red);
-            color: var(--neon-red);
-            font-weight: 800;
-            font-size: 11px;
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-        }
-        .copy-trigger:hover {
-            background: var(--neon-red);
-            color: #000;
-            box-shadow: 0 0 12px var(--neon-red);
-        }
-
-        .spec-container {
-            display: grid;
-            grid-template-cols: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 14px;
-        }
-        .spec-tile {
-            background: var(--panel-accent);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .spec-title { font-size: 10px; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
-        .spec-data { font-family: var(--font-code); font-size: 13px; margin-top: 2px; font-weight: bold; }
     </style>
 </head>
-<body>
+<body class="text-gray-200 min-h-screen flex flex-col justify-between">
 
-    <div class="matrix-box">
-        
-        <div class="matrix-header">
-            <div class="matrix-title">🧬 Julpone Core Core Node 🧬</div>
-            <input type="text" id="domainInput" class="domain-field" placeholder="System Domain Resolution">
-        </div>
-
-        <!-- Protocol Section -->
-        <div class="grid-label">System Protocols</div>
-        <div class="selector-row four-cols">
-            <button class="m-btn active" id="p-vless" onclick="updateConfigProtocol('vless')">VLESS</button>
-            <button class="m-btn" id="p-trojan" onclick="updateConfigProtocol('trojan')">TROJAN</button>
-            <button class="m-btn" id="p-vmess" onclick="updateConfigProtocol('vmess')">VMESS</button>
-            <button class="m-btn" id="p-ss" onclick="updateConfigProtocol('ss')">SHADOWSOCKS</button>
-        </div>
-
-        <!-- Pipeline Section -->
-        <div class="grid-label">Transport Medium</div>
-        <div class="selector-row three-cols">
-            <button class="m-btn active" id="t-ws" onclick="updateConfigTransport('ws')">WebSocket</button>
-            <button class="m-btn" id="t-hu" onclick="updateConfigTransport('hu')">HTTPUpgrade</button>
-            <button class="m-btn" id="t-xh" onclick="updateConfigTransport('xh')">XHTTP</button>
-        </div>
-
-        <!-- Output Terminal Display -->
-        <div class="grid-label">Terminal Buffer Output</div>
-        <div class="output-box">
-            <button class="copy-trigger" onclick="copyNetworkString()" id="copyBtn">INTERCEPT LINK</button>
-            <div class="output-text" id="outputCode">Processing infrastructure lines...</div>
-        </div>
-
-        <!-- Infrastructure Meta Data Configurations -->
-        <div class="spec-container">
-            <div class="spec-tile">
-                <div class="spec-title">ROUTING INTERNAL PORT</div>
-                <div class="spec-data" id="metaPort" style="color: var(--neon-cyan);">10006</div>
+    <!-- 1. STARTING BOOT SCREEN OVERLAY -->
+    <div id="bootScreen" class="fixed inset-0 bg-[#07090e] z-50 flex flex-col items-center justify-center p-6 transition-opacity duration-700">
+        <div class="max-w-md w-full cyber-font text-[#00f2fe]">
+            <div class="mb-4 text-xs tracking-widest opacity-60">== SYSTEM INITIALIZATION ==</div>
+            <div id="bootLogs" class="h-48 overflow-hidden font-mono text-sm text-cyan-400 space-y-1 mb-6 bg-black/40 p-4 border border-cyan-900/30 rounded">
+                <!-- Dito papasok ang animated boot sequences -->
             </div>
-            <div class="spec-tile">
-                <div class="spec-title">EXTERNAL PORT / SECURITY</div>
-                <div class="spec-data" style="color: #00ff66;">443 / TLS ON</div>
-            </div>
-            <div class="spec-tile">
-                <div class="spec-title">BALANCER EXPOSED PATH</div>
-                <div class="spec-data" id="metaPath" style="color: var(--neon-violet);">/vless-julpone-freenet</div>
-            </div>
-            <div class="spec-tile">
-                <div class="spec-title">ACCESS CREDENTIAL SECURITY KEY</div>
-                <div class="spec-data" style="color: #fff;">julpone-freenet</div>
-            </div>
+            <button id="btnEnter" class="hidden w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-black uppercase tracking-widest rounded cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:scale-105 active:scale-95 transition-all">
+                <i class="fa-solid fa-terminal mr-2"></i> Access Mainframe
+            </button>
         </div>
-
     </div>
 
-    <script>
-        // High-Tech Procedural Audio Synth Engine
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    <!-- BACKGROUND AUDIO UTILITY (Synthesizer Loop) -->
+    <audio id="bgMusic" loop>
+        <source src="https://mixkit.co" type="audio/mpeg">
+    </audio>
 
-        function playSynthBeep(frequency, duration, type, volume) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                osc.type = type || 'sine';
-                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+    <!-- AUDIO CONTROLLER FLOATING BUTTON -->
+    <button id="btnMusicToggle" class="fixed top-4 right-4 z-40 w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all cursor-pointer">
+        <i id="musicIcon" class="fa-solid fa-volume-xmark"></i>
+    </button>
+
+    <!-- MAIN INTERFACE HEADER -->
+    <header class="w-full max-w-5xl mx-auto px-4 pt-8 text-center">
+        <h1 class="cyber-font text-3xl md:text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 neon-glow">
+            PANARES CORE
+        </h1>
+        <p class="text-xs md:text-sm tracking-[0.3em] uppercase text-cyan-400/70 mt-2 font-mono">
+            High-Speed Anti-Timeout VPN Nodes & Adblock Infrastructure
+        </p>
+    </header>
+
+    <!-- 2. CONFIGURATION GENERATOR INTERFACE -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 md:grid-cols-5 gap-6">
+        
+        <!-- CONTROL PANEL BLOCK -->
+        <div class="cyber-card rounded-xl p-5 md:col-span-2 flex flex-col justify-between space-y-4">
+            <div>
+                <h2 class="cyber-font text-lg font-bold text-cyan-400 border-b border-cyan-900/40 pb-2 mb-4">
+                    <i class="fa-solid fa-sliders mr-2"></i> Generator Panel
+                </h2>
+                
+                <!-- HOST/IP INPUT -->
+                <div class="mb-4">
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Server Host / IP Address</label>
+                    <input type="text" id="inpHost" placeholder="e.g. 128.199.x.x o domain.com" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
+                </div>
+
+                <!-- PORT SELECTION -->
+                <div class="mb-4">
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Nginx Entry Port</label>
+                    <select id="inpPort" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
+                        <option value="80" selected>Port 80 (Standard Reverse Proxy)</option>
+                        <option value="8080">Port 8080 (Docker Internal Native)</option>
+                    </select>
+                </div>
+
+                <!-- PROTOCOL SELECTOR -->
+                <div class="mb-4">
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Core Protocol</label>
+                    <select id="inpProtocol" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
+                        <option value="vless-ws">VLESS - WebSocket (Recommended)</option>
+                        <option value="vless-hu">VLESS - HTTP Upgrade</option>
+                        <option value="vless-xh">VLESS - XHTTP</option>
+                        <option value="vmess-ws">VMess - WebSocket</option>
+                        <option value="vmess-hu">VMess - HTTP Upgrade</option>
+                        <option value="vmess-xh">VMess - XHTTP</option>
+                        <option value="trojan-ws">Trojan - WebSocket</option>
+                        <option value="trojan-hu">Trojan - HTTP Upgrade</option>
+                        <option value="trojan-xh">Trojan - XHTTP</option>
+                        <option value="ss-ws">Shadowsocks - WebSocket</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="btnGenerate" class="w-full py-3 bg-cyan-500 text-black font-bold uppercase tracking-wider rounded cursor-pointer shadow-[0_0_10px_rgba(6,182,212,0.3)] hover:bg-cyan-400 transition-all mt-4">
+                <i class="fa-solid fa-gears mr-2"></i> Build Configuration
+            </button>
+        </div>
+
+        <!-- OUTPUT DISPLAY BLOCK -->
+        <div class="cyber-card rounded-xl p-5 md:col-span-3 flex flex-col space-y-4">
+            <h2 class="cyber-font text-lg font-bold text-teal-400 border-b border-cyan-900/40 pb-2">
+                <i class="fa-solid fa-terminal mr-2"></i> Output Terminal
+            </h2>
+            
+            <!-- V2RAY Vpn URI Standard Link Link -->
+            <div class="flex-grow flex flex-col">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs uppercase tracking-wider font-mono text-gray-400">Standard V2Ray URI Link</span>
+                    <button onclick="copyText('txtUri')" class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer"><i class="fa-regular fa-copy mr-1"></i> Copy</button>
+                </div>
+                <textarea id="txtUri" readonly class="w-full flex-grow h-20 bg-black/60 border border-cyan-900/40 rounded p-2 font-mono text-xs text-green-400 focus:outline-none resize-none" placeholder="Mag-click sa 'Build Configuration' para i-compile ang link..."></textarea>
+            </div>
+
+            <!-- NETMOD SYNAPSE ADVANCED JSON CONFIG -->
+            <div class="flex-grow flex flex-col">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs uppercase tracking-wider font-mono text-gray-400">Netmod Advanced (JSON Form)</span>
+                    <button onclick="copyText('txtJson')" class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer"><i class="fa-regular fa-copy mr-1"></i> Copy</button>
+                </div>
+                <textarea id="txtJson" readonly class="w-full flex-grow h-40 bg-black/60 border border-cyan-900/40 rounded p-2 font-mono text-xs text-cyan-400 focus:outline-none resize-none" placeholder="Mag-click sa 'Build Configuration' para i-compile ang JSON structure..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER STATUS METERS -->
+    <footer class="w-full border-t border-cyan-900/20 bg-black/40 py-4 px-6 text-center text-xs font-mono text-gray-500 flex flex-col md:flex-row justify-between items-center max-w-5xl mx-auto rounded-t-lg">
+        <div class="flex items-center space-x-4 mb-2 md:mb-0">
+            <span><i class="fa-solid fa-shield-halved text-green-500 mr-1"></i> Adblocker: <strong class="text-green-400">ENABLED</strong></span>
+            <span><i class="fa-solid fa-circle text-green-500 mr-1 animate-pulse"></i> Node Status: <strong class="text-green-400">ONLINE</strong></span>
+        </div>
+        <div>&copy; 2026 PANARES NETWORKS CORE GATEWAY • NO TIMEOUT PLATFORM</div>
+    </footer>
+
+    <!-- 3. FUNCTIONAL CONTROL AND CORE LOGIC SCRIPT -->
+    <script>
+        // Auto-detect Host IP mula sa browser URL ng server
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentHost = window.location.hostname;
+            if (currentHost && currentHost !== '127.0.0.1' && currentHost !== 'localhost') {
+                document.getElementById('inpHost').value = currentHost;
+            } else {
