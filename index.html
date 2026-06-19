@@ -2,157 +2,325 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PANARES CORE V2RAY GATEWAY</title>
-    <!-- Tailwind CSS para sa mabilis at magandang UI -->
-    <script src="https://jsdelivr.net"></script>
-    <!-- FontAwesome para sa mga Icons -->
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JULPONE FREENET SERVICE</title>
     <style>
-        @import url('https://googleapis.com');
+        :root {
+            --bg: #090b0e;
+            --surface: #11151c;
+            --surface2: #1b202a;
+            --border: #263042;
+            --text: #f0f4f8;
+            --text-dim: #7a8b9e;
+            --accent: #00f2fe;
+            --glow: #00f2fe;
+            --green: #00e676;
+            --red: #ff3d00;
+            --yellow: #ffea00;
+            --blue: #2979ff;
+            --font-mono: 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-base: clamp(12px, 3.2vw, 15px);
+            --font-size-sm: clamp(10px, 2.8vw, 13px);
+            --font-size-lg: clamp(16px, 4.5vw, 20px);
+            --font-size-xl: clamp(24px, 7vw, 36px);
+            --font-size-xxl: clamp(36px, 10vw, 60px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background: radial-gradient(circle at center, #0d1117 0%, #07090e 100%);
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            padding: 16px 0;
         }
-        .cyber-font { font-family: 'Orbitron', sans-serif; }
-        .neon-glow { text-shadow: 0 0 10px rgba(0, 242, 254, 0.6), 0 0 20px rgba(0, 242, 254, 0.4); }
-        .cyber-card {
-            background: rgba(13, 17, 23, 0.75);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.05);
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
-        .cyber-card:hover {
-            border-color: rgba(0, 242, 254, 0.6);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
-            transition: all 0.4s ease;
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glowPulseStrong {
+            0%, 100% { text-shadow: 0 0 12px var(--glow), 0 0 24px var(--glow); }
+            50% { text-shadow: 0 0 6px var(--glow), 0 0 12px var(--glow); }
+        }
+
+        @keyframes glowPulseLight {
+            0%, 100% { text-shadow: 0 0 4px var(--glow); }
+            50% { text-shadow: 0 0 1px var(--glow); }
+        }
+
+        .fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+        .glow-text-strong { animation: glowPulseStrong 2.5s ease-in-out infinite; }
+        .glow-text-light { animation: glowPulseLight 3s ease-in-out infinite; }
+
+        /* LOADING COMPONENT SCREEN */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(9,11,14,0.98);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 9999;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-digits {
+            font-size: var(--font-size-xl);
+            font-weight: 900;
+            font-family: var(--font-mono);
+            letter-spacing: 4px;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .loading-subtitle {
+            margin-top: 14px;
+            font-size: var(--font-size-sm);
+            color: var(--text-dim);
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        .section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .section:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.05);
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            text-align: center;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            color: var(--text);
+        }
+
+        .section-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-dim);
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        /* CONFIG COMPILER FORM OBJECTS */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-base);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+        }
+
+        .button-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-sm);
+            transition: all 0.2s ease;
+            letter-spacing: 0.4px;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            background: #202735;
+        }
+
+        .btn.active {
+            border-color: var(--accent);
+            background: #1e293b;
+            color: var(--accent);
+            font-weight: bold;
+            text-shadow: 0 0 4px var(--accent);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+            transform: scale(0.99);
+        }
+
+        .config-area {
+            width: 100%;
+            height: 90px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--green);
+            padding: 8px;
+            font-family: var(--font-mono);
+            font-size: clamp(10px, 2.8vw, 12px);
+            resize: none;
+            outline: none;
+            margin-top: 4px;
+        }
+
+        .copy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-sm);
+            color: var(--text-dim);
+            margin-top: 10px;
+        }
+
+        .copy-link {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 4px;
+            gap: 10px;
+        }
+
+        .status-item { text-align: center; flex: 1; }
+        .status-label { font-size: var(--font-size-sm); color: var(--text-dim); }
+        .status-value { font-size: var(--font-size-lg); font-weight: 700; }
+        .status-value.active { color: var(--green); }
+        .status-value.ping { color: var(--yellow); }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- 1. STARTING BOOT SCREEN OVERLAY -->
-    <div id="bootScreen" class="fixed inset-0 bg-[#07090e] z-50 flex flex-col items-center justify-center p-6 transition-opacity duration-700">
-        <div class="max-w-md w-full cyber-font text-[#00f2fe]">
-            <div class="mb-4 text-xs tracking-widest opacity-60">== SYSTEM INITIALIZATION ==</div>
-            <div id="bootLogs" class="h-48 overflow-hidden font-mono text-sm text-cyan-400 space-y-1 mb-6 bg-black/40 p-4 border border-cyan-900/30 rounded">
-                <!-- Dito papasok ang animated boot sequences -->
-            </div>
-            <button id="btnEnter" class="hidden w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-black uppercase tracking-widest rounded cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:scale-105 active:scale-95 transition-all">
-                <i class="fa-solid fa-terminal mr-2"></i> Access Mainframe
-            </button>
-        </div>
-    </div>
-
-    <!-- BACKGROUND AUDIO UTILITY (Synthesizer Loop) -->
-    <audio id="bgMusic" loop>
+    <!-- AUDIO ELEMENT ENGINE WITH CAPABILITY PRELOADS -->
+    <audio id="bgAudio" loop preload="auto">
         <source src="https://mixkit.co" type="audio/mpeg">
     </audio>
 
-    <!-- AUDIO CONTROLLER FLOATING BUTTON -->
-    <button id="btnMusicToggle" class="fixed top-4 right-4 z-40 w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all cursor-pointer">
-        <i id="musicIcon" class="fa-solid fa-volume-xmark"></i>
-    </button>
+    <!-- LOADING SCREEN COMPONENT -->
+    <div id="loading-screen">
+        <div class="loading-digits glow-text-strong" id="loadLogs">INITIALIZING CORE...</div>
+        <div class="loading-subtitle">PANARES CORE MEMBRANE SYSTEM v4.0</div>
+    </div>
 
-    <!-- MAIN INTERFACE HEADER -->
-    <header class="w-full max-w-5xl mx-auto px-4 pt-8 text-center">
-        <h1 class="cyber-font text-3xl md:text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 neon-glow">
-            PANARES CORE
-        </h1>
-        <p class="text-xs md:text-sm tracking-[0.3em] uppercase text-cyan-400/70 mt-2 font-mono">
-            High-Speed Anti-Timeout VPN Nodes & Adblock Infrastructure
-        </p>
-    </header>
-
-    <!-- 2. CONFIGURATION GENERATOR INTERFACE -->
-    <main class="w-full max-w-4xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 md:grid-cols-5 gap-6">
+    <!-- MAIN INTERFACE CORE -->
+    <div class="container fade-in">
         
-        <!-- CONTROL PANEL BLOCK -->
-        <div class="cyber-card rounded-xl p-5 md:col-span-2 flex flex-col justify-between space-y-4">
-            <div>
-                <h2 class="cyber-font text-lg font-bold text-cyan-400 border-b border-cyan-900/40 pb-2 mb-4">
-                    <i class="fa-solid fa-sliders mr-2"></i> Generator Panel
-                </h2>
-                
-                <!-- HOST/IP INPUT -->
-                <div class="mb-4">
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Server Host / IP Address</label>
-                    <input type="text" id="inpHost" placeholder="e.g. 128.199.x.x o domain.com" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
-                </div>
-
-                <!-- PORT SELECTION -->
-                <div class="mb-4">
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Nginx Entry Port</label>
-                    <select id="inpPort" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
-                        <option value="80" selected>Port 80 (Standard Reverse Proxy)</option>
-                        <option value="8080">Port 8080 (Docker Internal Native)</option>
-                    </select>
-                </div>
-
-                <!-- PROTOCOL SELECTOR -->
-                <div class="mb-4">
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 font-mono mb-1">Core Protocol</label>
-                    <select id="inpProtocol" class="w-full bg-black/40 border border-cyan-900/50 rounded p-2 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all font-mono text-sm">
-                        <option value="vless-ws">VLESS - WebSocket (Recommended)</option>
-                        <option value="vless-hu">VLESS - HTTP Upgrade</option>
-                        <option value="vless-xh">VLESS - XHTTP</option>
-                        <option value="vmess-ws">VMess - WebSocket</option>
-                        <option value="vmess-hu">VMess - HTTP Upgrade</option>
-                        <option value="vmess-xh">VMess - XHTTP</option>
-                        <option value="trojan-ws">Trojan - WebSocket</option>
-                        <option value="trojan-hu">Trojan - HTTP Upgrade</option>
-                        <option value="trojan-xh">Trojan - XHTTP</option>
-                        <option value="ss-ws">Shadowsocks - WebSocket</option>
-                    </select>
-                </div>
-            </div>
-
-            <button id="btnGenerate" class="w-full py-3 bg-cyan-500 text-black font-bold uppercase tracking-wider rounded cursor-pointer shadow-[0_0_10px_rgba(6,182,212,0.3)] hover:bg-cyan-400 transition-all mt-4">
-                <i class="fa-solid fa-gears mr-2"></i> Build Configuration
-            </button>
-        </div>
-
-        <!-- OUTPUT DISPLAY BLOCK -->
-        <div class="cyber-card rounded-xl p-5 md:col-span-3 flex flex-col space-y-4">
-            <h2 class="cyber-font text-lg font-bold text-teal-400 border-b border-cyan-900/40 pb-2">
-                <i class="fa-solid fa-terminal mr-2"></i> Output Terminal
-            </h2>
+        <!-- SECTION 1: NETWORK MONITORS -->
+        <div class="section">
+            <div class="section-title glow-text-light">PANARES INFRASTRUCTURE</div>
+            <div class="section-subtitle">Anti-Timeout Nodes & Localized Adblocker</div>
             
-            <!-- V2RAY Vpn URI Standard Link Link -->
-            <div class="flex-grow flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs uppercase tracking-wider font-mono text-gray-400">Standard V2Ray URI Link</span>
-                    <button onclick="copyText('txtUri')" class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer"><i class="fa-regular fa-copy mr-1"></i> Copy</button>
+            <div class="status-row">
+                <div class="status-item">
+                    <div class="status-label">SYSTEM CORE</div>
+                    <div class="status-value active">ONLINE</div>
                 </div>
-                <textarea id="txtUri" readonly class="w-full flex-grow h-20 bg-black/60 border border-cyan-900/40 rounded p-2 font-mono text-xs text-green-400 focus:outline-none resize-none" placeholder="Mag-click sa 'Build Configuration' para i-compile ang link..."></textarea>
-            </div>
-
-            <!-- NETMOD SYNAPSE ADVANCED JSON CONFIG -->
-            <div class="flex-grow flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs uppercase tracking-wider font-mono text-gray-400">Netmod Advanced (JSON Form)</span>
-                    <button onclick="copyText('txtJson')" class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer"><i class="fa-regular fa-copy mr-1"></i> Copy</button>
+                <div class="status-item">
+                    <div class="status-label">ADBLOCKER</div>
+                    <div class="status-value active">ACTIVE</div>
                 </div>
-                <textarea id="txtJson" readonly class="w-full flex-grow h-40 bg-black/60 border border-cyan-900/40 rounded p-2 font-mono text-xs text-cyan-400 focus:outline-none resize-none" placeholder="Mag-click sa 'Build Configuration' para i-compile ang JSON structure..."></textarea>
+                <div class="status-item">
+                    <div class="status-label">GLOBAL REGION</div>
+                    <div class="status-value ping">US / MULTI</div>
+                </div>
             </div>
         </div>
-    </main>
 
-    <!-- FOOTER STATUS METERS -->
-    <footer class="w-full border-t border-cyan-900/20 bg-black/40 py-4 px-6 text-center text-xs font-mono text-gray-500 flex flex-col md:flex-row justify-between items-center max-w-5xl mx-auto rounded-t-lg">
-        <div class="flex items-center space-x-4 mb-2 md:mb-0">
-            <span><i class="fa-solid fa-shield-halved text-green-500 mr-1"></i> Adblocker: <strong class="text-green-400">ENABLED</strong></span>
-            <span><i class="fa-solid fa-circle text-green-500 mr-1 animate-pulse"></i> Node Status: <strong class="text-green-400">ONLINE</strong></span>
-        </div>
-        <div>&copy; 2026 PANARES NETWORKS CORE GATEWAY • NO TIMEOUT PLATFORM</div>
-    </footer>
-
-    <!-- 3. FUNCTIONAL CONTROL AND CORE LOGIC SCRIPT -->
-    <script>
-        // Auto-detect Host IP mula sa browser URL ng server
-        window.addEventListener('DOMContentLoaded', () => {
-            const currentHost = window.location.hostname;
-            if (currentHost && currentHost !== '127.0.0.1' && currentHost !== 'localhost') {
-                document.getElementById('inpHost').value = currentHost;
-            } else {
+        <!-- SECTION 2: CONFIG GENERATOR ENGINE -->
+        <div class="section">
+            <div class="section-title">CONFIG GENERATOR</div>
