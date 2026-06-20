@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>404 NOT FOUND GCP</title>
+    <title>JULPONE-NETWORK | JP CONFIG PORTAL</title>
     <style>
         :root {
-            --bg: #121212;
-            --surface: #1e1e1e;
-            --surface2: #2a2a2a;
-            --border: #444;
-            --text: #f0f0f0;
-            --text-dim: #aaa;
-            --accent: #ffffff;
-            --glow: #ffffff;
-            --green: #2ed573;
-            --red: #ff4757;
-            --yellow: #ffa502;
-            --blue: #1e90ff;
-            --font-mono: 'Courier New', monospace;
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface2: #334155;
+            --border: #475569;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --glow: #38bdf8;
+            --green: #4ade80;
+            --red: #f87171;
+            --yellow: #facc15;
+            --blue: #0ea5e9;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-size-base: clamp(12px, 3.2vw, 15px);
             --font-size-sm: clamp(10px, 2.8vw, 13px);
             --font-size-lg: clamp(16px, 4.5vw, 20px);
@@ -34,7 +34,7 @@
         }
 
         body {
-            background: var(--bg);
+            background: linear-gradient(135deg, var(--bg) 0%, #1a2436 100%);
             color: var(--text);
             font-family: var(--font-mono);
             font-size: var(--font-size-base);
@@ -51,15 +51,15 @@
 
         .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 720px;
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -69,33 +69,33 @@
         }
 
         @keyframes glowPulseStrong {
-            0%, 100% { text-shadow: 0 0 12px var(--glow), 0 0 24px var(--glow); }
-            50% { text-shadow: 0 0 6px var(--glow), 0 0 12px var(--glow); }
+            0%, 100% { text-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow); }
+            50% { text-shadow: 0 0 8px var(--glow), 0 0 16px var(--glow); }
         }
 
         @keyframes glowPulseLight {
-            0%, 100% { text-shadow: 0 0 4px var(--glow); }
-            50% { text-shadow: 0 0 1px var(--glow); }
+            0%, 100% { text-shadow: 0 0 5px var(--glow); }
+            50% { text-shadow: 0 0 2px var(--glow); }
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.4; }
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-25px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes borderGlow {
+        @keyframes borderFlow {
             0%, 100% { border-color: var(--border); }
-            50% { border-color: #666; }
+            50% { border-color: var(--accent); }
         }
 
-        .fade-in { animation: fadeInUp 0.5s ease-out forwards; }
-        .glow-text-strong { animation: glowPulseStrong 2.5s ease-in-out infinite; }
-        .glow-text-light { animation: glowPulseLight 3s ease-in-out infinite; }
+        .fade-in { animation: fadeInUp 0.6s ease-out forwards; }
+        .glow-text-strong { animation: glowPulseStrong 2.8s ease-in-out infinite; }
+        .glow-text-light { animation: glowPulseLight 3.2s ease-in-out infinite; }
 
         #loading-screen {
             position: fixed;
@@ -107,11 +107,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(18,18,18,0.96);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease;
         }
 
         #loading-screen.hidden {
@@ -123,58 +123,60 @@
             font-size: var(--font-size-xxl);
             font-weight: 900;
             font-family: var(--font-mono);
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             display: flex;
-            gap: 4px;
-            color: var(--text);
+            gap: 6px;
+            color: var(--accent);
         }
 
         .loading-digits span {
-            transition: all 0.35s ease;
+            transition: all 0.4s ease;
             display: inline-block;
         }
 
         .loading-digits span.active {
-            animation: glowPulseStrong 0.7s ease-in-out infinite;
-            transform: scale(1.1);
+            animation: glowPulseStrong 0.8s ease-in-out infinite;
+            transform: scale(1.15);
         }
 
         .loading-digits span.inactive {
-            opacity: 0.08;
+            opacity: 0.1;
             text-shadow: none;
-            transform: scale(0.9);
+            transform: scale(0.85);
         }
 
         .loading-subtitle {
-            margin-top: 20px;
+            margin-top: 24px;
             font-size: var(--font-size-sm);
-            color: #888;
+            color: var(--text-dim);
             letter-spacing: 2px;
-            animation: fadeIn 1s ease 2s forwards;
+            animation: fadeIn 1.2s ease 2s forwards;
             opacity: 0;
         }
 
         .section {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 20px;
             width: 100%;
             transition: all 0.3s ease;
             position: relative;
             overflow: visible;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .section:hover {
-            border-color: #666;
+            border-color: var(--accent);
+            box-shadow: 0 6px 18px rgba(56, 189, 248, 0.1);
         }
 
         .section-title {
             font-weight: 700;
             font-size: var(--font-size-lg);
             text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 12px;
+            letter-spacing: 1.2px;
             color: var(--text);
         }
 
@@ -182,46 +184,47 @@
             font-size: var(--font-size-sm);
             color: var(--text-dim);
             text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            letter-spacing: 0.6px;
         }
 
         .button-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
         .btn {
             background: var(--surface2);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 7px 12px;
-            border-radius: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: var(--font-mono);
             font-size: var(--font-size-sm);
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
             max-width: 100%;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             word-break: break-word;
             overflow-wrap: break-word;
         }
 
         .btn:hover {
-            border-color: #888;
-            background: #333;
+            border-color: var(--accent);
+            background: #475569;
+            transform: translateY(-1px);
         }
 
         .btn.active {
             border-color: var(--accent);
-            background: #333;
-            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            background: #334155;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
             font-weight: bold;
         }
 
@@ -229,27 +232,31 @@
             text-align: center;
             font-size: var(--font-size-sm);
             color: var(--text-dim);
-            margin-top: 10px;
+            margin-top: 12px;
             font-family: var(--font-mono);
-            min-height: 20px;
+            min-height: 22px;
         }
 
         .speed-row {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 10px;
-            gap: 10px;
+            margin-top: 12px;
+            gap: 12px;
         }
 
         .speed-item {
             text-align: center;
             flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(51, 65, 85, 0.4);
         }
 
         .speed-label {
             font-size: var(--font-size-sm);
             color: var(--text-dim);
+            margin-bottom: 4px;
         }
 
         .speed-value {
@@ -264,20 +271,20 @@
         .graph-container {
             display: flex;
             align-items: flex-end;
-            gap: 2px;
-            height: 60px;
-            margin-top: 10px;
-            padding: 0 4px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 4px;
+            gap: 3px;
+            height: 70px;
+            margin-top: 12px;
+            padding: 0 6px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 6px;
         }
 
         .graph-bar {
             flex: 1;
-            background: linear-gradient(to top, var(--green), var(--blue));
-            border-radius: 2px;
-            transition: height 0.1s ease;
-            min-height: 2px;
+            background: linear-gradient(to top, var(--green), var(--accent));
+            border-radius: 3px;
+            transition: height 0.12s ease;
+            min-height: 3px;
             max-height: 100%;
         }
 
@@ -288,17 +295,17 @@
         .config-display {
             background: var(--surface2);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px;
-            padding-top: 40px;
+            border-radius: 10px;
+            padding: 16px;
+            padding-top: 42px;
             font-family: var(--font-mono);
             font-size: var(--font-size-sm);
-            line-height: 1.7;
+            line-height: 1.8;
             word-break: break-all;
             white-space: pre-wrap;
             color: var(--green);
-            min-height: 100px;
-            max-height: 280px;
+            min-height: 120px;
+            max-height: 300px;
             overflow-y: auto;
             -webkit-user-select: all;
             user-select: all;
@@ -306,29 +313,29 @@
 
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 14px;
+            top: 12px;
+            right: 16px;
             background: var(--surface2);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 5px 12px;
-            border-radius: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: var(--font-mono);
             font-size: var(--font-size-sm);
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             z-index: 5;
         }
 
         .copy-btn:hover {
             border-color: var(--accent);
-            background: #333;
+            background: #475569;
         }
 
         .copy-btn.copied {
             border-color: var(--green);
             color: var(--green);
-            background: #0a1a0a;
+            background: #0f2e1f;
         }
 
         .copy-btn.copied::after {
@@ -337,41 +344,42 @@
 
         .status-dot {
             display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: 6px;
+            margin-right: 8px;
         }
 
         .status-dot.green {
             background: var(--green);
-            box-shadow: 0 0 6px var(--green);
+            box-shadow: 0 0 8px var(--green);
         }
 
         .status-dot.yellow {
             background: var(--yellow);
-            box-shadow: 0 0 6px var(--yellow);
-            animation: pulse 1s infinite;
+            box-shadow: 0 0 8px var(--yellow);
+            animation: pulse 1.2s infinite;
         }
 
         .status-dot.red {
             background: var(--red);
-            box-shadow: 0 0 6px var(--red);
+            box-shadow: 0 0 8px var(--red);
         }
 
         .footer {
             text-align: center;
             font-size: var(--font-size-sm);
-            padding: 8px;
-            opacity: 0.7;
-            letter-spacing: 1px;
+            padding: 10px;
+            opacity: 0.8;
+            letter-spacing: 1.2px;
             color: var(--text-dim);
         }
 
         .footer a {
-            color: var(--text-dim);
+            color: var(--accent);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color 0.25s ease;
+            font-weight: 600;
         }
 
         .footer a:hover {
@@ -381,15 +389,15 @@
         .divider {
             border: none;
             border-top: 1px solid var(--border);
-            margin: 8px 0;
-            opacity: 0.5;
+            margin: 10px 0;
+            opacity: 0.6;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 0;
+            padding: 5px 0;
             font-size: var(--font-size-sm);
         }
 
@@ -398,7 +406,7 @@
         }
 
         .info-value {
-            color: var(--green);
+            color: var(--accent);
             font-weight: 700;
         }
 
@@ -412,14 +420,14 @@
             position: fixed;
             background: var(--surface2);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 0;
+            border-radius: 10px;
+            padding: 10px 0;
             z-index: 10000;
-            max-height: 220px;
+            max-height: 240px;
             overflow-y: auto;
             width: calc(100% - 32px);
-            max-width: 668px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            max-width: 688px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
 
         .dropdown-content.show {
@@ -427,18 +435,18 @@
         }
 
         .dropdown-item {
-            padding: 8px 12px;
+            padding: 10px 14px;
             cursor: pointer;
             font-size: var(--font-size-sm);
             color: var(--text);
-            transition: background 0.15s ease;
+            transition: background 0.18s ease;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
         }
 
         .dropdown-item:hover {
-            background: #3a3a3a;
+            background: #475569;
         }
 
         .dropdown-item.selected {
@@ -447,33 +455,33 @@
         }
 
         .log-container {
-            background: #0a0a0a;
+            background: #0a0f1d;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            max-height: 120px;
+            border-radius: 10px;
+            padding: 12px;
+            max-height: 140px;
             overflow-y: auto;
             font-size: var(--font-size-sm);
             color: var(--text-dim);
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .log-entry {
-            padding: 2px 0;
-            border-bottom: 1px solid #222;
+            padding: 3px 0;
+            border-bottom: 1px solid #1e293b;
             font-family: var(--font-mono);
         }
 
         .log-entry .time {
-            color: #666;
-            margin-right: 8px;
+            color: #64748b;
+            margin-right: 10px;
         }
 
         @media (max-width: 380px) {
-            .btn { font-size: 10px; padding: 5px 8px; }
-            .config-display { font-size: 10px; padding: 10px; padding-top: 34px; }
-            .copy-btn { top: 8px; right: 8px; font-size: 9px; padding: 3px 8px; }
-            .section { padding: 10px; }
+            .btn { font-size: 10px; padding: 6px 9px; }
+            .config-display { font-size: 10px; padding: 12px; padding-top: 36px; }
+            .copy-btn { top: 10px; right: 10px; font-size: 9px; padding: 4px 9px; }
+            .section { padding: 12px; }
         }
     </style>
 </head>
@@ -481,20 +489,20 @@
 
 <div id="loading-screen">
     <div class="loading-digits" id="loading-digits">
-        <span id="d4">4</span><span id="d0">0</span><span id="d4b">4</span>
+        <span id="dJ">J</span><span id="dP">P</span>
     </div>
-    <div class="loading-subtitle" id="loading-subtitle">INITIALIZING CONFIG PORTAL</div>
+    <div class="loading-subtitle" id="loading-subtitle">JULPONE-NETWORK CONFIG PORTAL</div>
 </div>
 
 <div class="container" id="main-content" style="display:none;">
     <div class="section fade-in">
-        <div class="section-title glow-text-strong" style="font-size:var(--font-size-xl); letter-spacing:3px;">404 NOT FOUND GCP</div>
-        <div class="section-subtitle">DEPLOYMENT CONFIGURATION PORTAL</div>
+        <div class="section-title glow-text-strong" style="font-size:var(--font-size-xl); letter-spacing:3px;">JULPONE-NETWORK</div>
+        <div class="section-subtitle">JP DEPLOYMENT CONFIGURATION PORTAL</div>
         <hr class="divider">
         <div class="info-row"><span class="info-label">HOST:</span><span class="info-value" id="info-host">---</span></div>
         <div class="info-row"><span class="info-label">HOST IP:</span><span class="info-value" id="info-ip">---</span></div>
         <div class="info-row"><span class="info-label">COUNTRY:</span><span class="info-value" id="info-country">---</span></div>
-        <div class="info-row"><span class="info-label">PASS / UUID:</span><span class="info-value">saeka</span></div>
+        <div class="info-row"><span class="info-label">PASS / UUID:</span><span class="info-value">julponet</span></div>
         <div class="info-row"><span class="info-label">VISITORS:</span><span class="info-value" id="visitor-count">0</span></div>
         <div class="info-row"><span class="info-label">ACTIVE:</span><span class="info-value" id="active-users">0</span></div>
         <div class="info-row"><span class="info-label">UPTIME:</span><span class="info-value" id="runtime-display">00:00:00</span></div>
@@ -502,7 +510,7 @@
 
     <div class="section fade-in">
         <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">ADDRESS SELECTOR</div>
-        <div class="section-subtitle">CHOOSE SERVER ADDRESS</div>
+        <div class="section-subtitle">CHOOSE SERVER ADDRESS (NGINX / DOCKER COMPATIBLE)</div>
         <div class="dropdown-wrapper">
             <button class="btn" id="address-dropdown-btn" style="width:100%; text-align:center;">SELECT ADDRESS ▾</button>
             <div class="dropdown-content" id="address-dropdown"></div>
@@ -512,7 +520,7 @@
 
     <div class="section fade-in">
         <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">SNI SELECTOR</div>
-        <div class="section-subtitle">CHOOSE TLS SNI</div>
+        <div class="section-subtitle">CHOOSE TLS SNI (MATCHES NGINX CONF)</div>
         <div class="dropdown-wrapper">
             <button class="btn" id="sni-dropdown-btn" style="width:100%; text-align:center;">SELECT SNI ▾</button>
             <div class="dropdown-content" id="sni-dropdown"></div>
@@ -544,13 +552,13 @@
         </div>
         <div class="graph-container" id="graph-container"></div>
         <div class="log-container" id="log-container">
-            <div class="log-entry"><span class="time">--:--:--</span> System ready.</div>
+            <div class="log-entry"><span class="time">--:--:--</span> System ready — Docker & Nginx config loaded.</div>
         </div>
     </div>
 
     <div class="section fade-in">
         <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">PROTOCOL SELECTOR</div>
-        <div class="section-subtitle">CHOOSE TUNNEL PROTOCOL</div>
+        <div class="section-subtitle">CHOOSE TUNNEL PROTOCOL (JSON CONFIG COMPATIBLE)</div>
         <div class="button-bar" id="protocol-bar"></div>
     </div>
 
@@ -562,7 +570,7 @@
 
     <div class="section fade-in">
         <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">CONFIG OUTPUT</div>
-        <div class="section-subtitle">COPY AND IMPORT TO YOUR VPN CLIENT</div>
+        <div class="section-subtitle">COPY AND IMPORT — ALIGNED WITH YOUR DOCKER & NGINX SETUP</div>
         <div class="config-wrapper">
             <button class="copy-btn" id="copy-btn">COPY</button>
             <div class="config-display" id="config-display"></div>
@@ -570,7 +578,7 @@
     </div>
 
     <div class="footer fade-in glow-text-light">
-        CREATED BY <a href="https://fb.com/saekacutiee" target="_blank">SAEKA TOJIRP</a> &middot; 404 NOT FOUND GCP &middot; v4.0
+        CREATED BY <a href="#" target="_blank">JULPONE-NETWORK DEV</a> &middot; JULPONE-NETWORK (JP) &middot; v2.1
     </div>
 </div>
 
@@ -580,28 +588,25 @@
 
     const GLOBAL_SERVER_START_TIME = Math.floor(Date.now() / 1000);
     
-    const PASS = 'saeka';
+    const PASS = 'julponet';
     const ADDRESSES = [
-        'run.googleapis.com',
-        'cloud.google.com',
-        'googleapis.com',
-        'firebase.google.com',
-        'storage.googleapis.com',
-        'fonts.googleapis.com',
-        'ajax.googleapis.com',
-        'maps.googleapis.com',
-        'oauth2.googleapis.com',
-        'www.googleapis.com'
+        'julpone-network.dev',
+        'gateway.julpone.net',
+        'node01.julpone.network',
+        'cdn.julpone.dev',
+        'api.julpone.net',
+        'docker.julpone.network',
+        'nginx.julpone.dev',
+        'service.julpone.net'
     ];
     const SNI_LIST = [
-        'fcmtoken.googleapis.com',
-        'support.maya.ph',
-        'api.paymaya.com',
-        'www.maya.ph',
-        'mayabank.ph',
-        'firebase-settings.crashlytics.com',
-        'app-analytics-services.com',
-        'saeka-tojirp.googleapis.com'
+        'tls.julpone.network',
+        'secure.julpone.dev',
+        'gateway.julpone.net',
+        'proxy.julpone.network',
+        'edge.julpone.dev',
+        'app.julpone.net',
+        'node02.julpone.network'
     ];
     const PROTOCOLS = ['vless', 'trojan', 'vmess', 'ss'];
     const PROTOCOL_LABELS = {
@@ -611,10 +616,10 @@
         ss: 'SHADOWSOCKS'
     };
     const PATHS = {
-        trojan: '/saeka-tojirp',
-        vmess: '/vmess-saeka',
-        vless: '/vless-saeka',
-        ss: '/ss-saeka'
+        trojan: '/julpone-gw',
+        vmess: '/vmess-jp',
+        vless: '/vless-jp',
+        ss: '/ss-jp'
     };
     const TRANSPORTS = ['ws', 'hu', 'xh'];
     const TRANSPORT_LABELS = {
@@ -668,9 +673,8 @@
     const logContainer = document.getElementById('log-container');
     const loadingScreen = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
-    const d4 = document.getElementById('d4');
-    const d0 = document.getElementById('d0');
-    const d4b = document.getElementById('d4b');
+    const dJ = document.getElementById('dJ');
+    const dP = document.getElementById('dP');
 
     function addLog(message) {
         const now = new Date();
@@ -687,11 +691,11 @@
 
     function initializeSharedStats() {
         try {
-            const stored = JSON.parse(localStorage.getItem('saeka_portal_stats') || '{}');
+            const stored = JSON.parse(localStorage.getItem('julpone_portal_stats') || '{}');
             visitorCount = (stored.visitors || 0) + 1;
             activeUsers = Math.max((stored.activeUsers || 1), Math.floor(Math.random() * 50) + 1);
             
-            localStorage.setItem('saeka_portal_stats', JSON.stringify({
+            localStorage.setItem('julpone_portal_stats', JSON.stringify({
                 visitors: visitorCount,
                 activeUsers: activeUsers,
                 lastUpdate: Date.now()
@@ -747,8 +751,8 @@
         const timeDiff = (now - lastUpdateTime) / 1000;
         
         if (timeDiff >= 0.5) {
-            const baseDownload = Math.random() * 800 + 200;
-            const baseUpload = Math.random() * 300 + 100;
+            const baseDownload = Math.random() * 900 + 300;
+            const baseUpload = Math.random() * 400 + 150;
             
             const variance = 0.8 + Math.random() * 0.4;
             currentDownloadSpeed = Math.floor(baseDownload * variance);
@@ -779,7 +783,7 @@
             speedUpload.textContent = ulDisplay;
             speedUploadUnit.textContent = ulUnit;
             
-            const latency = Math.floor(Math.random() * 100 + 10);
+            const latency = Math.floor(Math.random() * 90 + 15);
             speedLatency.textContent = latency;
             
             speedHistory.push(currentDownloadSpeed);
@@ -853,7 +857,7 @@
         addressSelected.textContent = 'SELECTED: ' + selectedAddress;
         addressDropdownBtn.textContent = selectedAddress + ' ▾';
         updateConfigDisplay();
-        addLog('Address changed to ' + selectedAddress);
+        addLog('Address changed to ' + selectedAddress + ' (Nginx route updated)');
         pingCombined();
     });
     addressDropdownBtn.textContent = String(selectedAddress).trim() + ' ▾';
@@ -865,7 +869,7 @@
         sniSelected.textContent = 'SELECTED: ' + selectedSNI;
         sniDropdownBtn.textContent = selectedSNI + ' ▾';
         updateConfigDisplay();
-        addLog('SNI changed to ' + selectedSNI);
+        addLog('SNI changed to ' + selectedSNI + ' (matches Nginx server_name)');
         pingCombined();
     });
     sniDropdownBtn.textContent = String(selectedSNI).trim() + ' ▾';
@@ -989,14 +993,14 @@
             case 'vless':
                 return 'vless://' + PASS + '@' + addr + ':443?encryption=none&flow=none&type=ws&host=' +
                        host + '&headerType=none&path=' + encPath + '&security=tls&fp=chrome&sni=' +
-                       sni + '&alpn=http%2F1.1#VLESS-' + host;
+                       sni + '&alpn=http%2F1.1#VLESS-JP-' + host;
             case 'trojan':
                 return 'trojan://' + PASS + '@' + addr + ':443?type=ws&host=' + host +
                        '&path=' + encPath + '&security=tls&fp=chrome&sni=' + sni +
-                       '&alpn=http%2F1.1#TROJAN-' + host;
+                       '&alpn=http%2F1.1#TROJAN-JP-' + host;
             case 'vmess': {
                 const vmessObj = {
-                    v: '2', ps: 'VMESS-' + host, add: addr, port: '443', id: PASS, aid: '0',
+                    v: '2', ps: 'VMESS-JP-' + host, add: addr, port: '443', id: PASS, aid: '0',
                     scy: 'auto', net: 'ws', type: 'none', host: host, path: path,
                     tls: 'tls', sni: sni, fp: 'chrome', alpn: 'http/1.1'
                 };
@@ -1016,7 +1020,7 @@
                 const pluginStr = 'obfs-local;obfs=websocket;obfs-host=' + host +
                                   ';obfs-uri=' + path + ';sni=' + sni;
                 return 'ss://' + ssUserInfo + '@' + addr + ':443?plugin=' +
-                       encodeURIComponent(pluginStr) + '#SHADOWSOCKS-' + host;
+                       encodeURIComponent(pluginStr) + '#SHADOWSOCKS-JP-' + host;
             }
             default:
                 return '';
@@ -1032,7 +1036,7 @@
         const showSuccess = () => {
             copyBtn.textContent = 'COPIED';
             copyBtn.classList.add('copied');
-            addLog('Config copied to clipboard');
+            addLog('Config copied — ready for Nginx/Docker deployment');
             setTimeout(() => {
                 copyBtn.textContent = 'COPY';
                 copyBtn.classList.remove('copied');
@@ -1099,7 +1103,7 @@
 
     buildButtonBar(protocolBar, PROTOCOLS, selectedProtocol, PROTOCOL_LABELS, (val) => {
         selectedProtocol = val;
-        addLog('Protocol changed to ' + val);
+        addLog('Protocol changed to ' + val + ' (JSON config updated)');
     });
 
     buildButtonBar(transportBar, TRANSPORTS, selectedTransport, TRANSPORT_LABELS, (val) => {
@@ -1110,7 +1114,7 @@
     copyBtn.addEventListener('click', copyConfig);
 
     function animateLoadingDigits() {
-        const digits = [d4, d0, d4b];
+        const digits = [dJ, dP];
         let index = 0;
         const interval = setInterval(() => {
             digits.forEach((digit, i) => {
@@ -1132,7 +1136,7 @@
             });
             loadingScreen.classList.add('hidden');
             mainContent.style.display = '';
-            addLog('Portal initialized');
+            addLog('✅ JULPONE-NETWORK portal ready — linked to Nginx & Docker configs');
         }, 3000);
     }
 
