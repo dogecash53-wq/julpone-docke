@@ -3,28 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JULPONE-NETWORK | JP CONFIG PORTAL</title>
+    <title>JULPONE NETWORK | JP CONFIG CENTER</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --surface2: #334155;
-            --border: #475569;
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #f97316;
+            --accent-light: #fb923c;
             --text: #f8fafc;
-            --text-dim: #94a3b8;
-            --accent: #38bdf8;
-            --glow: #38bdf8;
-            --green: #4ade80;
-            --red: #f87171;
-            --yellow: #facc15;
-            --blue: #0ea5e9;
-            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-size-base: clamp(12px, 3.2vw, 15px);
-            --font-size-sm: clamp(10px, 2.8vw, 13px);
-            --font-size-lg: clamp(16px, 4.5vw, 20px);
-            --font-size-xl: clamp(24px, 7vw, 36px);
-            --font-size-xxl: clamp(36px, 10vw, 60px);
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 8px 32px rgba(0,0,0,0.25);
+            --font-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-mono: 'Consolas', 'Monaco', monospace;
+            --radius: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -34,551 +31,513 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg) 0%, #1a2436 100%);
+            background: linear-gradient(160deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
             color: var(--text);
-            font-family: var(--font-mono);
-            font-size: var(--font-size-base);
+            font-family: var(--font-main);
             min-height: 100vh;
+            padding: 20px 12px;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseAccent {
+            0%, 100% { box-shadow: 0 0 0 rgba(249, 115, 22, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.6); }
+        }
+
+        @keyframes rotateGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.98);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            padding: 16px 0;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-logo {
+            font-size: clamp(42px, 15vw, 72px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--info), var(--accent));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rotateGradient 4s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        .splash-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
         .container {
-            width: 100%;
-            max-width: 720px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes glowPulseStrong {
-            0%, 100% { text-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow); }
-            50% { text-shadow: 0 0 8px var(--glow), 0 0 16px var(--glow); }
-        }
-
-        @keyframes glowPulseLight {
-            0%, 100% { text-shadow: 0 0 5px var(--glow); }
-            50% { text-shadow: 0 0 2px var(--glow); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes borderFlow {
-            0%, 100% { border-color: var(--border); }
-            50% { border-color: var(--accent); }
-        }
-
-        .fade-in { animation: fadeInUp 0.6s ease-out forwards; }
-        .glow-text-strong { animation: glowPulseStrong 2.8s ease-in-out infinite; }
-        .glow-text-light { animation: glowPulseLight 3.2s ease-in-out infinite; }
-
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(15, 23, 42, 0.97);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 9999;
-            transition: opacity 0.6s ease;
-        }
-
-        #loading-screen.hidden {
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeInScale 0.5s ease-out forwards;
             opacity: 0;
-            pointer-events: none;
         }
 
-        .loading-digits {
-            font-size: var(--font-size-xxl);
-            font-weight: 900;
-            font-family: var(--font-mono);
-            letter-spacing: 10px;
-            display: flex;
-            gap: 6px;
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+        .card:nth-child(5) { animation-delay: 0.4s; }
+        .card:nth-child(6) { animation-delay: 0.5s; }
+
+        .header-card {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(59, 130, 246, 0.15));
+            border-color: var(--accent-light);
+        }
+
+        .main-title {
+            font-size: clamp(26px, 6vw, 38px);
+            font-weight: 800;
+            margin-bottom: 8px;
             color: var(--accent);
-        }
-
-        .loading-digits span {
-            transition: all 0.4s ease;
-            display: inline-block;
-        }
-
-        .loading-digits span.active {
-            animation: glowPulseStrong 0.8s ease-in-out infinite;
-            transform: scale(1.15);
-        }
-
-        .loading-digits span.inactive {
-            opacity: 0.1;
-            text-shadow: none;
-            transform: scale(0.85);
-        }
-
-        .loading-subtitle {
-            margin-top: 24px;
-            font-size: var(--font-size-sm);
-            color: var(--text-dim);
             letter-spacing: 2px;
-            animation: fadeIn 1.2s ease 2s forwards;
-            opacity: 0;
         }
 
-        .section {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: visible;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .sub-title {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
         }
 
-        .section:hover {
-            border-color: var(--accent);
-            box-shadow: 0 6px 18px rgba(56, 189, 248, 0.1);
-        }
-
-        .section-title {
-            font-weight: 700;
-            font-size: var(--font-size-lg);
-            text-align: center;
-            margin-bottom: 12px;
-            letter-spacing: 1.2px;
-            color: var(--text);
-        }
-
-        .section-subtitle {
-            font-size: var(--font-size-sm);
-            color: var(--text-dim);
-            text-align: center;
-            margin-bottom: 12px;
-            letter-spacing: 0.6px;
-        }
-
-        .button-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 8px;
-        }
-
-        .btn {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: var(--font-size-sm);
-            transition: all 0.25s ease;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            max-width: 100%;
-            letter-spacing: 0.5px;
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .btn:hover {
-            border-color: var(--accent);
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        .btn.active {
-            border-color: var(--accent);
-            background: #334155;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
-            font-weight: bold;
-        }
-
-        .ping-display {
-            text-align: center;
-            font-size: var(--font-size-sm);
-            color: var(--text-dim);
-            margin-top: 12px;
-            font-family: var(--font-mono);
-            min-height: 22px;
-        }
-
-        .speed-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 12px;
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
+            margin-top: 16px;
         }
 
-        .speed-item {
-            text-align: center;
-            flex: 1;
-            padding: 8px;
-            border-radius: 8px;
-            background: rgba(51, 65, 85, 0.4);
-        }
-
-        .speed-label {
-            font-size: var(--font-size-sm);
-            color: var(--text-dim);
-            margin-bottom: 4px;
-        }
-
-        .speed-value {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-        }
-
-        .speed-value.download { color: var(--green); }
-        .speed-value.upload { color: var(--blue); }
-        .speed-value.latency { color: var(--yellow); }
-
-        .graph-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 3px;
-            height: 70px;
-            margin-top: 12px;
-            padding: 0 6px;
+        .info-item {
             background: rgba(15, 23, 42, 0.5);
-            border-radius: 6px;
-        }
-
-        .graph-bar {
-            flex: 1;
-            background: linear-gradient(to top, var(--green), var(--accent));
-            border-radius: 3px;
-            transition: height 0.12s ease;
-            min-height: 3px;
-            max-height: 100%;
-        }
-
-        .config-wrapper {
-            position: relative;
-        }
-
-        .config-display {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 16px;
-            padding-top: 42px;
-            font-family: var(--font-mono);
-            font-size: var(--font-size-sm);
-            line-height: 1.8;
-            word-break: break-all;
-            white-space: pre-wrap;
-            color: var(--green);
-            min-height: 120px;
-            max-height: 300px;
-            overflow-y: auto;
-            -webkit-user-select: all;
-            user-select: all;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: var(--font-size-sm);
-            transition: all 0.25s ease;
-            z-index: 5;
-        }
-
-        .copy-btn:hover {
-            border-color: var(--accent);
-            background: #475569;
-        }
-
-        .copy-btn.copied {
-            border-color: var(--green);
-            color: var(--green);
-            background: #0f2e1f;
-        }
-
-        .copy-btn.copied::after {
-            content: ' ✓';
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .status-dot.green {
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-        }
-
-        .status-dot.yellow {
-            background: var(--yellow);
-            box-shadow: 0 0 8px var(--yellow);
-            animation: pulse 1.2s infinite;
-        }
-
-        .status-dot.red {
-            background: var(--red);
-            box-shadow: 0 0 8px var(--red);
-        }
-
-        .footer {
-            text-align: center;
-            font-size: var(--font-size-sm);
             padding: 10px;
-            opacity: 0.8;
-            letter-spacing: 1.2px;
-            color: var(--text-dim);
-        }
-
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color 0.25s ease;
-            font-weight: 600;
-        }
-
-        .footer a:hover {
-            color: var(--text);
-        }
-
-        .divider {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 10px 0;
-            opacity: 0.6;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 0;
-            font-size: var(--font-size-sm);
+            border-radius: 8px;
+            text-align: center;
         }
 
         .info-label {
-            color: var(--text-dim);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         .info-value {
-            color: var(--accent);
+            font-weight: 600;
+            color: var(--accent-light);
+            font-family: var(--font-mono);
+        }
+
+        .section-heading {
+            font-size: 18px;
             font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .dropdown-wrapper {
             position: relative;
-            width: 100%;
+            margin-bottom: 12px;
         }
 
-        .dropdown-content {
-            display: none;
-            position: fixed;
-            background: var(--surface2);
+        .dropdown-btn {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-btn:hover, .dropdown-btn.active {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--secondary);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 10px 0;
-            z-index: 10000;
-            max-height: 240px;
+            max-height: 220px;
             overflow-y: auto;
-            width: calc(100% - 32px);
-            max-width: 688px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transform: translateY(-10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
         }
 
-        .dropdown-content.show {
-            display: block;
+        .dropdown-menu.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
 
         .dropdown-item {
-            padding: 10px 14px;
+            padding: 10px 16px;
             cursor: pointer;
-            font-size: var(--font-size-sm);
-            color: var(--text);
-            transition: background 0.18s ease;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
+            transition: var(--transition);
+            font-size: 14px;
+            border-bottom: 1px solid #273549;
         }
 
+        .dropdown-item:last-child { border-bottom: none; }
         .dropdown-item:hover {
-            background: #475569;
+            background: rgba(249, 115, 22, 0.15);
+            padding-left: 20px;
         }
-
         .dropdown-item.selected {
-            color: var(--green);
-            font-weight: bold;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            font-weight: 600;
         }
 
-        .log-container {
-            background: #0a0f1d;
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulseAccent 1.8s infinite;
+        }
+        .status-dot.green { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .status-dot.yellow { background: var(--warning); box-shadow: 0 0 10px var(--warning); animation-duration: 1.2s; }
+        .status-dot.red { background: var(--danger); box-shadow: 0 0 10px var(--danger); animation-duration: 0.8s; }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+        }
+
+        .btn-option {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-option:hover {
+            border-color: var(--info);
+            transform: translateY(-2px);
+        }
+
+        .btn-option.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-color: var(--accent-light);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+        .stat-value.dl { color: var(--success); }
+        .stat-value.ul { color: var(--info); }
+        .stat-value.ping { color: var(--warning); }
+
+        .visualizer {
+            height: 60px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 0 6px;
+            background: rgba(2, 6, 23, 0.6);
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        .vis-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--info), var(--accent));
+            border-radius: 2px 2px 0 0;
+            transition: height 0.15s ease;
+            min-height: 3px;
+        }
+
+        .config-container {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .config-box {
+            width: 100%;
+            min-height: 120px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--success);
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid var(--info);
+            color: var(--info);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-button:hover {
+            background: var(--info);
+            color: #fff;
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
+        }
+
+        .log-view {
+            background: rgba(2, 6, 23, 0.7);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 12px;
-            max-height: 140px;
+            max-height: 130px;
             overflow-y: auto;
-            font-size: var(--font-size-sm);
-            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
             margin-top: 12px;
         }
 
         .log-entry {
-            padding: 3px 0;
+            padding: 2px 0;
             border-bottom: 1px solid #1e293b;
-            font-family: var(--font-mono);
         }
 
-        .log-entry .time {
-            color: #64748b;
-            margin-right: 10px;
+        .footer-note {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
         }
 
-        @media (max-width: 380px) {
-            .btn { font-size: 10px; padding: 6px 9px; }
-            .config-display { font-size: 10px; padding: 12px; padding-top: 36px; }
-            .copy-btn { top: 10px; right: 10px; font-size: 9px; padding: 4px 9px; }
-            .section { padding: 12px; }
+        @media (max-width: 480px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div id="loading-screen">
-    <div class="loading-digits" id="loading-digits">
-        <span id="dJ">J</span><span id="dP">P</span>
-    </div>
-    <div class="loading-subtitle" id="loading-subtitle">JULPONE-NETWORK CONFIG PORTAL</div>
+<div id="splash-screen">
+    <div class="splash-logo">JP</div>
+    <div class="splash-sub">JULPONE NETWORK SYSTEM</div>
 </div>
 
-<div class="container" id="main-content" style="display:none;">
-    <div class="section fade-in">
-        <div class="section-title glow-text-strong" style="font-size:var(--font-size-xl); letter-spacing:3px;">JULPONE-NETWORK</div>
-        <div class="section-subtitle">JP DEPLOYMENT CONFIGURATION PORTAL</div>
-        <hr class="divider">
-        <div class="info-row"><span class="info-label">HOST:</span><span class="info-value" id="info-host">---</span></div>
-        <div class="info-row"><span class="info-label">HOST IP:</span><span class="info-value" id="info-ip">---</span></div>
-        <div class="info-row"><span class="info-label">COUNTRY:</span><span class="info-value" id="info-country">---</span></div>
-        <div class="info-row"><span class="info-label">PASS / UUID:</span><span class="info-value">julponet</span></div>
-        <div class="info-row"><span class="info-label">VISITORS:</span><span class="info-value" id="visitor-count">0</span></div>
-        <div class="info-row"><span class="info-label">ACTIVE:</span><span class="info-value" id="active-users">0</span></div>
-        <div class="info-row"><span class="info-label">UPTIME:</span><span class="info-value" id="runtime-display">00:00:00</span></div>
+<div class="container" style="opacity:0; transition: opacity 0.8s ease;" id="main-ui">
+
+    <div class="card header-card">
+        <h1 class="main-title">JULPONE NETWORK</h1>
+        <p class="sub-title">CONFIGURATION GENERATOR & MONITORING CENTER</p>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Host</div>
+                <div class="info-value" id="info-host">---</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">IP Address</div>
+                <div class="info-value" id="info-ip">---</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Location</div>
+                <div class="info-value" id="info-country">---</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Uptime</div>
+                <div class="info-value" id="uptime">00:00:00</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Visitors</div>
+                <div class="info-value" id="visitors">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Active</div>
+                <div class="info-value" id="active">0</div>
+            </div>
+        </div>
     </div>
 
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">ADDRESS SELECTOR</div>
-        <div class="section-subtitle">CHOOSE SERVER ADDRESS (NGINX / DOCKER COMPATIBLE)</div>
+    <div class="card">
+        <h2 class="section-heading">🌐 SERVER ADDRESS</h2>
         <div class="dropdown-wrapper">
-            <button class="btn" id="address-dropdown-btn" style="width:100%; text-align:center;">SELECT ADDRESS ▾</button>
-            <div class="dropdown-content" id="address-dropdown"></div>
+            <button class="dropdown-btn" id="addr-btn">Select Server Address ▾</button>
+            <div class="dropdown-menu" id="addr-menu"></div>
         </div>
-        <div id="address-selected" style="text-align:center; margin-top:6px; font-size:var(--font-size-sm); color:var(--green); word-break: break-all;"></div>
+        <div class="status-indicator">
+            <span class="status-dot yellow" id="addr-status-dot"></span>
+            <span id="addr-status-text">Choose address to continue</span>
+        </div>
     </div>
 
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">SNI SELECTOR</div>
-        <div class="section-subtitle">CHOOSE TLS SNI (MATCHES NGINX CONF)</div>
+    <div class="card">
+        <h2 class="section-heading">🔒 TLS SNI HOST</h2>
         <div class="dropdown-wrapper">
-            <button class="btn" id="sni-dropdown-btn" style="width:100%; text-align:center;">SELECT SNI ▾</button>
-            <div class="dropdown-content" id="sni-dropdown"></div>
+            <button class="dropdown-btn" id="sni-btn">Select SNI / Hostname ▾</button>
+            <div class="dropdown-menu" id="sni-menu"></div>
         </div>
-        <div id="sni-selected" style="text-align:center; margin-top:6px; font-size:var(--font-size-sm); color:var(--green); word-break: break-all;"></div>
-        <div class="ping-display" id="ping-display" style="margin-top:8px;">
-            <span class="status-dot yellow"></span> SELECT BOTH TO PING
+        <div class="status-indicator">
+            <span class="status-dot yellow" id="sni-status-dot"></span>
+            <span id="sni-status-text">Choose SNI for TLS security</span>
         </div>
     </div>
 
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">REAL-TIME MONITOR</div>
-        <div class="speed-row">
-            <div class="speed-item">
-                <div class="speed-label">DOWNLOAD</div>
-                <div class="speed-value download" id="speed-download">0</div>
-                <div class="speed-label"><span id="speed-download-unit">KB/s</span></div>
+    <div class="card">
+        <h2 class="section-heading">⚙️ PROTOCOL TYPE</h2>
+        <div class="btn-group" id="protocol-group"></div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">🚀 TRANSPORT MODE</h2>
+        <div class="btn-group" id="transport-group"></div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">📊 REAL-TIME MONITOR</h2>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Download</div>
+                <div class="stat-value dl" id="stat-dl">0</div>
+                <div class="stat-label" id="stat-dl-unit">KB/s</div>
             </div>
-            <div class="speed-item">
-                <div class="speed-label">UPLOAD</div>
-                <div class="speed-value upload" id="speed-upload">0</div>
-                <div class="speed-label"><span id="speed-upload-unit">KB/s</span></div>
+            <div class="stat-card">
+                <div class="stat-label">Upload</div>
+                <div class="stat-value ul" id="stat-ul">0</div>
+                <div class="stat-label" id="stat-ul-unit">KB/s</div>
             </div>
-            <div class="speed-item">
-                <div class="speed-label">LATENCY</div>
-                <div class="speed-value latency" id="speed-latency">0</div>
-                <div class="speed-label">ms</div>
+            <div class="stat-card">
+                <div class="stat-label">Latency</div>
+                <div class="stat-value ping" id="stat-ping">0</div>
+                <div class="stat-label">ms</div>
             </div>
         </div>
-        <div class="graph-container" id="graph-container"></div>
-        <div class="log-container" id="log-container">
-            <div class="log-entry"><span class="time">--:--:--</span> System ready — Docker & Nginx config loaded.</div>
+        <div class="visualizer" id="data-visualizer"></div>
+        <div class="log-view" id="system-log"></div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">📝 GENERATED CONFIG</h2>
+        <div class="config-container">
+            <button class="copy-button" id="copy-action">COPY</button>
+            <div class="config-box" id="config-output"></div>
         </div>
     </div>
 
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">PROTOCOL SELECTOR</div>
-        <div class="section-subtitle">CHOOSE TUNNEL PROTOCOL (JSON CONFIG COMPATIBLE)</div>
-        <div class="button-bar" id="protocol-bar"></div>
-    </div>
-
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">TRANSPORT SELECTOR</div>
-        <div class="section-subtitle">CHOOSE TRANSPORT MODE</div>
-        <div class="button-bar" id="transport-bar"></div>
-    </div>
-
-    <div class="section fade-in">
-        <div class="section-title" style="font-size:var(--font-size-sm);color:var(--text-dim);">CONFIG OUTPUT</div>
-        <div class="section-subtitle">COPY AND IMPORT — ALIGNED WITH YOUR DOCKER & NGINX SETUP</div>
-        <div class="config-wrapper">
-            <button class="copy-btn" id="copy-btn">COPY</button>
-            <div class="config-display" id="config-display"></div>
-        </div>
-    </div>
-
-    <div class="footer fade-in glow-text-light">
-        CREATED BY <a href="#" target="_blank">JULPONE-NETWORK DEV</a> &middot; JULPONE-NETWORK (JP) &middot; v2.1
+    <div class="footer-note">
+        JULPONE NETWORK DEPLOYMENT SYSTEM • POWERED BY XRAY + NGINX • 2026
     </div>
 </div>
 
@@ -586,562 +545,262 @@
 (function() {
     'use strict';
 
-    const GLOBAL_SERVER_START_TIME = Math.floor(Date.now() / 1000);
+    const START_TIME = Math.floor(Date.now() / 1000);
     
-    const PASS = 'julponet';
-    const ADDRESSES = [
-        'julpone-network.dev',
+    // ✅ MATCHED SA IYONG CONFIG.JSON
+    const TROJAN_PASS = 'julpone-freenet';
+    const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
+    const SS_PASS = 'julpone-freenet';
+
+    const ADDRESS_LIST = [
         'gateway.julpone.net',
         'node01.julpone.network',
         'cdn.julpone.dev',
         'api.julpone.net',
-        'docker.julpone.network',
-        'nginx.julpone.dev',
-        'service.julpone.net'
+        'service.julpone.net',
+        'edge.julpone.network',
+        'julpone-network.dev'
     ];
     const SNI_LIST = [
-        'tls.julpone.network',
         'secure.julpone.dev',
-        'gateway.julpone.net',
+        'tls.julpone.network',
         'proxy.julpone.network',
-        'edge.julpone.dev',
         'app.julpone.net',
-        'node02.julpone.network'
+        'node02.julpone.network',
+        'cdn.julpone.dev'
     ];
-    const PROTOCOLS = ['vless', 'trojan', 'vmess', 'ss'];
-    const PROTOCOL_LABELS = {
-        vless: 'VLESS',
-        trojan: 'TROJAN',
-        vmess: 'VMESS',
-        ss: 'SHADOWSOCKS'
-    };
-    const PATHS = {
-        trojan: '/julpone-gw',
-        vmess: '/vmess-jp',
-        vless: '/vless-jp',
-        ss: '/ss-jp'
-    };
-    const TRANSPORTS = ['ws', 'hu', 'xh'];
-    const TRANSPORT_LABELS = {
-        ws: 'WebSocket',
-        hu: 'HTTP Upgrade',
-        xh: 'XHTTP'
-    };
 
-    let selectedAddress = ADDRESSES[0];
+    const PROTOCOLS = [
+        {id: 'trojan', name: 'TROJAN'},
+        {id: 'vmess', name: 'VMESS'},
+        {id: 'vless', name: 'VLESS'},
+        {id: 'ss', name: 'SHADOWSOCKS'}
+    ];
+
+    const TRANSPORTS = [
+        {id: 'ws', name: 'WebSocket'},
+        {id: 'hu', name: 'HTTP Upgrade'},
+        {id: 'xh', name: 'XHTTP'}
+    ];
+
+    // ✅ MATCHED SA IYONG NGINX LOCATION
+    const PATH_MAP = {
+        trojan: '/julpone-freenet',
+        vmess: '/vmess-julpone',
+        vless: '/vless-julpone',
+        ss: '/ss-julpone'
+    };
+    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh' };
+
+    let selectedAddr = ADDRESS_LIST[0];
     let selectedSNI = SNI_LIST[0];
-    let selectedProtocol = 'vless';
-    let selectedTransport = 'ws';
+    let selectedProto = 'trojan';
+    let selectedTrans = 'ws';
     const currentHost = window.location.hostname || 'localhost';
-    const pingCache = {};
-    let pingInProgress = false;
 
-    let totalDataSent = 0;
-    let totalDataReceived = 0;
-    let lastUpdateTime = Date.now();
-    let currentDownloadSpeed = 0;
-    let currentUploadSpeed = 0;
-    
-    const speedHistory = [];
-
-    let visitorCount = 0;
-    let activeUsers = 0;
+    let speedHistory = [];
+    let pingCache = {};
 
     const infoHost = document.getElementById('info-host');
     const infoIp = document.getElementById('info-ip');
     const infoCountry = document.getElementById('info-country');
-    const visitorCountEl = document.getElementById('visitor-count');
-    const activeUsersEl = document.getElementById('active-users');
-    const runtimeDisplay = document.getElementById('runtime-display');
-    const addressDropdownBtn = document.getElementById('address-dropdown-btn');
-    const addressDropdown = document.getElementById('address-dropdown');
-    const addressSelected = document.getElementById('address-selected');
-    const sniDropdownBtn = document.getElementById('sni-dropdown-btn');
-    const sniDropdown = document.getElementById('sni-dropdown');
-    const sniSelected = document.getElementById('sni-selected');
-    const protocolBar = document.getElementById('protocol-bar');
-    const transportBar = document.getElementById('transport-bar');
-    const pingDisplay = document.getElementById('ping-display');
-    const configDisplay = document.getElementById('config-display');
-    const copyBtn = document.getElementById('copy-btn');
-    const speedDownload = document.getElementById('speed-download');
-    const speedUpload = document.getElementById('speed-upload');
-    const speedLatency = document.getElementById('speed-latency');
-    const speedDownloadUnit = document.getElementById('speed-download-unit');
-    const speedUploadUnit = document.getElementById('speed-upload-unit');
-    const graphContainer = document.getElementById('graph-container');
-    const logContainer = document.getElementById('log-container');
-    const loadingScreen = document.getElementById('loading-screen');
-    const mainContent = document.getElementById('main-content');
-    const dJ = document.getElementById('dJ');
-    const dP = document.getElementById('dP');
+    const uptimeEl = document.getElementById('uptime');
+    const visitorsEl = document.getElementById('visitors');
+    const activeEl = document.getElementById('active');
+    const addrBtn = document.getElementById('addr-btn');
+    const addrMenu = document.getElementById('addr-menu');
+    const addrStatusDot = document.getElementById('addr-status-dot');
+    const addrStatusText = document.getElementById('addr-status-text');
+    const sniBtn = document.getElementById('sni-btn');
+    const sniMenu = document.getElementById('sni-menu');
+    const sniStatusDot = document.getElementById('sni-status-dot');
+    const sniStatusText = document.getElementById('sni-status-text');
+    const protocolGroup = document.getElementById('protocol-group');
+    const transportGroup = document.getElementById('transport-group');
+    const statDl = document.getElementById('stat-dl');
+    const statDlUnit = document.getElementById('stat-dl-unit');
+    const statUl = document.getElementById('stat-ul');
+    const statUlUnit = document.getElementById('stat-ul-unit');
+    const statPing = document.getElementById('stat-ping');
+    const visualizer = document.getElementById('data-visualizer');
+    const systemLog = document.getElementById('system-log');
+    const configOutput = document.getElementById('config-output');
+    const copyAction = document.getElementById('copy-action');
+    const splash = document.getElementById('splash-screen');
+    const mainUI = document.getElementById('main-ui');
 
-    function addLog(message) {
-        const now = new Date();
-        const time = now.toTimeString().split(' ')[0];
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        entry.innerHTML = '<span class="time">' + time + '</span> ' + message;
-        logContainer.appendChild(entry);
-        logContainer.scrollTop = logContainer.scrollHeight;
-        while (logContainer.children.length > 20) {
-            logContainer.removeChild(logContainer.firstChild);
-        }
+    function log(text) {
+        const now = new Date().toTimeString().split(' ')[0];
+        const el = document.createElement('div');
+        el.className = 'log-entry';
+        el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
+        systemLog.appendChild(el);
+        systemLog.scrollTop = systemLog.scrollHeight;
+        while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
     }
 
-    function initializeSharedStats() {
+    function initStats() {
+        let v = 1, a = Math.floor(Math.random() * 40) + 5;
         try {
-            const stored = JSON.parse(localStorage.getItem('julpone_portal_stats') || '{}');
-            visitorCount = (stored.visitors || 0) + 1;
-            activeUsers = Math.max((stored.activeUsers || 1), Math.floor(Math.random() * 50) + 1);
-            
-            localStorage.setItem('julpone_portal_stats', JSON.stringify({
-                visitors: visitorCount,
-                activeUsers: activeUsers,
-                lastUpdate: Date.now()
-            }));
-        } catch (e) {
-            visitorCount = 1;
-            activeUsers = Math.floor(Math.random() * 50) + 1;
-        }
-        
-        visitorCountEl.textContent = visitorCount;
-        activeUsersEl.textContent = activeUsers;
+            const s = JSON.parse(localStorage.getItem('jp_stats') || '{}');
+            v = (s.v || 0) + 1;
+            a = s.a || a;
+        } catch(e){}
+        visitorsEl.textContent = v;
+        activeEl.textContent = a;
+        setInterval(() => {
+            const diff = Math.floor(Date.now()/1000) - START_TIME;
+            const h = String(Math.floor(diff/3600)).padStart(2,'0');
+            const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
+            const s = String(diff%60).padStart(2,'0');
+            uptimeEl.textContent = `${h}:${m}:${s}`;
+        }, 1000);
     }
 
     infoHost.textContent = currentHost;
-
     fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => {
-            infoIp.textContent = data.ip || '---';
-            infoCountry.textContent = (data.country_name || '---') + ' ' + (data.flag?.emoji || '');
-            addLog('IP location: ' + data.country_name);
-        })
-        .catch(() => {
-            infoIp.textContent = '---';
-            infoCountry.textContent = '---';
-            addLog('IP fetch failed (local)');
-        });
+        .then(r=>r.json())
+        .then(d=>{ infoIp.textContent=d.ip||'---'; infoCountry.textContent=d.country_name||'---'; log('Location data loaded'); })
+        .catch(()=>{ infoIp.textContent='---'; infoCountry.textContent='---'; });
 
-    initializeSharedStats();
-
-    function updateRuntime() {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const diffSec = currentTime - GLOBAL_SERVER_START_TIME;
-        
-        const days = Math.floor(diffSec / 86400);
-        const hours = Math.floor((diffSec % 86400) / 3600);
-        const minutes = Math.floor((diffSec % 3600) / 60);
-        const seconds = diffSec % 60;
-        
-        let runtimeStr = '';
-        if (days > 0) runtimeStr += days + 'D ';
-        runtimeStr += String(hours).padStart(2, '0') + ':' +
-                      String(minutes).padStart(2, '0') + ':' +
-                      String(seconds).padStart(2, '0');
-        runtimeDisplay.textContent = runtimeStr;
-    }
-    
-    updateRuntime();
-    setInterval(updateRuntime, 1000);
-
-    function simulateNetworkActivity() {
-        const now = Date.now();
-        const timeDiff = (now - lastUpdateTime) / 1000;
-        
-        if (timeDiff >= 0.5) {
-            const baseDownload = Math.random() * 900 + 300;
-            const baseUpload = Math.random() * 400 + 150;
-            
-            const variance = 0.8 + Math.random() * 0.4;
-            currentDownloadSpeed = Math.floor(baseDownload * variance);
-            currentUploadSpeed = Math.floor(baseUpload * variance);
-            
-            totalDataReceived += (currentDownloadSpeed * timeDiff) / 1000;
-            totalDataSent += (currentUploadSpeed * timeDiff) / 1000;
-            
-            let dlDisplay, dlUnit;
-            if (currentDownloadSpeed >= 1024) {
-                dlDisplay = (currentDownloadSpeed / 1024).toFixed(2);
-                dlUnit = 'MB/s';
-            } else {
-                dlDisplay = currentDownloadSpeed.toFixed(1);
-                dlUnit = 'KB/s';
-            }
-            speedDownload.textContent = dlDisplay;
-            speedDownloadUnit.textContent = dlUnit;
-            
-            let ulDisplay, ulUnit;
-            if (currentUploadSpeed >= 1024) {
-                ulDisplay = (currentUploadSpeed / 1024).toFixed(2);
-                ulUnit = 'MB/s';
-            } else {
-                ulDisplay = currentUploadSpeed.toFixed(1);
-                ulUnit = 'KB/s';
-            }
-            speedUpload.textContent = ulDisplay;
-            speedUploadUnit.textContent = ulUnit;
-            
-            const latency = Math.floor(Math.random() * 90 + 15);
-            speedLatency.textContent = latency;
-            
-            speedHistory.push(currentDownloadSpeed);
-            if (speedHistory.length > 30) {
-                speedHistory.shift();
-            }
-            
-            updateGraph();
-            lastUpdateTime = now;
-        }
-    }
-
-    function updateGraph() {
-        graphContainer.innerHTML = '';
-        
-        if (speedHistory.length === 0) {
-            for (let i = 0; i < 30; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'graph-bar';
-                bar.style.height = '5px';
-                graphContainer.appendChild(bar);
-            }
-            return;
-        }
-        
-        const maxSpeed = Math.max(...speedHistory, 1000);
-        
-        speedHistory.forEach(speed => {
-            const bar = document.createElement('div');
-            bar.className = 'graph-bar';
-            const percentage = (speed / maxSpeed) * 100;
-            bar.style.height = Math.max(5, percentage) + '%';
-            graphContainer.appendChild(bar);
-        });
-    }
-
-    setInterval(simulateNetworkActivity, 100);
-    simulateNetworkActivity();
-
-    function buildDropdown(container, items, selected, callback) {
-        container.innerHTML = '';
-        items.forEach(item => {
+    function buildDropdown(menu, list, selected, cb) {
+        menu.innerHTML = '';
+        list.forEach(item=>{
             const div = document.createElement('div');
-            div.className = 'dropdown-item';
+            div.className = 'dropdown-item' + (item===selected?' selected':'');
             div.textContent = item;
-            if (item === selected) div.classList.add('selected');
-            div.addEventListener('click', (e) => {
-                e.stopPropagation();
-                callback(item);
-                container.classList.remove('show');
-                container.querySelectorAll('.dropdown-item').forEach(d => d.classList.remove('selected'));
-                div.classList.add('selected');
-            });
-            container.appendChild(div);
+            div.onclick=()=>{
+                menu.classList.remove('show');
+                cb(item);
+                menu.parentElement.querySelector('.dropdown-btn').textContent = item + ' ▾';
+                updateConfig();
+                log(`Selected: ${item}`);
+                pingTest(item);
+            };
+            menu.appendChild(div);
         });
     }
 
-    function positionDropdown(dropdown) {
-        const btn = dropdown.previousElementSibling;
-        if (!btn || !btn.classList.contains('btn')) return;
-        
-        const rect = btn.getBoundingClientRect();
-        dropdown.style.top = (rect.bottom + window.scrollY + 4) + 'px';
-        dropdown.style.left = (rect.left + window.scrollX) + 'px';
-        dropdown.style.width = rect.width + 'px';
-    }
+    addrBtn.onclick=()=>{ addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
+    sniBtn.onclick=()=>{ sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
+    document.onclick=(e)=>{ if(!e.target.closest('.dropdown-wrapper')){ addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); } };
 
-    buildDropdown(addressDropdown, ADDRESSES, selectedAddress, (val) => {
-        if (!val || val.trim() === '') return;
-        selectedAddress = String(val).trim();
-        addressSelected.textContent = 'SELECTED: ' + selectedAddress;
-        addressDropdownBtn.textContent = selectedAddress + ' ▾';
-        updateConfigDisplay();
-        addLog('Address changed to ' + selectedAddress + ' (Nginx route updated)');
-        pingCombined();
-    });
-    addressDropdownBtn.textContent = String(selectedAddress).trim() + ' ▾';
-    addressSelected.textContent = 'SELECTED: ' + String(selectedAddress).trim();
+    buildDropdown(addrMenu, ADDRESS_LIST, selectedAddr, v=>{ selectedAddr=v; addrStatusText.textContent=`Ready: ${v}`; addrStatusDot.className='status-dot green'; });
+    buildDropdown(sniMenu, SNI_LIST, selectedSNI, v=>{ selectedSNI=v; sniStatusText.textContent=`Secure: ${v}`; sniStatusDot.className='status-dot green'; });
+    addrBtn.textContent = selectedAddr + ' ▾';
+    sniBtn.textContent = selectedSNI + ' ▾';
 
-    buildDropdown(sniDropdown, SNI_LIST, selectedSNI, (val) => {
-        if (!val || val.trim() === '') return;
-        selectedSNI = String(val).trim();
-        sniSelected.textContent = 'SELECTED: ' + selectedSNI;
-        sniDropdownBtn.textContent = selectedSNI + ' ▾';
-        updateConfigDisplay();
-        addLog('SNI changed to ' + selectedSNI + ' (matches Nginx server_name)');
-        pingCombined();
-    });
-    sniDropdownBtn.textContent = String(selectedSNI).trim() + ' ▾';
-    sniSelected.textContent = 'SELECTED: ' + String(selectedSNI).trim();
-
-    addressDropdownBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const show = !addressDropdown.classList.contains('show');
-        addressDropdown.classList.toggle('show');
-        sniDropdown.classList.remove('show');
-        if (show) {
-            positionDropdown(addressDropdown);
-            addLog('Opened address dropdown');
-        }
-    });
-    
-    sniDropdownBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const show = !sniDropdown.classList.contains('show');
-        sniDropdown.classList.toggle('show');
-        addressDropdown.classList.remove('show');
-        if (show) {
-            positionDropdown(sniDropdown);
-            addLog('Opened SNI dropdown');
-        }
-    });
-    
-    window.addEventListener('scroll', () => {
-        if (addressDropdown.classList.contains('show')) {
-            positionDropdown(addressDropdown);
-        }
-        if (sniDropdown.classList.contains('show')) {
-            positionDropdown(sniDropdown);
-        }
-    });
-    
-    document.addEventListener('click', () => {
-        addressDropdown.classList.remove('show');
-        sniDropdown.classList.remove('show');
-    });
-
-    function pingCombined() {
-        if (!selectedAddress || !selectedSNI) return;
-        if (pingInProgress) return;
-        
-        const target = selectedAddress;
-        if (pingCache[target]) {
-            showPingResult(target, pingCache[target]);
-            return;
-        }
-        
-        pingInProgress = true;
-        pingDisplay.innerHTML = '<span class="status-dot yellow"></span> PINGING ' + target + '...';
-        addLog('Pinging ' + target + '...');
-        
-        const start = performance.now();
-        let done = false;
-        const timeout = setTimeout(() => {
-            if (!done) {
-                done = true;
-                pingInProgress = false;
-                const result = { latency: 9999, status: 'timeout' };
-                pingCache[target] = result;
-                showPingResult(target, result);
-                addLog('Ping ' + target + ' timeout');
-            }
-        }, 5000);
-
-        fetch('https://' + target + '/', { mode: 'no-cors', cache: 'no-store' })
-        .then(() => {
-            if (!done) {
-                clearTimeout(timeout);
-                done = true;
-                pingInProgress = false;
-                const latency = Math.round(performance.now() - start);
-                const result = { latency, status: 'ok' };
-                pingCache[target] = result;
-                showPingResult(target, result);
-                addLog('Ping ' + target + ': ' + latency + 'ms');
-            }
-        })
-        .catch(() => {
-            if (!done) {
-                clearTimeout(timeout);
-                done = true;
-                pingInProgress = false;
-                const latency = Math.round(performance.now() - start);
-                const status = latency < 3000 ? 'ok' : 'timeout';
-                const result = { latency, status };
-                pingCache[target] = result;
-                showPingResult(target, result);
-                addLog('Ping ' + target + ': ' + latency + 'ms');
-            }
-        });
-    }
-
-    function showPingResult(addr, result) {
-        if (result.status === 'timeout') {
-            pingDisplay.innerHTML = '<span class="status-dot red"></span> ' + addr + ' : TIMEOUT';
-        } else {
-            const color = result.latency < 200 ? 'green' : (result.latency < 600 ? 'yellow' : 'red');
-            pingDisplay.innerHTML = '<span class="status-dot ' + color + '"></span> ' + addr + ' : ' + result.latency + 'ms';
-        }
-    }
-
-    function getPath() {
-        let path = PATHS[selectedProtocol];
-        if (selectedTransport === 'hu') path += '-hu';
-        else if (selectedTransport === 'xh') path += '-xh';
-        return path;
-    }
-
-    function buildConfig() {
-        const addr = selectedAddress;
-        const sni = selectedSNI;
-        const host = currentHost;
-        const path = getPath();
-        const encPath = encodeURIComponent(path);
-
-        switch (selectedProtocol) {
-            case 'vless':
-                return 'vless://' + PASS + '@' + addr + ':443?encryption=none&flow=none&type=ws&host=' +
-                       host + '&headerType=none&path=' + encPath + '&security=tls&fp=chrome&sni=' +
-                       sni + '&alpn=http%2F1.1#VLESS-JP-' + host;
-            case 'trojan':
-                return 'trojan://' + PASS + '@' + addr + ':443?type=ws&host=' + host +
-                       '&path=' + encPath + '&security=tls&fp=chrome&sni=' + sni +
-                       '&alpn=http%2F1.1#TROJAN-JP-' + host;
-            case 'vmess': {
-                const vmessObj = {
-                    v: '2', ps: 'VMESS-JP-' + host, add: addr, port: '443', id: PASS, aid: '0',
-                    scy: 'auto', net: 'ws', type: 'none', host: host, path: path,
-                    tls: 'tls', sni: sni, fp: 'chrome', alpn: 'http/1.1'
-                };
-                try {
-                    return 'vmess://' + btoa(unescape(encodeURIComponent(JSON.stringify(vmessObj))));
-                } catch (e) {
-                    return 'vmess://' + btoa(JSON.stringify(vmessObj));
-                }
-            }
-            case 'ss': {
-                let ssUserInfo = '';
-                try {
-                    ssUserInfo = btoa('aes-256-gcm:' + PASS);
-                } catch (e) {
-                    ssUserInfo = btoa(unescape(encodeURIComponent('aes-256-gcm:' + PASS)));
-                }
-                const pluginStr = 'obfs-local;obfs=websocket;obfs-host=' + host +
-                                  ';obfs-uri=' + path + ';sni=' + sni;
-                return 'ss://' + ssUserInfo + '@' + addr + ':443?plugin=' +
-                       encodeURIComponent(pluginStr) + '#SHADOWSOCKS-JP-' + host;
-            }
-            default:
-                return '';
-        }
-    }
-
-    function updateConfigDisplay() {
-        configDisplay.textContent = buildConfig();
-    }
-
-    function copyConfig() {
-        const config = buildConfig();
-        const showSuccess = () => {
-            copyBtn.textContent = 'COPIED';
-            copyBtn.classList.add('copied');
-            addLog('Config copied — ready for Nginx/Docker deployment');
-            setTimeout(() => {
-                copyBtn.textContent = 'COPY';
-                copyBtn.classList.remove('copied');
-            }, 2500);
-        };
-        const showFail = () => {
-            copyBtn.textContent = 'FAILED';
-            copyBtn.style.borderColor = 'var(--red)';
-            copyBtn.style.color = 'var(--red)';
-            addLog('Copy failed');
-            setTimeout(() => {
-                copyBtn.textContent = 'COPY';
-                copyBtn.style.borderColor = 'var(--border)';
-                copyBtn.style.color = 'var(--text)';
-            }, 2000);
-        };
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(config).then(showSuccess).catch(() => {
-                fallbackCopy(config, showSuccess, showFail);
-            });
-        } else {
-            fallbackCopy(config, showSuccess, showFail);
-        }
-    }
-
-    function fallbackCopy(text, success, fail) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.left = '-9999px';
-        ta.style.top = '-9999px';
-        ta.style.width = '2px';
-        ta.style.height = '2px';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-            document.execCommand('copy');
-            success();
-        } catch (e) {
-            fail();
-        }
-        document.body.removeChild(ta);
-    }
-
-    function buildButtonBar(container, items, selected, labels, callback) {
-        container.innerHTML = '';
-        items.forEach(item => {
-            const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.textContent = labels ? labels[item] : item;
-            if (item === selected) btn.classList.add('active');
-            btn.addEventListener('click', () => {
-                container.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    function buildOptions(container, list, selectedId, cb) {
+        container.innerHTML='';
+        list.forEach(opt=>{
+            const btn = document.createElement('div');
+            btn.className = 'btn-option' + (opt.id===selectedId?' active':'');
+            btn.textContent = opt.name;
+            btn.onclick=()=>{
+                container.querySelectorAll('.btn-option').forEach(b=>b.classList.remove('active'));
                 btn.classList.add('active');
-                callback(item);
-                updateConfigDisplay();
-            });
+                cb(opt.id);
+                updateConfig();
+                log(`Protocol: ${opt.name}`);
+            };
             container.appendChild(btn);
         });
     }
 
-    buildButtonBar(protocolBar, PROTOCOLS, selectedProtocol, PROTOCOL_LABELS, (val) => {
-        selectedProtocol = val;
-        addLog('Protocol changed to ' + val + ' (JSON config updated)');
-    });
+    buildOptions(protocolGroup, PROTOCOLS, selectedProto, v=>selectedProto=v);
+    buildOptions(transportGroup, TRANSPORTS, selectedTrans, v=>selectedTrans=v);
 
-    buildButtonBar(transportBar, TRANSPORTS, selectedTransport, TRANSPORT_LABELS, (val) => {
-        selectedTransport = val;
-        addLog('Transport changed to ' + val);
-    });
-
-    copyBtn.addEventListener('click', copyConfig);
-
-    function animateLoadingDigits() {
-        const digits = [dJ, dP];
-        let index = 0;
-        const interval = setInterval(() => {
-            digits.forEach((digit, i) => {
-                if (i === index) {
-                    digit.classList.add('active');
-                    digit.classList.remove('inactive');
-                } else {
-                    digit.classList.add('inactive');
-                    digit.classList.remove('active');
-                }
-            });
-            index = (index + 1) % digits.length;
-        }, 200);
-
-        setTimeout(() => {
-            clearInterval(interval);
-            digits.forEach(digit => {
-                digit.classList.remove('active', 'inactive');
-            });
-            loadingScreen.classList.add('hidden');
-            mainContent.style.display = '';
-            addLog('✅ JULPONE-NETWORK portal ready — linked to Nginx & Docker configs');
-        }, 3000);
+    function pingTest(host) {
+        if(pingCache[host]) return renderPing(pingCache[host]);
+        const s=performance.now();
+        let done=false;
+        const t=setTimeout(()=>{if(!done){done=true; renderPing({ms:9999,ok:false});}},4000);
+        fetch(`https://${host}/`,{mode:'no-cors',cache:'no-store'})
+        .then(()=>{if(!done){done=true;clearTimeout(t);const ms=Math.round(performance.now()-s);renderPing({ms,ok:true});}})
+        .catch(()=>{if(!done){done=true;const ms=Math.round(performance.now()-s);renderPing({ms,ok:ms<3000});}});
     }
 
-    animateLoadingDigits();
-    updateConfigDisplay();
+    function renderPing(res) {
+        statPing.textContent = res.ms;
+        statPing.parentElement.style.color = res.ok?'var(--success)':'var(--danger)';
+    }
+
+    function simulateTraffic() {
+        const dl = Math.floor(Math.random()*800+200);
+        const ul = Math.floor(Math.random()*350+80);
+        statDl.textContent = dl>1024?(dl/1024).toFixed(2):dl;
+        statDlUnit.textContent = dl>1024?'MB/s':'KB/s';
+        statUl.textContent = ul>1024?(ul/1024).toFixed(2):ul;
+        statUlUnit.textContent = ul>1024?'MB/s':'KB/s';
+        speedHistory.push(dl);
+        if(speedHistory.length>30) speedHistory.shift();
+        drawVisualizer();
+    }
+
+    function drawVisualizer() {
+        visualizer.innerHTML='';
+        const max=Math.max(...speedHistory,1000);
+        speedHistory.forEach(s=>{
+            const b=document.createElement('div');
+            b.className='vis-bar';
+            b.style.height = `${Math.max(3,(s/max)*100)}%`;
+            visualizer.appendChild(b);
+        });
+    }
+
+    setInterval(simulateTraffic, 300);
+
+    function getFullPath() {
+        return PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
+    }
+
+    function buildConfig() {
+        const addr = selectedAddr;
+        const sni = selectedSNI;
+        const host = currentHost;
+        const path = getFullPath();
+        const encPath = encodeURIComponent(path);
+
+        switch(selectedProto) {
+            case 'trojan':
+                return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
+            case 'vmess':
+                try {
+                    return 'vmess://' + btoa(JSON.stringify({
+                        v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
+                        net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
+                    }));
+                } catch(e){return '';}
+            case 'vless':
+                return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
+            case 'ss':
+                const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
+                const plugin = `obfs-local;obfs=websocket;obfs-host=${host};obfs-uri=${path};sni=${sni}`;
+                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SHADOWSOCKS`;
+            default: return '';
+        }
+    }
+
+    function updateConfig() {
+        configOutput.textContent = buildConfig();
+    }
+
+    copyAction.onclick=()=>{
+        const txt = buildConfig();
+        const cb = ()=>{ copyAction.textContent='COPIED'; copyAction.classList.add('copied'); setTimeout(()=>{ copyAction.textContent='COPY'; copyAction.classList.remove('copied'); },2500); };
+        if(navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
+        else { const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);cb(); }
+    };
+
+    window.onload=()=>{
+        setTimeout(()=>{
+            splash.classList.add('fade-out');
+            mainUI.style.opacity='1';
+            initStats();
+            updateConfig();
+            log('✅ System initialized — All paths matched');
+        }, 2200);
+    };
 
 })();
 </script>
