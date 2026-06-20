@@ -280,47 +280,47 @@
         .status-item { text-align: center; flex: 1; }
         .status-label { font-size: var(--font-size-sm); color: var(--text-dim); }
         .status-value { font-size: var(--font-size-lg); font-weight: 700; }
+        
+        /* Dinugtong na CSS rule na naputol */
         .status-value.active { color: var(--green); }
-        .status-value.ping { color: var(--yellow); }
     </style>
 </head>
 <body>
 
-    <!-- AUDIO ELEMENT ENGINE WITH CAPABILITY PRELOADS -->
-    <audio id="bgAudio" loop preload="auto">
-        <source src="https://mixkit.co" type="audio/mpeg">
-    </audio>
-
-    <!-- LOADING SCREEN COMPONENT -->
+    <!-- 1. LOADING SCREEN LAYER -->
     <div id="loading-screen">
-        <div class="loading-digits glow-text-strong" id="loadLogs">INITIALIZING CORE...</div>
-        <div class="loading-subtitle">PANARES CORE MEMBRANE SYSTEM v4.0</div>
+        <div class="loading-digits glow-text-strong" id="loading-counter">00%</div>
+        <div class="loading-subtitle">INITIALIZING CORE ENGINE...</div>
     </div>
 
-    <!-- MAIN INTERFACE CORE -->
+    <!-- MAIN DASHBOARD CONTENT -->
     <div class="container fade-in">
         
-        <!-- SECTION 1: NETWORK MONITORS -->
+        <!-- SYSTEM STATUS PANEL -->
         <div class="section">
-            <div class="section-title glow-text-light">PANARES INFRASTRUCTURE</div>
-            <div class="section-subtitle">Anti-Timeout Nodes & Localized Adblocker</div>
+            <div class="section-title glow-text-light">JULPONE FREENET</div>
+            <div class="section-subtitle">NETWORK MONITORING PANEL</div>
             
             <div class="status-row">
                 <div class="status-item">
-                    <div class="status-label">SYSTEM CORE</div>
-                    <div class="status-value active">ONLINE</div>
+                    <div class="status-label">STATUS</div>
+                    <div class="status-value active" id="stat-core">ONLINE</div>
                 </div>
                 <div class="status-item">
-                    <div class="status-label">ADBLOCKER</div>
-                    <div class="status-value active">ACTIVE</div>
+                    <div class="status-label">LATENCY</div>
+                    <div class="status-value" id="stat-ping" style="color: var(--yellow);">28 ms</div>
                 </div>
                 <div class="status-item">
-                    <div class="status-label">GLOBAL REGION</div>
-                    <div class="status-value ping">US / MULTI</div>
+                    <div class="status-label">ACTIVE CONFIG</div>
+                    <div class="status-value" id="stat-config" style="color: var(--blue);">LOCAL</div>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 2: CONFIG GENERATOR ENGINE -->
+        <!-- AUTO-CONFIG GENERATOR INTERFACE -->
         <div class="section">
-            <div class="section-title">CONFIG GENERATOR</div>
+            <div class="section-title">PAYLOAD COMPILER</div>
+            <div class="section-subtitle">Build and save your setup locally</div>
+
+            <form id="compiler-form" onsubmit="event.preventDefault(); compileConfig();">
+                <div class="form-group">
