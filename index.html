@@ -63,11 +63,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         @keyframes glowPulseStrong {
             0%, 100% { text-shadow: 0 0 12px var(--glow), 0 0 24px var(--glow); }
             50% { text-shadow: 0 0 6px var(--glow), 0 0 12px var(--glow); }
@@ -93,16 +88,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(9,11,14,0.98);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: #090b0e;
             z-index: 9999;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
         }
 
         .loading-digits {
@@ -280,8 +267,6 @@
         .status-item { text-align: center; flex: 1; }
         .status-label { font-size: var(--font-size-sm); color: var(--text-dim); }
         .status-value { font-size: var(--font-size-lg); font-weight: 700; }
-        
-        /* Dinugtong na CSS rule na naputol */
         .status-value.active { color: var(--green); }
     </style>
 </head>
@@ -289,8 +274,8 @@
 
     <!-- 1. LOADING SCREEN LAYER -->
     <div id="loading-screen">
-        <div class="loading-digits glow-text-strong" id="loading-counter">00%</div>
-        <div class="loading-subtitle">INITIALIZING CORE ENGINE...</div>
+        <div class="loading-digits glow-text-strong" id="loading-counter">READY</div>
+        <div class="loading-subtitle">BYPASSING STARTER BOOT...</div>
     </div>
 
     <!-- MAIN DASHBOARD CONTENT -->
@@ -324,3 +309,10 @@
 
             <form id="compiler-form" onsubmit="event.preventDefault(); compileConfig();">
                 <div class="form-group">
+                    <label class="form-label">SNI / Bug Host</label>
+                    <input type="text" id="sni-input" class="form-input" placeholder="e.g. ://facebook.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Protocol Tunnel Type</label>
+                    <div class="button-bar">
