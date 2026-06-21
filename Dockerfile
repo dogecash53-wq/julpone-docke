@@ -1,30 +1,31 @@
 FROM teddysun/xray:latest
 
-# Lumipat sa ROOT user para magkaroon ng ganap na kapangyarihan sa pag-install
 USER root
 
-# 1. I-install ang Nginx at mga pangunahing dependencies nang ligtas (Inalis ang sirang repo path)
+# I-install ang Nginx, HAProxy, at dependencies
 RUN apk update && \
-    apk add --no-cache nginx ca-certificates curl tzdata bash
+    apk add --no-cache nginx haproxy ca-certificates curl tzdata bash
 
-# 2. Ligtas na paggawa ng mga kinakailangang direktoryo
-RUN mkdir -p /etc/nginx/http.d /usr/local/openresty/index/html /run/nginx /etc/xray && \
+# Gawa ng mga kinakailangang direktoryo
+RUN mkdir -p /etc/nginx/http.d /usr/local/openresty/index/html /run/nginx /etc/xray /etc/haproxy && \
     rm -rf /etc/nginx/http.d/*
 
-# 3. Kopyahin ang iyong configuration at interface files mula sa repository root
+# Kopyahin ang apat na files mula sa repo mo
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/local/openresty/index/html/index.html
+COPY haproxy.cfg /etc/haproxy/haproxy.cfg
 
-# 🔥 PERMISSION FIX: Ibigay ang pagmamay-ari at saktong permisyon sa 'nginx' user
+# Permission fixes
 RUN chown -R nginx:nginx /usr/local/openresty/index/html /run/nginx /etc/nginx && \
+    chown -R haproxy:haproxy /etc/haproxy && \
     chmod -R 755 /usr/local/openresty/index/html
 
-# 4. I-customize ang pangalan ng process patungong 'panares'
+# I-customize ang pangalan ng process patungong 'panares'
 RUN cp /usr/bin/xray /usr/bin/panares && chmod +x /usr/bin/panares
 
 ENV TZ=UTC
 EXPOSE 8080
 
-# 5. Patakbuhin ang panares at nginx gamit ang bash string execution
-CMD ["/bin/bash", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
+# Patakbuhin ang Xray, Nginx, at HAProxy nang sabay-sabay
+CMD ["/bin/bash", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;' & haproxy -f /etc/haproxy/haproxy.cfg -db"]
