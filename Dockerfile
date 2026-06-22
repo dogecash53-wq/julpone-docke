@@ -1,30 +1,20 @@
 FROM teddysun/xray:latest
+
+# IMPORTANT: Lumipat sa ROOT user para payagan ang pag-install at pag-kopya
 USER root
 
-# 1. I-update ang package manager at i-install ang HAProxy, bash, at curl
-RUN apk update && \
-    apk add --no-cache haproxy ca-certificates curl tzdata bash && \
-    rm -rf /var/cache/apk/*
+# I-install ang Nginx at mga kinakailangang certificates sa Alpine Linux
+RUN apk update && apk add --no-cache nginx ca-certificates
 
-# 2. I-rename ang binary file patungong 'panares' base sa iyong signature
-RUN cp /usr/bin/xray /usr/bin/panares && \
-    chmod +x /usr/bin/panares
-
-# 3. Gumawa ng mga selyadong absolute directories para sa iyong configs
-RUN mkdir -p /etc/xray /usr/local/etc/haproxy /var/lib/haproxy
-
-# 4. Kopyahin ang mga configuration files mula sa iyong repository root folder
+# Kopyahin ang iyong config.json at nginx.conf sa kanilang tamang direktoryo
 COPY config.json /etc/xray/config.json
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
-COPY index.html /usr/local/etc/haproxy/index.html
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# 5. I-set ang tamang structural folder ownership at system boundaries
-RUN chmod 755 /usr/bin/panares && \
-    chmod 644 /usr/local/etc/haproxy/haproxy.cfg /usr/local/etc/haproxy/index.html /etc/xray/config.json && \
-    chown -R haproxy:haproxy /usr/local/etc/haproxy /etc/xray /var/lib/haproxy
+# I-customize ang pangalan ng executable patungong 'panares' nang walang permission error
+RUN cp /usr/bin/xray /usr/bin/panares
 
-ENV TZ=UTC
+# Buksan ang Port 8080 para sa Cloud Run
 EXPOSE 8080
 
-# 6. UNTHROTTLED ULTRA-FAST RUN ENGINE (100% Google Cloud Run Compliant)
-CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
+# Patakbuhin ang panares at panatilihing buhay ang Nginx sa foreground
+CMD ["sh", "-c", "panares -config /etc/xray/config.json & nginx -g 'daemon off;'"]
