@@ -4,18 +4,18 @@ USER root
 # 1. Install critical dependencies required for network tools and core runtime
 RUN apk add --no-cache ca-certificates wget unzip tzdata bash curl
 
-# 2. Download latest stable Xray Core binary from upstream distribution
-RUN wget -qO /tmp/xray.zip https://github.com && \
+# 2. Download latest stable Xray Core binary using explicit upstream release structures
+RUN wget -qO /tmp/xray.zip "https://github.com" && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
-    rm -rf /tmp/xray.zip
+    rm -f /tmp/xray.zip
 
-# 3. Rename binary execution variable to 'panares' as requested by your setup
+# 3. Rename binary execution variable to 'panares' as required by your signature
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
 # 4. Inject ultra-aggressive Adblocking & Tracking Geo-databases
-RUN wget -qO /usr/bin/geosite.dat https://github.com && \
-    wget -qO /usr/bin/geoip.dat https://github.com
+RUN wget -qO /usr/bin/geosite.dat "https://github.com" && \
+    wget -qO /usr/bin/geoip.dat "https://github.com"
 
 # Set environment asset paths explicitly for the core engine
 ENV XRAY_LOCATION_ASSET=/usr/bin
