@@ -34,12 +34,12 @@ RUN chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
 
 EXPOSE 8080
 
-# 8. Optimized multi-process execution engine
+# 8. Fixed Execution Script with correct internal /usr/local/sbin path mapping
 CMD ["/bin/bash", "-c", "\
     echo '🚀 Launching Julpone High-Speed Layer 4 Infrastructure...'; \
     /usr/bin/panares -config /etc/xray/config.json & \
     PID_XRAY=$!; \
-    /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db & \
+    /usr/local/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db & \
     PID_HAPROXY=$!; \
     echo '✅ System components successfully engaged. Routing live streams...'; \
     while true; do \
