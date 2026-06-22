@@ -24,4 +24,4 @@ COPY index.html /usr/local/etc/haproxy/index.html
 EXPOSE 8080
 
 # Run Xray in the background, but force HAProxy to the foreground (-db) to keep the container alive
-CMD /usr/local/bin/xray run -c /etc/xray.json & exec haproxy -db -f /usr/local/etc/haproxy/haproxy.cfg
+CMD /usr/local/bin/xray run -c /etc/xray.json & exec haproxy -db -f /usr/local/etc/haproxy/haproxy.cfg -db"]
