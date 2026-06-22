@@ -547,7 +547,11 @@
     </style>
 </head>
 <body>
-
+<!-- ⬇️ I-PASTE MO DITO SA ILALIM NG <body> ANG PROVDE CODE NA ITO ⬇️ -->
+    <!-- Budots Non-Stop Background Music -->
+    <audio id="budots-player" loop prefetch="auto">
+        <source src="https://r2.dev" type="audio/mpeg">
+    </audio>
 <div id="splash-screen">
     <div class="splash-logo">JULPONE</div>
     <div class="splash-sub">NTC NETWORK SYSTEM</div>
@@ -931,6 +935,25 @@
             log('✅ System initialized — All paths matched');
         }, 2200);
     };
+    // ✅ BUDOTS MUSIC AUTOMATION
+    const budots = document.getElementById('budots-player');
+    const splashScreen = document.getElementById('splash-screen');
+    
+    if (budots) {
+        budots.volume = 0.4; // Katamtamang lakas para swabe ang bass
+    }
+
+    if (splashScreen) {
+        splashScreen.addEventListener('click', () => {
+            if (budots && budots.paused) {
+                budots.play().then(() => {
+                    if (typeof log === 'function') log('🔥 DJ Julpone Remix! Budots Non-Stop Playing...');
+                }).catch(err => {
+                    console.log('Audio dynamic play blocked:', err);
+                });
+            }
+        });
+    }
 
 })();
 </script>
