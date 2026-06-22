@@ -28,13 +28,13 @@ RUN mkdir -p /etc/xray /usr/local/etc/haproxy
 COPY config.json /etc/xray/config.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# 7. Secure execution rights and folder ownership configurations
-RUN chmod +x /usr/local/bin/entrypoint.sh && \
-    chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
+# 7. Secure folder ownership permissions for internal system runtime
+RUN chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
 
 EXPOSE 8080
 
-# 8. Trigger clean boot sequence mapping using the official script runner
-ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
+# 8. THE NATIVE ENTRYPOINT WRAPPER:
+# Patatakbuhin ang panares sa background, at gagamitin ang official image entrypoint 
+# ng HAProxy upang gisingin ang load balancer nang walang script crashes.
+CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & docker-entrypoint.sh haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
