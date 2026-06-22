@@ -40,52 +40,139 @@
             overflow-x: hidden;
         }
 
-        /* [REST OF YOUR CSS REMAINS THE SAME] */
+        @keyframes fadeInScale { from { opacity: 0; transform: translateY(12px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes pulseAccent { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.4); } 50% { transform: scale(1.03); box-shadow: 0 0 12px 3px rgba(255, 107, 0, 0.5); } }
+        @keyframes rotateGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes textGlow { 0%, 100% { text-shadow: 0 0 20px rgba(255,107,0,0.4), 0 0 40px rgba(0,240,255,0.2); } 50% { text-shadow: 0 0 35px rgba(255,107,0,0.7), 0 0 50px rgba(0,240,255,0.4); } }
+
+        #splash-screen { position: fixed; inset: 0; background: #020308; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s; }
+        #splash-screen.fade-out { opacity: 0; visibility: hidden; }
+
+        .splash-logo { font-size: clamp(44px, 16vw, 76px); font-weight: 900; letter-spacing: 10px; background: linear-gradient(90deg, var(--accent), var(--info), var(--accent)); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rotateGradient 3s linear infinite, textGlow 3s ease-in-out infinite; margin-bottom: 16px; }
+        .splash-sub { font-size: 12px; color: var(--text-muted); letter-spacing: 5px; text-transform: uppercase; font-weight: 600; }
         .container { max-width: 720px; margin: 0 auto; display: grid; gap: 16px; }
-        .card { background: rgba(11, 19, 41, 0.45); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
-        .config-box { width: 100%; min-height: 110px; max-height: 200px; overflow-y: auto; background: #020617; border: 1px solid rgba(0, 255, 136, 0.2); border-radius: 12px; padding: 16px; font-family: var(--font-mono); font-size: 12px; color: var(--success); white-space: pre-wrap; }
-        .btn-option { padding: 14px 10px; background: rgba(2, 6, 23, 0.4); border: 1px solid var(--border); color: var(--text-muted); border-radius: 12px; cursor: pointer; text-align: center; }
-        .btn-option.active { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #fff; }
+        .card { background: rgba(11, 19, 41, 0.45); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); }
+        .header-card { text-align: center; background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.08) 0%, rgba(11, 19, 41, 0.5) 100%); border: 1px solid rgba(255, 107, 0, 0.2); }
+        .main-title { font-size: clamp(24px, 6vw, 34px); font-weight: 900; margin-bottom: 4px; background: linear-gradient(135deg, #fff 40%, var(--accent-light)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 1.5px; }
+        .sub-title { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; margin-bottom: 20px; }
+        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+        .info-item { background: rgba(2, 6, 23, 0.4); padding: 10px 6px; border-radius: 12px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.02); }
+        .info-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
+        .info-value { font-weight: 700; color: #fff; font-family: var(--font-mono); font-size: clamp(11px, 2.8vw, 13px); }
+        .section-heading { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; text-transform: uppercase; }
+        .section-heading::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent); }
+        .dropdown-btn { width: 100%; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; font-weight: 600; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-menu { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #0b1329; border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 12px; max-height: 200px; overflow-y: auto; z-index: 100; visibility: hidden; opacity: 0; padding: 4px; }
+        .dropdown-menu.show { visibility: visible; opacity: 1; }
+        .dropdown-item { padding: 10px 14px; cursor: pointer; font-size: 13px; font-family: var(--font-mono); border-radius: 8px; }
+        .dropdown-item:hover { background: rgba(255, 107, 0, 0.1); }
+        .dropdown-item.selected { background: rgba(0, 255, 136, 0.1); color: var(--success); }
+        .status-indicator { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; margin-top: 10px; background: rgba(2, 6, 23, 0.2); border: 1px solid var(--border); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.green { background: var(--success); }
+        .status-dot.yellow { background: var(--warning); }
+        .btn-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+        .btn-option { padding: 14px 10px; background: rgba(2, 6, 23, 0.4); border: 1px solid var(--border); color: var(--text-muted); border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 700; text-align: center; }
+        .btn-option.active { background: linear-gradient(135deg, var(--accent), var(--accent-light)); border-color: transparent; color: #fff; }
+        .config-box { width: 100%; min-height: 110px; max-height: 200px; overflow-y: auto; background: #020617; border: 1px solid rgba(0, 255, 136, 0.2); border-radius: 12px; padding: 16px; padding-top: 46px; font-family: var(--font-mono); font-size: 12px; color: var(--success); word-break: break-all; white-space: pre-wrap; }
+        .copy-button { position: absolute; top: 10px; right: 10px; background: rgba(0, 240, 255, 0.1); border: 1px solid var(--info); color: var(--info); padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; z-index: 5; }
+        .copy-button.copied { background: var(--success); border-color: var(--success); color: #020617; }
+        .footer-note { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-ui">
+<div id="splash-screen">
+    <div class="splash-logo">JULPONE</div>
+    <div class="splash-sub">NTC NETWORK SYSTEM</div>
+</div>
+
+<div class="container" style="opacity:0;" id="main-ui">
+    <div class="card header-card">
+        <h1 class="main-title">JULPONE NETWORK</h1>
+        <p class="sub-title">CONFIGURATION GENERATOR & MONITORING CENTER</p>
+        <div class="info-grid">
+            <div class="info-item"><div class="info-label">Host</div><div class="info-value" id="info-host">---</div></div>
+            <div class="info-item"><div class="info-label">IP</div><div class="info-value" id="info-ip">---</div></div>
+            <div class="info-item"><div class="info-label">Loc</div><div class="info-value" id="info-country">---</div></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">SERVER ADDRESS</h2>
+        <div class="dropdown-wrapper">
+            <button class="dropdown-btn" id="addr-btn"><span>Select Server</span> ▾</button>
+            <div class="dropdown-menu" id="addr-menu"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">TLS SNI</h2>
+        <div class="dropdown-wrapper">
+            <button class="dropdown-btn" id="sni-btn"><span>Select SNI</span> ▾</button>
+            <div class="dropdown-menu" id="sni-menu"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">⚙️ PROTOCOL</h2>
+        <div class="btn-group" id="protocol-group"></div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-heading">🚀 TRANSPORT</h2>
+        <div class="btn-group" id="transport-group"></div>
+    </div>
+
     <div class="card">
         <h2 class="section-heading">GENERATED CONFIG</h2>
-        <div class="config-container">
+        <div class="config-container" style="position:relative;">
             <button class="copy-button" id="copy-action">COPY</button>
             <div class="config-box" id="config-output"></div>
         </div>
     </div>
+
+    <div class="footer-note">JULPONE NETWORK DEPLOYMENT SYSTEM • 2026</div>
 </div>
 
 <script>
 (function() {
-    'use strict';
-    
-    // Config variables
     const TROJAN_PASS = 'julpone-freenet';
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
+    const ADDRESS_LIST = ['firebase-settings.crashlytics.com', 
+                          'run.googleapis.com', 
+                          'cloud.google.com', 
+                          'googleapis.com'];
+  
+    const SNI_LIST = ['firebase-settings.crashlytics.com', 
+                      'fcmtoken.googleapis.com', 
+                      'support.maya.ph'];
+
+    const PROTOCOLS = [{id: 'trojan', name: 'TROJAN'}, {id: 'vmess', name: 'VMESS'}, {id: 'vless', name: 'VLESS'}, {id: 'ss', name: 'SHADOWSOCKS'}];
+    const TRANSPORTS = [{id: 'ws', name: 'WebSocket'}, {id: 'hu', name: 'HTTP Upgrade'}, {id: 'xh', name: 'XHTTP'}];
+
+    let selectedAddr = ADDRESS_LIST;
+    let selectedSNI = SNI_LIST;
     let selectedProto = 'trojan';
     let selectedTrans = 'ws';
-    let selectedAddr = 'firebase-settings.crashlytics.com';
-    let selectedSNI = 'firebase-settings.crashlytics.com';
     const currentHost = window.location.hostname || 'localhost';
 
-    // FIX SA GENERATOR
     function buildConfig() {
         const addr = selectedAddr;
         const sni = selectedSNI;
         const host = currentHost;
         
-        // I-map natin ang shortcode sa official transport names
         const netTypeMap = { ws: 'ws', hu: 'httpupgrade', xh: 'xhttp' };
         const xrayNet = netTypeMap[selectedTrans] || 'ws';
         
-        const path = (selectedProto === 'trojan' ? '/julpone-freenet' : (selectedProto === 'vmess' ? '/vmess-julpone' : (selectedProto === 'vless' ? '/vless-julpone' : '/ss-julpone'))) + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
+        const path = (selectedProto === 'trojan' ? '/julpone-freenet' : 
+                     (selectedProto === 'vmess' ? '/vmess-julpone' : 
+                     (selectedProto === 'vless' ? '/vless-julpone' : '/ss-julpone'))) 
+                     + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
+        
         const encPath = encodeURIComponent(path);
 
         switch(selectedProto) {
@@ -100,20 +187,28 @@
                 return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                // Para sa Shadowsocks, kailangan ng tamang plugin mode
                 const plugin = `v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`;
                 return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
             default: return '';
         }
     }
 
-    // Function to update output
-    function updateConfig() {
-        document.getElementById('config-output').textContent = buildConfig();
-    }
+    // [Dito nakalagay ang mga event listeners at init logic mo...]
+    // (Inalis ko ang mahabang logic dito para hindi masyadong mahaba ang response, 
+    // pero panatilihin mo ang nasa orihinal mong file, palitan lang ang buildConfig)
 
-    // ... (rest of your logic functions)
-    updateConfig();
+    document.getElementById('copy-action').onclick = () => {
+        const txt = buildConfig();
+        navigator.clipboard.writeText(txt).then(() => {
+            const btn = document.getElementById('copy-action');
+            btn.textContent = 'COPIED'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2500);
+        });
+    };
+    
+    // Siguraduhin na i-update ang UI para tawagin ang buildConfig() sa bawat change
+    function updateConfig() { document.getElementById('config-output').textContent = buildConfig(); }
+    // ... [Ituloy ang iyong logic]
 })();
 </script>
 </body>
