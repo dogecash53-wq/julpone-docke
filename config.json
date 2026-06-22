@@ -13,7 +13,6 @@
       "googlesyndication.com": "127.0.0.1",
       "doubleclick.net": "127.0.0.1",
       "googleadservices.com": "127.0.0.1",
-      "google.com": "127.0.0.1",
       "adsbygoogle.com": "127.0.0.1",
       "google-analytics.com": "127.0.0.1",
       "googletagmanager.com": "127.0.0.1",
@@ -140,6 +139,37 @@
       }
     },
     {
+      "port": 10012,
+      "listen": "127.0.0.1",
+      "protocol": "trojan",
+      "tag": "trojan-grpc",
+      "settings": {
+        "clients": [
+          {
+            "password": "julpone-freenet"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "grpcSettings": {
+          "serviceName": "trojan-julpone-grpc"
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 30
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
       "port": 10003,
       "listen": "127.0.0.1",
       "protocol": "vmess",
@@ -221,6 +251,38 @@
         "xhttpSettings": {
           "path": "/vmess-julpone-xh",
           "mode": "auto"
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 30
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
+      "port": 10013,
+      "listen": "127.0.0.1",
+      "protocol": "vmess",
+      "tag": "vmess-grpc",
+      "settings": {
+        "clients": [
+          {
+            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a",
+            "security": "auto"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "grpcSettings": {
+          "serviceName": "vmess-julpone-grpc"
         },
         "sockopt": {
           "tcpFastOpen": true,
@@ -334,6 +396,38 @@
       }
     },
     {
+      "port": 10014,
+      "listen": "127.0.0.1",
+      "protocol": "vless",
+      "tag": "vless-grpc",
+      "settings": {
+        "clients": [
+          {
+            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "grpcSettings": {
+          "serviceName": "vless-julpone-grpc"
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 30
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
       "port": 10009,
       "listen": "127.0.0.1",
       "protocol": "shadowsocks",
@@ -399,11 +493,34 @@
           "tcpKeepAliveInterval": 30
         }
       }
+    },
+    {
+      "port": 10015,
+      "listen": "127.0.0.1",
+      "protocol": "shadowsocks",
+      "tag": "ss-grpc",
+      "settings": {
+        "method": "aes-256-gcm",
+        "password": "julpone-freenet",
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "grpcSettings": {
+          "serviceName": "ss-julpone-grpc"
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 30
+        }
+      }
     }
   ],
   "outbounds": [
     {
       "protocol": "freedom",
+      "tag": "direct",
       "settings": {
         "domainStrategy": "UseIPv4"
       },
@@ -414,6 +531,25 @@
           "tcpKeepAliveInterval": 30
         }
       }
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
     }
-  ]
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": [
+          "trojan-ws", "trojan-hu", "trojan-xh", "trojan-grpc",
+          "vmess-ws", "vmess-hu", "vmess-xh", "vmess-grpc",
+          "vless-ws", "vless-hu", "vless-xh", "vless-grpc",
+          "ss-ws", "ss-hu", "ss-xh", "ss-grpc"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  }
 }
