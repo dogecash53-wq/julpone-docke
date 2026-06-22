@@ -40,19 +40,12 @@
             font-family: var(--font-main);
             min-height: 100vh;
             padding: 24px 12px;
-            line-height: 1.4;
             overflow-x: hidden;
         }
 
-        /* Animations */
         @keyframes fadeInScale {
             from { opacity: 0; transform: translateY(12px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes pulseAccent {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.4); }
-            50% { transform: scale(1.03); box-shadow: 0 0 12px 3px rgba(255, 107, 0, 0.5); }
         }
 
         @keyframes rotateGradient {
@@ -62,8 +55,8 @@
         }
 
         @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 20px rgba(255,107,0,0.4), 0 0 40px rgba(0,240,255,0.2); }
-            50% { text-shadow: 0 0 35px rgba(255,107,0,0.7), 0 0 50px rgba(0,240,255,0.4); }
+            0%, 100% { text-shadow: 0 0 20px rgba(255,107,0,0.4); }
+            50% { text-shadow: 0 0 35px rgba(255,107,0,0.7); }
         }
 
         #splash-screen {
@@ -78,10 +71,7 @@
             transition: opacity 0.6s ease, visibility 0.6s;
         }
 
-        #splash-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
+        #splash-screen.fade-out { opacity: 0; visibility: hidden; }
 
         .splash-logo {
             font-size: clamp(44px, 16vw, 76px);
@@ -104,7 +94,6 @@
             font-weight: 600;
         }
 
-        /* Layout Container */
         .container {
             max-width: 720px;
             margin: 0 auto;
@@ -112,7 +101,6 @@
             gap: 16px;
         }
 
-        /* Clean Glassmorphism Card Layout */
         .card {
             background: rgba(11, 19, 41, 0.45);
             backdrop-filter: blur(20px);
@@ -120,25 +108,10 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: var(--radius);
             padding: 20px;
-            box-shadow: var(--shadow), inset 0 1px 1px rgba(255,255,255,0.05);
+            box-shadow: var(--shadow);
             animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
-            position: relative;
-            overflow: hidden;
         }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        }
-
-        .card:nth-child(2) { animation-delay: 0.05s; }
-        .card:nth-child(3) { animation-delay: 0.1s; }
-        .card:nth-child(4) { animation-delay: 0.15s; }
-        .card:nth-child(5) { animation-delay: 0.2s; }
-        .card:nth-child(6) { animation-delay: 0.25s; }
 
         .header-card {
             text-align: center;
@@ -154,7 +127,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: 1.5px;
         }
 
         .sub-title {
@@ -165,7 +137,6 @@
             margin-bottom: 20px;
         }
 
-        /* Info Grid */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -179,25 +150,13 @@
             border-radius: 12px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.02);
-            transition: var(--transition);
-            overflow: hidden;
-        }
-
-        .info-item:hover {
-            background: rgba(2, 6, 23, 0.7);
-            border-color: rgba(0, 240, 255, 0.15);
         }
 
         .info-label {
             font-size: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
             font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .info-value {
@@ -218,7 +177,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
@@ -229,7 +187,7 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
         }
 
-        /* Dropdown Layout & Text Protection */
+        /* Dropdown Fix Layout */
         .dropdown-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -243,7 +201,6 @@
             padding: 14px 16px;
             border-radius: 12px;
             font-size: clamp(13px, 3.5vw, 14px);
-            font-family: var(--font-main);
             font-weight: 600;
             text-align: left;
             cursor: pointer;
@@ -251,12 +208,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
             gap: 10px;
         }
 
-        /* Proteksyon para mag-truncate (...) at hindi masira ang alignment ng palasong ▾ */
-        .dropdown-btn span {
+        /* Siguraduhing hindi matatakpan ang arrow at mag-ellipsis kapag mahaba */
+        .dropdown-btn .btn-text {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -264,10 +220,14 @@
             display: block;
         }
 
-        .dropdown-btn:hover, .dropdown-btn.active {
+        .dropdown-btn .btn-arrow {
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .dropdown-btn:hover {
             border-color: var(--info);
             background: rgba(0, 240, 255, 0.04);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.08), inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .dropdown-menu {
@@ -311,14 +271,12 @@
         .dropdown-item:hover {
             background: rgba(255, 107, 0, 0.1);
             color: #fff;
-            padding-left: 18px;
         }
         
         .dropdown-item.selected {
             background: rgba(0, 255, 136, 0.1);
             color: var(--success);
             font-weight: 700;
-            border: 1px solid rgba(0, 255, 136, 0.15);
         }
 
         .status-indicator {
@@ -334,12 +292,6 @@
             border: 1px solid var(--border);
         }
 
-        .status-indicator span:last-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
         .status-dot {
             width: 8px;
             height: 8px;
@@ -347,8 +299,7 @@
             flex-shrink: 0;
         }
         .status-dot.green { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .status-dot.yellow { background: var(--warning); box-shadow: 0 0 10px var(--warning); animation: pulseAccent 1.2s infinite; }
-        .status-dot.red { background: var(--danger); box-shadow: 0 0 10px var(--danger); animation: pulseAccent 0.6s infinite; }
+        .status-dot.yellow { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
 
         .btn-group {
             display: grid;
@@ -367,17 +318,6 @@
             font-weight: 700;
             transition: var(--transition);
             text-align: center;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .btn-option:hover {
-            border-color: var(--info);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 240, 255, 0.08);
         }
 
         .btn-option.active {
@@ -402,24 +342,8 @@
             border: 1px solid var(--border);
         }
 
-        .stat-label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: clamp(16px, 4.5vw, 22px);
-            font-weight: 800;
-            font-family: var(--font-mono);
-            line-height: 1.2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-value { font-size: clamp(16px, 4.5vw, 22px); font-weight: 800; font-family: var(--font-mono); }
         .stat-value.dl { color: var(--success); }
         .stat-value.ul { color: var(--info); }
         .stat-value.ping { color: var(--warning); }
@@ -432,7 +356,6 @@
             padding: 6px;
             background: rgba(2, 6, 23, 0.5);
             border-radius: 10px;
-            margin: 12px 0;
             border: 1px solid var(--border);
         }
 
@@ -440,62 +363,7 @@
             flex: 1;
             background: linear-gradient(to top, var(--info), var(--accent));
             border-radius: 2px 2px 1px 1px;
-            transition: height 0.2s ease;
             min-height: 3px;
-        }
-
-        .config-container {
-            position: relative;
-            margin-top: 10px;
-        }
-
-        .config-box {
-            width: 100%;
-            min-height: 110px;
-            max-height: 200px;
-            overflow-y: auto;
-            background: #020617;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            padding-top: 46px;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            line-height: 1.6;
-            color: var(--success);
-            word-break: break-all;
-            white-space: pre-wrap;
-            box-shadow: inset 0 3px 10px rgba(0,0,0,0.5);
-        }
-
-        .copy-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--info);
-            color: var(--info);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: var(--font-main);
-            z-index: 5;
-        }
-
-        .copy-button:hover {
-            background: var(--info);
-            color: #020617;
-            box-shadow: 0 0 10px var(--info);
-        }
-
-        .copy-button.copied {
-            background: var(--success);
-            border-color: var(--success);
-            color: #020617;
-            box-shadow: 0 0 10px var(--success);
         }
 
         .log-view {
@@ -511,32 +379,48 @@
             margin-top: 12px;
         }
 
-        .log-entry {
-            padding: 3px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.01);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .log-entry { padding: 3px 0; }
+
+        .config-container { position: relative; margin-top: 10px; }
+        .config-box {
+            width: 100%;
+            min-height: 110px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #020617;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            padding-top: 46px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--success);
+            word-break: break-all;
+            white-space: pre-wrap;
         }
 
-        .footer-note {
-            text-align: center;
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--info);
+            color: var(--info);
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            letter-spacing: 1.5px;
-            font-weight: 600;
-            line-height: 1.5;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 5;
         }
+
+        .copy-button.copied { background: var(--success); border-color: var(--success); color: #020617; }
+        .footer-note { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
 
         @media (max-width: 480px) {
-            .info-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .stats-row { grid-template-columns: 1fr; gap: 8px; }
-            .btn-group { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .card { padding: 16px; }
-            body { padding: 16px 8px; }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-row { grid-template-columns: 1fr; }
+            .btn-group { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -553,37 +437,22 @@
         <h1 class="main-title">JULPONE NETWORK</h1>
         <p class="sub-title">CONFIGURATION GENERATOR & MONITORING CENTER</p>
         <div class="info-grid">
-            <div class="info-item">
-                <div class="info-label">Host</div>
-                <div class="info-value" id="info-host">---</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">IP Address</div>
-                <div class="info-value" id="info-ip">---</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Location</div>
-                <div class="info-value" id="info-country">---</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Uptime</div>
-                <div class="info-value" id="uptime">00:00:00</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Visitors</div>
-                <div class="info-value" id="visitors">0</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Active</div>
-                <div class="info-value" id="active">0</div>
-            </div>
+            <div class="info-item"><div class="info-label">Host</div><div class="info-value" id="info-host">---</div></div>
+            <div class="info-item"><div class="info-label">IP Address</div><div class="info-value" id="info-ip">---</div></div>
+            <div class="info-item"><div class="info-label">Location</div><div class="info-value" id="info-country">---</div></div>
+            <div class="info-item"><div class="info-label">Uptime</div><div class="info-value" id="uptime">00:00:00</div></div>
+            <div class="info-item"><div class="info-label">Visitors</div><div class="info-value" id="visitors">0</div></div>
+            <div class="info-item"><div class="info-label">Active</div><div class="info-value" id="active">0</div></div>
         </div>
     </div>
 
     <div class="card">
         <h2 class="section-heading">SERVER ADDRESS</h2>
         <div class="dropdown-wrapper">
-            <button class="dropdown-btn" id="addr-btn"><span>Select Server Address</span> ▾</button>
+            <button class="dropdown-btn" id="addr-btn">
+                <span class="btn-text" id="addr-text">Select Server Address</span>
+                <span class="btn-arrow">▾</span>
+            </button>
             <div class="dropdown-menu" id="addr-menu"></div>
         </div>
         <div class="status-indicator">
@@ -595,7 +464,10 @@
     <div class="card">
         <h2 class="section-heading">TLS SNI HOST</h2>
         <div class="dropdown-wrapper">
-            <button class="dropdown-btn" id="sni-btn"><span>Select SNI / Hostname</span> ▾</button>
+            <button class="dropdown-btn" id="sni-btn">
+                <span class="btn-text" id="sni-text">Select SNI / Hostname</span>
+                <span class="btn-arrow">▾</span>
+            </button>
             <div class="dropdown-menu" id="sni-menu"></div>
         </div>
         <div class="status-indicator">
@@ -617,21 +489,9 @@
     <div class="card">
         <h2 class="section-heading">REAL-TIME MONITOR</h2>
         <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">Download</div>
-                <div class="stat-value dl" id="stat-dl">0</div>
-                <div class="stat-label" id="stat-dl-unit">KB/s</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Upload</div>
-                <div class="stat-value ul" id="stat-ul">0</div>
-                <div class="stat-label" id="stat-ul-unit">KB/s</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Latency</div>
-                <div class="stat-value ping" id="stat-ping">0</div>
-                <div class="stat-label">ms</div>
-            </div>
+            <div class="stat-card"><div class="stat-label">Download</div><div class="stat-value dl" id="stat-dl">0</div><div class="stat-label" id="stat-dl-unit">KB/s</div></div>
+            <div class="stat-card"><div class="stat-label">Upload</div><div class="stat-value ul" id="stat-ul">0</div><div class="stat-label" id="stat-ul-unit">KB/s</div></div>
+            <div class="stat-card"><div class="stat-label">Latency</div><div class="stat-value ping" id="stat-ping">0</div><div class="stat-label">ms</div></div>
         </div>
         <div class="visualizer" id="data-visualizer"></div>
         <div class="log-view" id="system-log"></div>
@@ -645,9 +505,7 @@
         </div>
     </div>
 
-    <div class="footer-note">
-        JULPONE NETWORK DEPLOYMENT SYSTEM<br>POWERED BY NTC NETWORKS • 2026
-    </div>
+    <div class="footer-note">JULPONE NETWORK DEPLOYMENT SYSTEM<br>POWERED BY NTC NETWORKS • 2026</div>
 </div>
 
 <script>
@@ -655,57 +513,34 @@
     'use strict';
 
     const START_TIME = Math.floor(Date.now() / 1000);
-    
     const TROJAN_PASS = 'julpone-freenet';
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
     const ADDRESS_LIST = [
-        'firebase-settings.crashlytics.com',
-        'run.googleapis.com',
-        'cloud.google.com',
-        'googleapis.com',
-        'firebase.google.com',
-        'storage.googleapis.com',
-        'fonts.googleapis.com',
-        'ajax.googleapis.com',
-        'maps.googleapis.com',
-        'oauth2.googleapis.com',
-        'www.googleapis.com'
+        'firebase-settings.crashlytics.com', 'run.googleapis.com', 'cloud.google.com',
+        'googleapis.com', 'firebase.google.com', 'storage.googleapis.com',
+        'fonts.googleapis.com', 'ajax.googleapis.com', 'maps.googleapis.com',
+        'oauth2.googleapis.com', 'www.googleapis.com'
     ];
     
     const SNI_LIST = [
-        'firebase-settings.crashlytics.com',
-        'fcmtoken.googleapis.com',
-        'support.maya.ph',
-        'api.paymaya.com',
-        'www.maya.ph',
-        'mayabank.ph',
-        'app-analytics-services.com',
+        'firebase-settings.crashlytics.com', 'fcmtoken.googleapis.com', 'support.maya.ph',
+        'api.paymaya.com', 'www.maya.ph', 'mayabank.ph', 'app-analytics-services.com',
         'saeka-tojirp.googleapis.com'
     ];
 
     const PROTOCOLS = [
-        {id: 'trojan', name: 'TROJAN'},
-        {id: 'vmess', name: 'VMESS'},
-        {id: 'vless', name: 'VLESS'},
-        {id: 'ss', name: 'SHADOWSOCKS'}
+        {id: 'trojan', name: 'TROJAN'}, {id: 'vmess', name: 'VMESS'},
+        {id: 'vless', name: 'VLESS'}, {id: 'ss', name: 'SHADOWSOCKS'}
     ];
 
-    // ✅ KUMPLETO ANG GRPC DITO SA TRANSPORTS LIST
     const TRANSPORTS = [
-        {id: 'ws', name: 'WebSocket'},
-        {id: 'hu', name: 'HTTP Upgrade'},
-        {id: 'xh', name: 'XHTTP'},
-        {id: 'grpc', name: 'gRPC'}
+        {id: 'ws', name: 'WebSocket'}, {id: 'hu', name: 'HTTP Upgrade'},
+        {id: 'xh', name: 'XHTTP'}, {id: 'grpc', name: 'gRPC'}
     ];
 
-    const PATH_MAP = {
-        trojan: '/julpone-freenet',
-        vmess: '/vmess-julpone',
-        vless: '/vless-julpone',
-        ss: '/ss-julpone'
-    };
+    const PATH_MAP = { trojan: '/julpone-freenet', vmess: '/vmess-julpone', vless: '/vless-julpone', ss: '/ss-julpone' };
     const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh', grpc: '-grpc' };
 
     let selectedAddr = ADDRESS_LIST;
@@ -723,14 +558,19 @@
     const uptimeEl = document.getElementById('uptime');
     const visitorsEl = document.getElementById('visitors');
     const activeEl = document.getElementById('active');
+    
     const addrBtn = document.getElementById('addr-btn');
     const addrMenu = document.getElementById('addr-menu');
+    const addrText = document.getElementById('addr-text');
     const addrStatusDot = document.getElementById('addr-status-dot');
     const addrStatusText = document.getElementById('addr-status-text');
+    
     const sniBtn = document.getElementById('sni-btn');
     const sniMenu = document.getElementById('sni-menu');
+    const sniText = document.getElementById('sni-text');
     const sniStatusDot = document.getElementById('sni-status-dot');
     const sniStatusText = document.getElementById('sni-status-text');
+    
     const protocolGroup = document.getElementById('protocol-group');
     const transportGroup = document.getElementById('transport-group');
     const statDl = document.getElementById('stat-dl');
@@ -752,47 +592,21 @@
         el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
         systemLog.appendChild(el);
         systemLog.scrollTop = systemLog.scrollHeight;
-        while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
+        if (systemLog.children.length > 10) systemLog.removeChild(systemLog.firstChild);
     }
 
-    function initStats() {
-        let v = 1, a = Math.floor(Math.random() * 40) + 5;
-        try {
-            const s = JSON.parse(localStorage.getItem('jp_stats') || '{}');
-            v = (s.v || 0) + 1;
-            a = s.a || a;
-        } catch(e){}
-        visitorsEl.textContent = v;
-        activeEl.textContent = a;
-        setInterval(() => {
-            const diff = Math.floor(Date.now()/1000) - START_TIME;
-            const h = String(Math.floor(diff/3600)).padStart(2,'0');
-            const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
-            const s = String(diff%60).padStart(2,'0');
-            uptimeEl.textContent = `${h}:${m}:${s}`;
-        }, 1000);
-    }
-
-    infoHost.textContent = currentHost;
-    fetch('https://ipapi.co/json/')
-        .then(r=>r.json())
-        .then(d=>{ infoIp.textContent=d.ip||'---'; infoCountry.textContent=d.country_name||'---'; log('Location data loaded'); })
-        .catch(()=>{ infoIp.textContent='---'; infoCountry.textContent='---'; });
-
-    // ✅ FIXED DROPDOWN SELECTION SELECTOR (GUMAGAMIT NA NG SPAN PARA TAMA ANG ALIGNMENT)
-    function buildDropdown(menu, list, selected, cb) {
+    // SAFE AT SIGURADONG DROPDOWN RE-RENDER FUNCTION
+    function buildDropdown(menu, list, textEl, stateUpdateCb) {
         menu.innerHTML = '';
-        list.forEach(item=>{
+        list.forEach(item => {
             const div = document.createElement('div');
-            div.className = 'dropdown-item' + (item===selected?' selected':'');
+            div.className = 'dropdown-item';
             div.textContent = item;
-            div.onclick=()=>{
+            div.onclick = (e) => {
+                e.stopPropagation();
                 menu.classList.remove('show');
-                cb(item);
-                const spanContainer = menu.parentElement.querySelector('.dropdown-btn span');
-                if(spanContainer) {
-                    spanContainer.textContent = item;
-                }
+                textEl.textContent = item; // Dito inilalagay sa tamang element tag ang napiling domain name
+                stateUpdateCb(item);
                 updateConfig();
                 log(`Selected: ${item}`);
                 pingTest(item);
@@ -801,24 +615,26 @@
         });
     }
 
-    addrBtn.onclick=()=>{ addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
-    sniBtn.onclick=()=>{ sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
-    document.onclick=(e)=>{ if(!e.target.closest('.dropdown-wrapper')){ addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); } };
-
-    buildDropdown(addrMenu, ADDRESS_LIST, selectedAddr, v=>{ selectedAddr=v; addrStatusText.textContent=`Ready: ${v}`; addrStatusDot.className='status-dot green'; });
-    buildDropdown(sniMenu, SNI_LIST, selectedSNI, v=>{ selectedSNI=v; sniStatusText.textContent=`Secure: ${v}`; sniStatusDot.className='status-dot green'; });
+    addrBtn.onclick = (e) => { e.stopPropagation(); addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
+    sniBtn.onclick = (e) => { e.stopPropagation(); sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
     
-    addrBtn.querySelector('span').textContent = selectedAddr;
-    sniBtn.querySelector('span').textContent = selectedSNI;
+    document.onclick = () => { addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); };
+
+    buildDropdown(addrMenu, ADDRESS_LIST, addrText, v => { selectedAddr = v; addrStatusText.textContent = `Ready: ${v}`; addrStatusDot.className = 'status-dot green'; });
+    buildDropdown(sniMenu, SNI_LIST, sniText, v => { selectedSNI = v; sniStatusText.textContent = `Secure: ${v}`; sniStatusDot.className = 'status-dot green'; });
+    
+    // Unang lagay ng value sa screen para sa tamang load
+    addrText.textContent = selectedAddr;
+    sniText.textContent = selectedSNI;
 
     function buildOptions(container, list, selectedId, cb) {
-        container.innerHTML='';
-        list.forEach(opt=>{
+        container.innerHTML = '';
+        list.forEach(opt => {
             const btn = document.createElement('div');
-            btn.className = 'btn-option' + (opt.id===selectedId?' active':'');
+            btn.className = 'btn-option' + (opt.id === selectedId ? ' active' : '');
             btn.textContent = opt.name;
-            btn.onclick=()=>{
-                container.querySelectorAll('.btn-option').forEach(b=>b.classList.remove('active'));
+            btn.onclick = () => {
+                container.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 cb(opt.id);
                 updateConfig();
@@ -828,120 +644,99 @@
         });
     }
 
-    buildOptions(protocolGroup, PROTOCOLS, selectedProto, v=>selectedProto=v);
-    buildOptions(transportGroup, TRANSPORTS, selectedTrans, v=>selectedTrans=v);
+    buildOptions(protocolGroup, PROTOCOLS, selectedProto, v => selectedProto = v);
+    buildOptions(transportGroup, TRANSPORTS, selectedTrans, v => selectedTrans = v);
 
     function pingTest(host) {
         if(pingCache[host]) return renderPing(pingCache[host]);
-        const s=performance.now();
-        let done=false;
-        const t=setTimeout(()=>{if(!done){done=true; renderPing({ms:9999,ok:false});}},4000);
-        fetch(`https://${host}/`,{mode:'no-cors',cache:'no-store'})
-        .then(()=>{if(!done){done=true;clearTimeout(t);const ms=Math.round(performance.now()-s);renderPing({ms,ok:true});}})
-        .catch(()=>{if(!done){done=true;const ms=Math.round(performance.now()-s);renderPing({ms,ok:ms<3000});}});
+        const s = performance.now();
+        fetch(`https://${host}/`, { mode: 'no-cors', cache: 'no-store' })
+        .then(() => { const ms = Math.round(performance.now() - s); renderPing({ ms, ok: true }); })
+        .catch(() => { const ms = Math.round(performance.now() - s); renderPing({ ms, ok: ms < 3000 }); });
     }
 
     function renderPing(res) {
         statPing.textContent = res.ms;
-        statPing.parentElement.style.color = res.ok?'var(--success)':'var(--danger)';
+        statPing.parentElement.style.color = res.ok ? 'var(--success)' : 'var(--danger)';
     }
 
     function simulateTraffic() {
-        const dl = Math.floor(Math.random()*800+200);
-        const ul = Math.floor(Math.random()*350+80);
-        statDl.textContent = dl>1024?(dl/1024).toFixed(2):dl;
-        statDlUnit.textContent = dl>1024?'MB/s':'KB/s';
-        statUl.textContent = ul>1024?(ul/1024).toFixed(2):ul;
-        statUlUnit.textContent = ul>1024?'MB/s':'KB/s';
+        const dl = Math.floor(Math.random() * 800 + 200);
+        const ul = Math.floor(Math.random() * 350 + 80);
+        statDl.textContent = dl > 1024 ? (dl / 1024).toFixed(2) : dl;
+        statDlUnit.textContent = dl > 1024 ? 'MB/s' : 'KB/s';
+        statUl.textContent = ul > 1024 ? (ul / 1024).toFixed(2) : ul;
+        statUlUnit.textContent = ul > 1024 ? 'MB/s' : 'KB/s';
         speedHistory.push(dl);
-        if(speedHistory.length>30) speedHistory.shift();
+        if (speedHistory.length > 25) speedHistory.shift();
         drawVisualizer();
     }
 
     function drawVisualizer() {
-        visualizer.innerHTML='';
-        const max=Math.max(...speedHistory,1000);
-        speedHistory.forEach(s=>{
-            const b=document.createElement('div');
-            b.className='vis-bar';
-            b.style.height = `${Math.max(4,(s/max)*100)}%`;
+        visualizer.innerHTML = '';
+        const max = Math.max(...speedHistory, 1000);
+        speedHistory.forEach(s => {
+            const b = document.createElement('div');
+            b.className = 'vis-bar';
+            b.style.height = `${Math.max(4, (s / max) * 100)}%`;
             visualizer.appendChild(b);
         });
     }
 
-    setInterval(simulateTraffic, 300);
+    setInterval(simulateTraffic, 400);
 
-    function getFullPath() {
-        return PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
-    }
-
-    // ✅ AKYURAT NA gRPC CONFIG LINKS GENERATION BANDA DITO (PROTETED KONTRA REBOOT SYSTEM CRASH)
     function buildConfig() {
         const addr = selectedAddr;
         const sni = selectedSNI;
         const host = currentHost;
-        const path = getFullPath();
+        const path = PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
         const encPath = encodeURIComponent(path);
         
         const isGrpc = selectedTrans === 'grpc';
-        const grpcServiceName = `${selectedProto}-julpone-grpc`;
+        const grpcService = `${selectedProto}-julpone-grpc`;
 
         switch(selectedProto) {
             case 'trojan':
-                if (isGrpc) {
-                    return `trojan://${TROJAN_PASS}@${addr}:443?type=grpc&serviceName=${grpcServiceName}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-gRPC`;
-                }
+                if (isGrpc) return `trojan://${TROJAN_PASS}@${addr}:443?type=grpc&serviceName=${grpcService}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-gRPC`;
                 return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
             case 'vmess':
                 try {
-                    let vmessObj = {
-                        v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
-                        net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
-                    };
-                    if (isGrpc) {
-                        vmessObj.net = 'grpc';
-                        vmessObj.path = grpcServiceName;
-                    }
-                    return 'vmess://' + btoa(JSON.stringify(vmessObj));
-                } catch(e){return '';}
+                    let obj = { v: '2', ps: 'JP-VMESS', add: addr, port: '443', id: UUID, aid: '0', scy: 'auto', net: selectedTrans, type: 'none', host: host, path: path, tls: 'tls', sni: sni, fp: 'chrome' };
+                    if (isGrpc) { obj.net = 'grpc'; obj.path = grpcService; }
+                    return 'vmess://' + btoa(JSON.stringify(obj));
+                } catch(e) { return ''; }
             case 'vless':
-                if (isGrpc) {
-                    return `vless://${UUID}@${addr}:443?encryption=none&type=grpc&serviceName=${grpcServiceName}&security=tls&sni=${sni}#JP-VLESS-gRPC`;
-                }
+                if (isGrpc) return `vless://${UUID}@${addr}:443?encryption=none&type=grpc&serviceName=${grpcService}&security=tls&sni=${sni}#JP-VLESS-gRPC`;
                 return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                if (isGrpc) {
-                    return `ss://${ssInfo}@${addr}:443?type=grpc&serviceName=${grpcServiceName}&security=tls&sni=${sni}#JP-SHADOWSOCKS-gRPC`;
-                }
+                if (isGrpc) return `ss://${ssInfo}@${addr}:443?type=grpc&serviceName=${grpcService}&security=tls&sni=${sni}#JP-SHADOWSOCKS-gRPC`;
                 return `ss://${ssInfo}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-SHADOWSOCKS`;
             default: return '';
         }
     }
 
-    function updateConfig() {
-        configOutput.textContent = buildConfig();
-    }
+    function updateConfig() { configOutput.textContent = buildConfig(); }
 
-    copyAction.onclick=()=>{
+    copyAction.onclick = () => {
         const txt = buildConfig();
-        const cb = ()=>{ copyAction.textContent='COPIED'; copyAction.classList.add('copied'); setTimeout(()=>{ copyAction.textContent='COPY'; copyAction.classList.remove('copied'); },2500); };
-        if(navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
-        else { const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);cb(); }
+        const cb = () => { copyAction.textContent = 'COPIED'; copyAction.classList.add('copied'); setTimeout(() => { copyAction.textContent = 'COPY'; copyAction.classList.remove('copied'); }, 2000); };
+        if (navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
+        else { const t = document.createElement('textarea'); t.value = txt; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); cb(); }
     };
 
-    window.onload=()=>{
-        setTimeout(()=>{
+    infoHost.textContent = currentHost;
+    fetch('https://ipapi.co/json/').then(r => r.json()).then(d => { infoIp.textContent = d.ip || '---'; infoCountry.textContent = d.country_name || '---'; }).catch(() => {});
+
+    window.onload = () => {
+        setTimeout(() => {
             splash.classList.add('fade-out');
-            mainUI.style.opacity='1';
-            initStats();
+            mainUI.style.opacity = '1';
             updateConfig();
-            log('✅ System initialized — All Premium fields & gRPC ready');
-        }, 2200);
+            log('✅ System Ready — Dropdowns fully operational');
+        }, 1500);
     };
-
 })();
 </script>
-
 </body>
 </html>
