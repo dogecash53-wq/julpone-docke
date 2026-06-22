@@ -1,39 +1,50 @@
 FROM haproxy:alpine
 USER root
 
-# 1. I-install ang mga kailangang dependencies para sa Xray, downloading, at process handling
+# 1. Install core dependencies required for downloading and extracting Xray
 RUN apk add --no-cache ca-certificates wget unzip tzdata bash curl
 
-# 2. I-download ang pinakabagong stable Xray Core binary mula sa official repository
+# 2. Download latest stable Xray Core binary
 RUN wget -qO /tmp/xray.zip https://github.com && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
     rm -rf /tmp/xray.zip
 
-# 3. I-customize ang binary execution name patungong 'panares' base sa luma mong setup
+# 3. Rename binary to your custom 'panares' name
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
-# 4. Mag-inject ng Ultra-Aggressive Adblocking, Tracking, at Anti-Adult Geo-databases
+# 4. Inject ultra-aggressive Adblocking & Tracking Geo-databases
 RUN wget -qO /usr/bin/geosite.dat https://github.com && \
     wget -qO /usr/bin/geoip.dat https://github.com
 
-# I-declare ang asset paths para mabasang buo ng 'panares' core ang adblock files mo
+# Set environment variables for core runtime assets
 ENV XRAY_LOCATION_ASSET=/usr/bin
 ENV TZ=UTC
 
-# 5. Gumawa ng mga kinakailangang malilinis na direktoryo para sa iyong configs
-RUN mkdir -p /etc/xray /etc/haproxy
+# 5. Create absolute directory structures for configurations
+RUN mkdir -p /etc/xray /usr/local/etc/haproxy
 
-# 6. Kopyahin ang tatlong natitirang core files mula sa iyong repository root
+# 6. Copy files from your repository root using the exact image paths
 COPY config.json /etc/xray/config.json
-COPY haproxy.cfg /etc/haproxy/haproxy.cfg
-COPY index.html /etc/haproxy/index.html
+COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY index.html /usr/local/etc/haproxy/index.html
 
-# 7. Ayusin ang structural ownership at permissions para sa HAProxy isolation security
-RUN chown -R haproxy:haproxy /etc/haproxy /var/lib/haproxy
+# 7. Secure folder ownership permissions for internal system runtime
+RUN chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
 
 EXPOSE 8080
 
-# 8. FIXED CMD ENGINE: Patakbuhin ang panares sa background at hilahin ang HAProxy sa foreground gamit ang exec.
-# Ito ang nagpapakita sa Cloud Run na aktibong nakikinig ang port 8080 nang walang delay.
-CMD /usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -db
+# 8. Optimized multi-process execution engine
+CMD ["/bin/bash", "-c", "\
+    echo '🚀 Launching Julpone High-Speed Layer 4 Infrastructure...'; \
+    /usr/bin/panares -config /etc/xray/config.json & \
+    PID_XRAY=$!; \
+    /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db & \
+    PID_HAPROXY=$!; \
+    echo '✅ System components successfully engaged. Routing live streams...'; \
+    while true; do \
+        kill -0 $PID_XRAY 2>/dev/null || { echo '❌ Xray (panares) failed! Core terminating...'; exit 1; }; \
+        kill -0 $PID_HAPROXY 2>/dev/null || { echo '❌ HAProxy engine failed! Core terminating...'; exit 1; }; \
+        sleep 5; \
+    done \
+"]
