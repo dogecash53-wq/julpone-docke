@@ -1,59 +1,32 @@
-# ====================================================================
-# STAGE 1: THE BUILD ENGINE (Dito gagawin ang lahat ng mabibigat na download)
-# ====================================================================
-FROM debian:stable-slim AS builder
+FROM teddysun/xray:latest
 USER root
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl unzip && \
-    rm -rf /var/lib/apt/lists/*
-
-# I-download ang pinakabagong stable Xray Core binary gamit ang absolute upstream links
-RUN curl -L -s -o /tmp/xray.zip "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip" && \
-    unzip -j /tmp/xray.zip xray -d /tmp/ && \
-    cp /tmp/xray /tmp/panares && \
-    chmod +x /tmp/panares
-
-# I-download ang pinakabagong Ultra-Aggressive Adblocking at Tracking Geo-databases
-RUN curl -L -s -o /tmp/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" && \
-    curl -L -s -o /tmp/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
-
-
-# ====================================================================
-# STAGE 2: THE RUNTIME SUITE (Ang pangmalakasang selyadong minimal image)
-# ====================================================================
-FROM alpine:latest
-USER root
-
-# I-install LAMANG si HAProxy, tzdata, at bash shell para sa raw socket execution
+# 1. Update the system package manager and install HAProxy, bash, and curl directly
 RUN apk update && \
-    apk add --no-cache ca-certificates haproxy tzdata bash && \
+    apk add --no-cache haproxy ca-certificates curl tzdata bash && \
     rm -rf /var/cache/apk/*
 
-# Gumawa ng mga malilinis na absolute directories para sa iyong network components
+# 2. Re-map the embedded execution binary name to 'panares' to preserve your signature layout
+RUN cp /usr/bin/xray /usr/bin/panares && \
+    chmod +x /usr/bin/panares
+
+# 3. Create absolute directory pathways for your repository configuration assets
 RUN mkdir -p /etc/xray /usr/local/etc/haproxy /var/lib/haproxy
 
-# HUGUTIN ANG MGA BINARIES MULA SA STAGE 1 BUILDER (Heto ang sikreto kaya sobrang gaan nito)
-COPY --from=builder /tmp/panares /usr/bin/panares
-COPY --from=builder /tmp/geosite.dat /usr/bin/geosite.dat
-COPY --from=builder /tmp/geoip.dat /usr/bin/geoip.dat
-
-# Kopyahin ang mga static configuration at dashboard files mula sa iyong repository root
+# 4. Copy configuration files and UI dashboard strictly from your repository source
 COPY config.json /etc/xray/config.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
 
-# Ayusin ang permissions para sa HAProxy isolation at Google Cloud non-root policy integration
-RUN chmod 755 /usr/bin/panares /usr/bin/geosite.dat /usr/bin/geoip.dat && \
+# 5. Fix permissions for HAProxy isolation and Google Cloud Run non-root policy integration
+RUN chmod 755 /usr/bin/panares && \
     chmod 644 /usr/local/etc/haproxy/haproxy.cfg /usr/local/etc/haproxy/index.html /etc/xray/config.json && \
     chown -R haproxy:haproxy /usr/local/etc/haproxy /etc/xray /var/lib/haproxy
 
-# I-declare ang core structural assets at systems settings
-ENV XRAY_LOCATION_ASSET=/usr/bin
 ENV TZ=UTC
 EXPOSE 8080
 
-# THE PRODUCTION RUN WRAPPER (100% Google Cloud Run at Docker Build Compliant)
-# Gisingin si panares sa background gamit ang zero bounds network block interface, 
-# at hilahin si HAProxy sa foreground gamit ang native Linux environment path nito.
+# 6. UNTHROTTLED RUN EXECUTABLE ENGINE (100% Google Cloud Run Compliant)
+# Fires up your custom panares proxy core internally and links the ingress stream 
+# directly to the HAProxy daemon listening actively on port 8080.
 CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
