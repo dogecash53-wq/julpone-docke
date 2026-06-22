@@ -1,24 +1,24 @@
 FROM teddysun/xray:latest
 USER root
 
-# 1. Update the system package manager and install HAProxy, bash, and curl directly
+# 1. I-update ang package manager at i-install ang HAProxy, bash, at curl
 RUN apk update && \
     apk add --no-cache haproxy ca-certificates curl tzdata bash && \
     rm -rf /var/cache/apk/*
 
-# 2. Re-map the embedded execution binary name to 'panares' to preserve your signature layout
+# 2. I-rename ang binary file patungong 'panares' base sa iyong signature
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
-# 3. Create absolute directory pathways for your repository configuration assets
+# 3. Gumawa ng mga selyadong absolute directories para sa iyong configs
 RUN mkdir -p /etc/xray /usr/local/etc/haproxy /var/lib/haproxy
 
-# 4. Copy configuration files and UI dashboard strictly from your repository source
+# 4. Kopyahin ang mga configuration files mula sa iyong repository root folder
 COPY config.json /etc/xray/config.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
 
-# 5. Fix permissions for HAProxy isolation and Google Cloud Run non-root policy integration
+# 5. I-set ang tamang structural folder ownership at system boundaries
 RUN chmod 755 /usr/bin/panares && \
     chmod 644 /usr/local/etc/haproxy/haproxy.cfg /usr/local/etc/haproxy/index.html /etc/xray/config.json && \
     chown -R haproxy:haproxy /usr/local/etc/haproxy /etc/xray /var/lib/haproxy
@@ -26,7 +26,5 @@ RUN chmod 755 /usr/bin/panares && \
 ENV TZ=UTC
 EXPOSE 8080
 
-# 6. UNTHROTTLED RUN EXECUTABLE ENGINE (100% Google Cloud Run Compliant)
-# Fires up your custom panares proxy core internally and links the ingress stream 
-# directly to the HAProxy daemon listening actively on port 8080.
+# 6. UNTHROTTLED ULTRA-FAST RUN ENGINE (100% Google Cloud Run Compliant)
 CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
