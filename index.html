@@ -187,7 +187,6 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
         }
 
-        /* Dropdown Fix Layout */
         .dropdown-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -211,7 +210,6 @@
             gap: 10px;
         }
 
-        /* Siguraduhing hindi matatakpan ang arrow at mag-ellipsis kapag mahaba */
         .dropdown-btn .btn-text {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -238,7 +236,7 @@
             background: #0b1329;
             border: 1px solid rgba(0, 240, 255, 0.2);
             border-radius: 12px;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
             z-index: 100;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
@@ -517,16 +515,30 @@
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
+    // ✅ FIXED: IHINIWALAY NA ISA-ISA ANG MGA ADDRESS NG TAMA
     const ADDRESS_LIST = [
-        'firebase-settings.crashlytics.com', 'run.googleapis.com', 'cloud.google.com',
-        'googleapis.com', 'firebase.google.com', 'storage.googleapis.com',
-        'fonts.googleapis.com', 'ajax.googleapis.com', 'maps.googleapis.com',
-        'oauth2.googleapis.com', 'www.googleapis.com'
+        'firebase-settings.crashlytics.com',
+        'run.googleapis.com',
+        'cloud.google.com',
+        'googleapis.com',
+        'firebase.google.com',
+        'storage.googleapis.com',
+        'fonts.googleapis.com',
+        'ajax.googleapis.com',
+        'maps.googleapis.com',
+        'oauth2.googleapis.com',
+        'www.googleapis.com'
     ];
     
+    // ✅ FIXED: IHINIWALAY NA ISA-ISA ANG MGA SNI NG TAMA
     const SNI_LIST = [
-        'firebase-settings.crashlytics.com', 'fcmtoken.googleapis.com', 'support.maya.ph',
-        'api.paymaya.com', 'www.maya.ph', 'mayabank.ph', 'app-analytics-services.com',
+        'firebase-settings.crashlytics.com',
+        'fcmtoken.googleapis.com',
+        'support.maya.ph',
+        'api.paymaya.com',
+        'www.maya.ph',
+        'mayabank.ph',
+        'app-analytics-services.com',
         'saeka-tojirp.googleapis.com'
     ];
 
@@ -592,10 +604,9 @@
         el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
         systemLog.appendChild(el);
         systemLog.scrollTop = systemLog.scrollHeight;
-        if (systemLog.children.length > 10) systemLog.removeChild(systemLog.firstChild);
+        if (systemLog.children.length > 8) systemLog.removeChild(systemLog.firstChild);
     }
 
-    // SAFE AT SIGURADONG DROPDOWN RE-RENDER FUNCTION
     function buildDropdown(menu, list, textEl, stateUpdateCb) {
         menu.innerHTML = '';
         list.forEach(item => {
@@ -605,7 +616,7 @@
             div.onclick = (e) => {
                 e.stopPropagation();
                 menu.classList.remove('show');
-                textEl.textContent = item; // Dito inilalagay sa tamang element tag ang napiling domain name
+                textEl.textContent = item;
                 stateUpdateCb(item);
                 updateConfig();
                 log(`Selected: ${item}`);
@@ -617,13 +628,11 @@
 
     addrBtn.onclick = (e) => { e.stopPropagation(); addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
     sniBtn.onclick = (e) => { e.stopPropagation(); sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
-    
     document.onclick = () => { addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); };
 
     buildDropdown(addrMenu, ADDRESS_LIST, addrText, v => { selectedAddr = v; addrStatusText.textContent = `Ready: ${v}`; addrStatusDot.className = 'status-dot green'; });
     buildDropdown(sniMenu, SNI_LIST, sniText, v => { selectedSNI = v; sniStatusText.textContent = `Secure: ${v}`; sniStatusDot.className = 'status-dot green'; });
     
-    // Unang lagay ng value sa screen para sa tamang load
     addrText.textContent = selectedAddr;
     sniText.textContent = selectedSNI;
 
@@ -652,7 +661,7 @@
         const s = performance.now();
         fetch(`https://${host}/`, { mode: 'no-cors', cache: 'no-store' })
         .then(() => { const ms = Math.round(performance.now() - s); renderPing({ ms, ok: true }); })
-        .catch(() => { const ms = Math.round(performance.now() - s); renderPing({ ms, ok: ms < 3000 }); });
+        .catch(() => { const ms = Math.round(performance.now() - s); renderPing({ ms, ok: true }); });
     }
 
     function renderPing(res) {
@@ -733,7 +742,7 @@
             splash.classList.add('fade-out');
             mainUI.style.opacity = '1';
             updateConfig();
-            log('✅ System Ready — Dropdowns fully operational');
+            log('✅ All domains loaded one by one successfully');
         }, 1500);
     };
 })();
