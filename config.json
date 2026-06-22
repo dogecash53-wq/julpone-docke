@@ -1,4 +1,7 @@
 {
+  "assets": {
+    "location": "/usr/bin"
+  },
   "log": {
     "loglevel": "none"
   },
