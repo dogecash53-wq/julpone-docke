@@ -1,15 +1,15 @@
 FROM haproxy:alpine
 USER root
 
-# 1. Install core dependencies required for downloading and extracting Xray
+# 1. Install operational dependencies required for network tools
 RUN apk add --no-cache ca-certificates wget unzip tzdata bash curl
 
-# 2. Download latest stable Xray Core binary
+# 2. Download latest stable Xray Core binary from upstream distribution
 RUN wget -qO /tmp/xray.zip https://github.com && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
     rm -rf /tmp/xray.zip
 
-# 3. Rename binary to your custom 'panares' name
+# 3. Rename binary execution variable to 'panares' as requested
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
@@ -17,34 +17,24 @@ RUN cp /usr/bin/xray /usr/bin/panares && \
 RUN wget -qO /usr/bin/geosite.dat https://github.com && \
     wget -qO /usr/bin/geoip.dat https://github.com
 
-# Set environment variables for core runtime assets
+# Set environment paths for container engine evaluation
 ENV XRAY_LOCATION_ASSET=/usr/bin
 ENV TZ=UTC
 
-# 5. Create absolute directory structures for configurations
+# 5. Build absolute configuration folders
 RUN mkdir -p /etc/xray /usr/local/etc/haproxy
 
-# 6. Copy files from your repository root using the exact image paths
+# 6. Copy static infrastructure elements from your repository
 COPY config.json /etc/xray/config.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# 7. Secure folder ownership permissions for internal system runtime
-RUN chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
+# 7. Secure execution rights and folder ownership configurations
+RUN chmod +x /usr/local/bin/entrypoint.sh && \
+    chown -R haproxy:haproxy /usr/local/etc/haproxy /var/lib/haproxy
 
 EXPOSE 8080
 
-# 8. Fixed Execution Script with correct internal /usr/local/sbin path mapping
-CMD ["/bin/bash", "-c", "\
-    echo '🚀 Launching Julpone High-Speed Layer 4 Infrastructure...'; \
-    /usr/bin/panares -config /etc/xray/config.json & \
-    PID_XRAY=$!; \
-    /usr/local/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db & \
-    PID_HAPROXY=$!; \
-    echo '✅ System components successfully engaged. Routing live streams...'; \
-    while true; do \
-        kill -0 $PID_XRAY 2>/dev/null || { echo '❌ Xray (panares) failed! Core terminating...'; exit 1; }; \
-        kill -0 $PID_HAPROXY 2>/dev/null || { echo '❌ HAProxy engine failed! Core terminating...'; exit 1; }; \
-        sleep 5; \
-    done \
-"]
+# 8. Trigger clean boot sequence mapping using the official script runner
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
