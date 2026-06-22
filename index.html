@@ -138,33 +138,24 @@
 
 <script>
 (function() {
+    'use strict';
+    
+    // Config Constants
     const TROJAN_PASS = 'julpone-freenet';
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
+    const ADDRESS_LIST = ['firebase-settings.crashlytics.com', 'run.googleapis.com', 'cloud.google.com', 'googleapis.com'];
+    const SNI_LIST = ['firebase-settings.crashlytics.com', 'fcmtoken.googleapis.com', 'support.maya.ph'];
 
-    const ADDRESS_LIST = ['firebase-settings.crashlytics.com', 
-                          'run.googleapis.com', 
-                          'cloud.google.com', 
-                          'googleapis.com'];
-  
-    const SNI_LIST = ['firebase-settings.crashlytics.com', 
-                      'fcmtoken.googleapis.com', 
-                      'support.maya.ph'];
-
-    const PROTOCOLS = [{id: 'trojan', name: 'TROJAN'}, {id: 'vmess', name: 'VMESS'}, {id: 'vless', name: 'VLESS'}, {id: 'ss', name: 'SHADOWSOCKS'}];
-    const TRANSPORTS = [{id: 'ws', name: 'WebSocket'}, {id: 'hu', name: 'HTTP Upgrade'}, {id: 'xh', name: 'XHTTP'}];
-
+    // State Variables
     let selectedAddr = ADDRESS_LIST;
     let selectedSNI = SNI_LIST;
     let selectedProto = 'trojan';
     let selectedTrans = 'ws';
     const currentHost = window.location.hostname || 'localhost';
 
+    // Core Function: BUILD CONFIG (Ito ang inayos natin)
     function buildConfig() {
-        const addr = selectedAddr;
-        const sni = selectedSNI;
-        const host = currentHost;
-        
         const netTypeMap = { ws: 'ws', hu: 'httpupgrade', xh: 'xhttp' };
         const xrayNet = netTypeMap[selectedTrans] || 'ws';
         
@@ -177,39 +168,43 @@
 
         switch(selectedProto) {
             case 'trojan':
-                return `trojan://${TROJAN_PASS}@${addr}:443?type=${xrayNet}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
+                return `trojan://${TROJAN_PASS}@${selectedAddr}:443?type=${xrayNet}&host=${currentHost}&path=${encPath}&security=tls&fp=chrome&sni=${selectedSNI}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
             case 'vmess':
                 return 'vmess://' + btoa(JSON.stringify({
-                    v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
-                    net:xrayNet, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
+                    v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:selectedAddr, port:'443', id:UUID, aid:'0', scy:'auto',
+                    net:xrayNet, type:'none', host:currentHost, path:path, tls:'tls', sni:selectedSNI, fp:'chrome'
                 }));
             case 'vless':
-                return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
+                return `vless://${UUID}@${selectedAddr}:443?encryption=none&type=${xrayNet}&host=${currentHost}&path=${encPath}&security=tls&sni=${selectedSNI}#JP-VLESS-${selectedTrans.toUpperCase()}`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                const plugin = `v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`;
-                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
+                const plugin = `v2ray-plugin;mode=${xrayNet};host=${currentHost};path=${path};tls;sni=${selectedSNI}`;
+                return `ss://${ssInfo}@${selectedAddr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
             default: return '';
         }
     }
 
-    // [Dito nakalagay ang mga event listeners at init logic mo...]
-    // (Inalis ko ang mahabang logic dito para hindi masyadong mahaba ang response, 
-    // pero panatilihin mo ang nasa orihinal mong file, palitan lang ang buildConfig)
+    // UI Updates
+    function updateOutput() {
+        const output = document.getElementById('config-output');
+        if (output) output.textContent = buildConfig();
+    }
 
+    // Copy Action
     document.getElementById('copy-action').onclick = () => {
         const txt = buildConfig();
         navigator.clipboard.writeText(txt).then(() => {
             const btn = document.getElementById('copy-action');
-            btn.textContent = 'COPIED'; btn.classList.add('copied');
-            setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2500);
+            btn.textContent = 'COPIED';
+            setTimeout(() => { btn.textContent = 'COPY'; }, 2000);
         });
     };
-    
-    // Siguraduhin na i-update ang UI para tawagin ang buildConfig() sa bawat change
-    function updateConfig() { document.getElementById('config-output').textContent = buildConfig(); }
-    // ... [Ituloy ang iyong logic]
+
+    // Initial Load
+    window.onload = () => {
+        document.getElementById('main-ui').style.opacity = '1';
+        document.getElementById('splash-screen').style.display = 'none';
+        updateOutput();
+    };
 })();
 </script>
-</body>
-</html>
