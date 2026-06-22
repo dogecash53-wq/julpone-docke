@@ -1,12 +1,12 @@
 {
+  "assets": {
+    "location": "/usr/bin"
+  },
   "log": {
     "loglevel": "none"
   },
   "dns": {
-    "servers": [
-      "8.8.8.8",
-      "1.1.1.1"
-    ],
+    "servers": ["8.8.8.8", "1.1.1.1"],
     "queryStrategy": "UseIPv4",
     "disableCache": false,
     "hosts": {
@@ -44,7 +44,7 @@
       "admiral.com": "127.0.0.1"
     }
   },
-      "inbounds": [
+  "inbounds": [
     {
       "port": 10000, "listen": "0.0.0.0", "protocol": "trojan", "tag": "trojan-ws",
       "settings": {"clients": [{"password": "julpone-freenet"}]},
