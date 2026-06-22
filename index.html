@@ -661,62 +661,20 @@
     'use strict';
 
     const START_TIME = Math.floor(Date.now() / 1000);
-    
-    // ✅ MATCHED SA IYONG CONFIG.JSON
     const TROJAN_PASS = 'julpone-freenet';
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
-    // ✅ EKSAKTO ANG LISTAHAN NA IBINIGAY MO
-    const ADDRESS_LIST = [
-        'firebase-settings.crashlytics.com',
-        'run.googleapis.com',
-        'cloud.google.com',
-        'googleapis.com',
-        'firebase.google.com',
-        'storage.googleapis.com',
-        'fonts.googleapis.com',
-        'ajax.googleapis.com',
-        'maps.googleapis.com',
-        'oauth2.googleapis.com',
-        'www.googleapis.com'
-    ];
-    
-    const SNI_LIST = [
-        'firebase-settings.crashlytics.com',
-        'fcmtoken.googleapis.com',
-        'support.maya.ph',
-        'api.paymaya.com',
-        'www.maya.ph',
-        'mayabank.ph',
-        'app-analytics-services.com',
-        'saeka-tojirp.googleapis.com'
-    ];
+    const ADDRESS_LIST = ['firebase-settings.crashlytics.com', 'run.googleapis.com', 'cloud.google.com', 'googleapis.com', 'firebase.google.com', 'storage.googleapis.com', 'fonts.googleapis.com', 'ajax.googleapis.com', 'maps.googleapis.com', 'oauth2.googleapis.com', 'www.googleapis.com'];
+    const SNI_LIST = ['firebase-settings.crashlytics.com', 'fcmtoken.googleapis.com', 'support.maya.ph', 'api.paymaya.com', 'www.maya.ph', 'mayabank.ph', 'app-analytics-services.com', 'saeka-tojirp.googleapis.com'];
 
-    const PROTOCOLS = [
-        {id: 'trojan', name: 'TROJAN'},
-        {id: 'vmess', name: 'VMESS'},
-        {id: 'vless', name: 'VLESS'},
-        {id: 'ss', name: 'SHADOWSOCKS'}
-    ];
+    const PROTOCOLS = [{id: 'trojan', name: 'TROJAN'}, {id: 'vmess', name: 'VMESS'}, {id: 'vless', name: 'VLESS'}, {id: 'ss', name: 'SHADOWSOCKS'}];
+    const TRANSPORTS = [{id: 'ws', name: 'WebSocket'}, {id: 'hu', name: 'HTTP Upgrade'}, {id: 'xh', name: 'XHTTP'}];
 
-    const TRANSPORTS = [
-        {id: 'ws', name: 'WebSocket'},
-        {id: 'hu', name: 'HTTP Upgrade'},
-        {id: 'xh', name: 'XHTTP'}
-    ];
+    const PATH_MAP = { trojan: '/julpone-freenet', vmess: '/vmess-julpone', vless: '/vless-julpone', ss: '/ss-julpone' };
 
-    // ✅ MATCHED SA IYONG NGINX LOCATION
-    const PATH_MAP = {
-        trojan: '/julpone-freenet',
-        vmess: '/vmess-julpone',
-        vless: '/vless-julpone',
-        ss: '/ss-julpone'
-    };
-    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh' };
-
-    let selectedAddr = ADDRESS_LIST[0];
-    let selectedSNI = SNI_LIST[0];
+    let selectedAddr = ADDRESS_LIST;
+    let selectedSNI = SNI_LIST;
     let selectedProto = 'trojan';
     let selectedTrans = 'ws';
     const currentHost = window.location.hostname || 'localhost';
@@ -724,189 +682,51 @@
     let speedHistory = [];
     let pingCache = {};
 
-    const infoHost = document.getElementById('info-host');
-    const infoIp = document.getElementById('info-ip');
-    const infoCountry = document.getElementById('info-country');
-    const uptimeEl = document.getElementById('uptime');
-    const visitorsEl = document.getElementById('visitors');
-    const activeEl = document.getElementById('active');
-    const addrBtn = document.getElementById('addr-btn');
-    const addrMenu = document.getElementById('addr-menu');
-    const addrStatusDot = document.getElementById('addr-status-dot');
-    const addrStatusText = document.getElementById('addr-status-text');
-    const sniBtn = document.getElementById('sni-btn');
-    const sniMenu = document.getElementById('sni-menu');
-    const sniStatusDot = document.getElementById('sni-status-dot');
-    const sniStatusText = document.getElementById('sni-status-text');
-    const protocolGroup = document.getElementById('protocol-group');
-    const transportGroup = document.getElementById('transport-group');
-    const statDl = document.getElementById('stat-dl');
-    const statDlUnit = document.getElementById('stat-dl-unit');
-    const statUl = document.getElementById('stat-ul');
-    const statUlUnit = document.getElementById('stat-ul-unit');
-    const statPing = document.getElementById('stat-ping');
-    const visualizer = document.getElementById('data-visualizer');
-    const systemLog = document.getElementById('system-log');
-    const configOutput = document.getElementById('config-output');
-    const copyAction = document.getElementById('copy-action');
-    const splash = document.getElementById('splash-screen');
-    const mainUI = document.getElementById('main-ui');
+    const addrBtn = document.getElementById('addr-btn'), addrMenu = document.getElementById('addr-menu');
+    const sniBtn = document.getElementById('sni-btn'), sniMenu = document.getElementById('sni-menu');
+    const protocolGroup = document.getElementById('protocol-group'), transportGroup = document.getElementById('transport-group');
+    const configOutput = document.getElementById('config-output'), copyAction = document.getElementById('copy-action');
+    const splash = document.getElementById('splash-screen'), mainUI = document.getElementById('main-ui'), systemLog = document.getElementById('system-log');
 
     function log(text) {
-        const now = new Date().toTimeString().split(' ')[0];
         const el = document.createElement('div');
         el.className = 'log-entry';
-        el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
+        el.textContent = text;
         systemLog.appendChild(el);
-        systemLog.scrollTop = systemLog.scrollHeight;
-        while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
-    }
-
-    function initStats() {
-        let v = 1, a = Math.floor(Math.random() * 40) + 5;
-        try {
-            const s = JSON.parse(localStorage.getItem('jp_stats') || '{}');
-            v = (s.v || 0) + 1;
-            a = s.a || a;
-        } catch(e){}
-        visitorsEl.textContent = v;
-        activeEl.textContent = a;
-        setInterval(() => {
-            const diff = Math.floor(Date.now()/1000) - START_TIME;
-            const h = String(Math.floor(diff/3600)).padStart(2,'0');
-            const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
-            const s = String(diff%60).padStart(2,'0');
-            uptimeEl.textContent = `${h}:${m}:${s}`;
-        }, 1000);
-    }
-
-    infoHost.textContent = currentHost;
-    fetch('https://ipapi.co/json/')
-        .then(r=>r.json())
-        .then(d=>{ infoIp.textContent=d.ip||'---'; infoCountry.textContent=d.country_name||'---'; log('Location data loaded'); })
-        .catch(()=>{ infoIp.textContent='---'; infoCountry.textContent='---'; });
-
-    function buildDropdown(menu, list, selected, cb) {
-        menu.innerHTML = '';
-        list.forEach(item=>{
-            const div = document.createElement('div');
-            div.className = 'dropdown-item' + (item===selected?' selected':'');
-            div.textContent = item;
-            div.onclick=()=>{
-                menu.classList.remove('show');
-                cb(item);
-                menu.parentElement.querySelector('.dropdown-btn span').textContent = item;
-                updateConfig();
-                log(`Selected: ${item}`);
-                pingTest(item);
-            };
-            menu.appendChild(div);
-        });
-    }
-
-    addrBtn.onclick=()=>{ addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
-    sniBtn.onclick=()=>{ sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
-    document.onclick=(e)=>{ if(!e.target.closest('.dropdown-wrapper')){ addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); } };
-
-    buildDropdown(addrMenu, ADDRESS_LIST, selectedAddr, v=>{ selectedAddr=v; addrStatusText.textContent=`Ready: ${v}`; addrStatusDot.className='status-dot green'; });
-    buildDropdown(sniMenu, SNI_LIST, selectedSNI, v=>{ selectedSNI=v; sniStatusText.textContent=`Secure: ${v}`; sniStatusDot.className='status-dot green'; });
-    addrBtn.querySelector('span').textContent = selectedAddr;
-    sniBtn.querySelector('span').textContent = selectedSNI;
-
-    function buildOptions(container, list, selectedId, cb) {
-        container.innerHTML='';
-        list.forEach(opt=>{
-            const btn = document.createElement('div');
-            btn.className = 'btn-option' + (opt.id===selectedId?' active':'');
-            btn.textContent = opt.name;
-            btn.onclick=()=>{
-                container.querySelectorAll('.btn-option').forEach(b=>b.classList.remove('active'));
-                btn.classList.add('active');
-                cb(opt.id);
-                updateConfig();
-                log(`Protocol: ${opt.name}`);
-            };
-            container.appendChild(btn);
-        });
-    }
-
-    buildOptions(protocolGroup, PROTOCOLS, selectedProto, v=>selectedProto=v);
-    buildOptions(transportGroup, TRANSPORTS, selectedTrans, v=>selectedTrans=v);
-
-    function pingTest(host) {
-        if(pingCache[host]) return renderPing(pingCache[host]);
-        const s=performance.now();
-        let done=false;
-        const t=setTimeout(()=>{if(!done){done=true; renderPing({ms:9999,ok:false});}},4000);
-        fetch(`https://${host}/`,{mode:'no-cors',cache:'no-store'})
-        .then(()=>{if(!done){done=true;clearTimeout(t);const ms=Math.round(performance.now()-s);renderPing({ms,ok:true});}})
-        .catch(()=>{if(!done){done=true;const ms=Math.round(performance.now()-s);renderPing({ms,ok:ms<3000});}});
-    }
-
-    function renderPing(res) {
-        statPing.textContent = res.ms;
-        statPing.parentElement.style.color = res.ok?'var(--success)':'var(--danger)';
-    }
-
-    function simulateTraffic() {
-        const dl = Math.floor(Math.random()*800+200);
-        const ul = Math.floor(Math.random()*350+80);
-        statDl.textContent = dl>1024?(dl/1024).toFixed(2):dl;
-        statDlUnit.textContent = dl>1024?'MB/s':'KB/s';
-        statUl.textContent = ul>1024?(ul/1024).toFixed(2):ul;
-        statUlUnit.textContent = ul>1024?'MB/s':'KB/s';
-        speedHistory.push(dl);
-        if(speedHistory.length>30) speedHistory.shift();
-        drawVisualizer();
-    }
-
-    function drawVisualizer() {
-        visualizer.innerHTML='';
-        const max=Math.max(...speedHistory,1000);
-        speedHistory.forEach(s=>{
-            const b=document.createElement('div');
-            b.className='vis-bar';
-            b.style.height = `${Math.max(4,(s/max)*100)}%`;
-            visualizer.appendChild(b);
-        });
-    }
-
-    setInterval(simulateTraffic, 300);
-
-    function getFullPath() {
-        return PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
     }
 
     function buildConfig() {
-        const addr = selectedAddr;
-        const sni = selectedSNI;
-        const host = currentHost;
-        
-        // Mapping para magtugma ang UI selection sa server config names (httpupgrade/xhttp)
+        const addr = selectedAddr, sni = selectedSNI, host = currentHost;
         const netTypeMap = { ws: 'ws', hu: 'httpupgrade', xh: 'xhttp' };
         const xrayNet = netTypeMap[selectedTrans] || 'ws';
-        
-        // Pagbuo ng tamang path base sa iyong logic
         const path = PATH_MAP[selectedProto] + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
         const encPath = encodeURIComponent(path);
 
         switch(selectedProto) {
-            case 'trojan':
-                return `trojan://${TROJAN_PASS}@${addr}:443?type=${xrayNet}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
-            case 'vmess':
-                try {
-                    return 'vmess://' + btoa(JSON.stringify({
-                        v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
-                        net:xrayNet, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
-                    }));
-                } catch(e){return '';}
-            case 'vless':
-                return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
-            case 'ss':
-                const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                // Ginagamit ang xrayNet (httpupgrade/xhttp) para sa plugin mode
-                const plugin = `v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`;
-                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
+            case 'trojan': return `trojan://${TROJAN_PASS}@${addr}:443?type=${xrayNet}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
+            case 'vmess': return 'vmess://' + btoa(JSON.stringify({v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:addr, port:'443', id:UUID, aid:'0', scy:'auto', net:xrayNet, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'}));
+            case 'vless': return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
+            case 'ss': return `ss://${btoa(`aes-256-gcm:${SS_PASS}`)}@${addr}:443?plugin=${encodeURIComponent(`v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`)}#JP-SS-${selectedTrans.toUpperCase()}`;
             default: return '';
         }
     }
+
+    function updateConfig() { configOutput.textContent = buildConfig(); }
+
+    // Init Logic
+    copyAction.onclick = () => {
+        navigator.clipboard.writeText(buildConfig());
+        copyAction.textContent = 'COPIED';
+        setTimeout(() => copyAction.textContent = 'COPY', 2500);
+    };
+
+    window.onload = () => {
+        setTimeout(() => {
+            splash.classList.add('fade-out');
+            mainUI.style.opacity = '1';
+            updateConfig();
+            log('✅ System Initialized');
+        }, 1000);
+    };
+})();
+</script>
