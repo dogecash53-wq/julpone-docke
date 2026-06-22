@@ -10,7 +10,7 @@ RUN apk update && \
 ENV LAST_REPOSITORY_SYNC_DATE=2026-06-23
 
 # 2. I-download ang pinakabagong stable Xray Core binary gamit ang tuwid at absolute upstream link
-RUN curl -L -s -o /tmp/xray.zip "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip" && \
+RUN curl -L -s -o /tmp/xray.zip "https://github.com" && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
     rm -f /tmp/xray.zip
 
@@ -19,8 +19,8 @@ RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
 # 4. Mag-inject ng Ultra-Aggressive Adblocking at Tracking Geo-databases gamit ang tamang absolute links
-RUN curl -L -s -o /usr/bin/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" && \
-    curl -L -s -o /usr/bin/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
+RUN curl -L -s -o /usr/bin/geosite.dat "https://github.com" && \
+    curl -L -s -o /usr/bin/geoip.dat "https://github.com"
 
 # Explicitly ideklara ang asset paths para mabasang buo ng 'panares' core ang adblock files mo
 ENV XRAY_LOCATION_ASSET=/usr/bin
@@ -42,4 +42,6 @@ RUN chmod 755 /usr/bin/panares /usr/bin/geosite.dat /usr/bin/geoip.dat && \
 EXPOSE 8080
 
 # 8. THE NATIVE RUN WRAPPER (100% Google Cloud Run at Docker Build Compliant)
+# Pinatatakbo ang 'panares' sa background habang tinatawag ang default alpine haproxy path 
+# sa foreground upang awtomatikong mag-bind sa port 8080 nang walang kahit anong hidden blocks.
 CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
