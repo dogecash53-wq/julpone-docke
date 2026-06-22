@@ -881,52 +881,32 @@
         const addr = selectedAddr;
         const sni = selectedSNI;
         const host = currentHost;
-        const path = getFullPath();
+        
+        // Mapping para magtugma ang UI selection sa server config names (httpupgrade/xhttp)
+        const netTypeMap = { ws: 'ws', hu: 'httpupgrade', xh: 'xhttp' };
+        const xrayNet = netTypeMap[selectedTrans] || 'ws';
+        
+        // Pagbuo ng tamang path base sa iyong logic
+        const path = PATH_MAP[selectedProto] + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
         const encPath = encodeURIComponent(path);
 
         switch(selectedProto) {
             case 'trojan':
-                return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
+                return `trojan://${TROJAN_PASS}@${addr}:443?type=${xrayNet}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
             case 'vmess':
                 try {
                     return 'vmess://' + btoa(JSON.stringify({
-                        v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
-                        net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
+                        v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
+                        net:xrayNet, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
                     }));
                 } catch(e){return '';}
             case 'vless':
-                return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
+                return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                const plugin = `obfs-local;obfs=websocket;obfs-host=${host};obfs-uri=${path};sni=${sni}`;
-                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SHADOWSOCKS`;
+                // Ginagamit ang xrayNet (httpupgrade/xhttp) para sa plugin mode
+                const plugin = `v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`;
+                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
             default: return '';
         }
     }
-
-    function updateConfig() {
-        configOutput.textContent = buildConfig();
-    }
-
-    copyAction.onclick=()=>{
-        const txt = buildConfig();
-        const cb = ()=>{ copyAction.textContent='COPIED'; copyAction.classList.add('copied'); setTimeout(()=>{ copyAction.textContent='COPY'; copyAction.classList.remove('copied'); },2500); };
-        if(navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
-        else { const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);cb(); }
-    };
-
-    window.onload=()=>{
-        setTimeout(()=>{
-            splash.classList.add('fade-out');
-            mainUI.style.opacity='1';
-            initStats();
-            updateConfig();
-            log('✅ System initialized — All paths matched');
-        }, 2200);
-    };
-
-})();
-</script>
-
-</body>
-</html>
