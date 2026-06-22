@@ -1,38 +1,27 @@
 FROM haproxy:alpine
 USER root
 
-# 1. Install critical dependencies required for network tools and core runtime
-RUN apk add --no-cache ca-certificates wget unzip tzdata bash curl
+# Install dependencies required for Xray
+RUN apk add --no-cache ca-certificates wget unzip
 
-# 2. Download latest stable Xray Core binary using explicit upstream release structures
-RUN wget -qO /tmp/xray.zip "https://github.com" && \
-    unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
-    rm -f /tmp/xray.zip
+# Download latest stable Xray Core binary
+RUN wget -qO /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip && \
+    unzip -j /tmp/xray.zip xray -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/xray && rm -rf /tmp/xray.zip
 
-# 3. Rename binary execution variable to 'panares' as required by your signature
-RUN cp /usr/bin/xray /usr/bin/panares && \
-    chmod +x /usr/bin/panares
+# Inject Ultra-Aggressive Adblocking & Tracking Geo-databases
+RUN wget -qO /usr/local/bin/geosite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat && \
+    wget -qO /usr/local/bin/geoip.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
 
-# 4. Inject ultra-aggressive Adblocking & Tracking Geo-databases
-RUN wget -qO /usr/bin/geosite.dat "https://github.com" && \
-    wget -qO /usr/bin/geoip.dat "https://github.com"
+# CRITICAL FIX: Explicitly declare asset paths so Xray core reads the ad-block files flawlessly
+ENV XRAY_LOCATION_ASSET=/usr/local/bin
 
-# Set environment asset paths explicitly for the core engine
-ENV XRAY_LOCATION_ASSET=/usr/bin
-ENV TZ=UTC
-
-# 5. Build absolute configuration directory pathways
-RUN mkdir -p /etc/xray /usr/local/etc/haproxy
-
-# 6. Copy static files from your repository root using identical image definitions
-COPY config.json /etc/xray/config.json
+# Copy configuration files and UI
+COPY config.json /etc/xray.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
 
-# 7. Secure absolute structural folder permissions for internal system runtime
-RUN chmod 644 /usr/local/etc/haproxy/haproxy.cfg /usr/local/etc/haproxy/index.html /etc/xray/config.json
-
 EXPOSE 8080
 
-# 8. THE NATIVE RUN WRAPPER (Guarantees immediate Port 8080 binding on Google Cloud Run)
-CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
+# Run Xray in the background, but force HAProxy to the foreground (-db) to keep the container alive
+CMD /usr/local/bin/xray run -c /etc/xray.json & exec haproxy -db -f /usr/local/etc/haproxy/haproxy.cfg
