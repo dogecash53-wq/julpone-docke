@@ -156,55 +156,35 @@
 
     // Core Function: BUILD CONFIG (Ito ang inayos natin)
     function buildConfig() {
+        const addr = selectedAddr;
+        const sni = selectedSNI;
+        const host = currentHost;
+        
+        // Mapping para magtugma ang UI selection sa server config names (httpupgrade/xhttp)
         const netTypeMap = { ws: 'ws', hu: 'httpupgrade', xh: 'xhttp' };
         const xrayNet = netTypeMap[selectedTrans] || 'ws';
         
-        const path = (selectedProto === 'trojan' ? '/julpone-freenet' : 
-                     (selectedProto === 'vmess' ? '/vmess-julpone' : 
-                     (selectedProto === 'vless' ? '/vless-julpone' : '/ss-julpone'))) 
-                     + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
-        
+        // Pagbuo ng tamang path base sa iyong logic
+        const path = PATH_MAP[selectedProto] + (selectedTrans === 'ws' ? '' : '-' + selectedTrans);
         const encPath = encodeURIComponent(path);
 
         switch(selectedProto) {
             case 'trojan':
-                return `trojan://${TROJAN_PASS}@${selectedAddr}:443?type=${xrayNet}&host=${currentHost}&path=${encPath}&security=tls&fp=chrome&sni=${selectedSNI}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
+                return `trojan://${TROJAN_PASS}@${addr}:443?type=${xrayNet}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-${selectedTrans.toUpperCase()}`;
             case 'vmess':
-                return 'vmess://' + btoa(JSON.stringify({
-                    v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:selectedAddr, port:'443', id:UUID, aid:'0', scy:'auto',
-                    net:xrayNet, type:'none', host:currentHost, path:path, tls:'tls', sni:selectedSNI, fp:'chrome'
-                }));
+                try {
+                    return 'vmess://' + btoa(JSON.stringify({
+                        v:'2', ps:`JP-VMESS-${selectedTrans.toUpperCase()}`, add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
+                        net:xrayNet, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
+                    }));
+                } catch(e){return '';}
             case 'vless':
-                return `vless://${UUID}@${selectedAddr}:443?encryption=none&type=${xrayNet}&host=${currentHost}&path=${encPath}&security=tls&sni=${selectedSNI}#JP-VLESS-${selectedTrans.toUpperCase()}`;
+                return `vless://${UUID}@${addr}:443?encryption=none&type=${xrayNet}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS-${selectedTrans.toUpperCase()}`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                const plugin = `v2ray-plugin;mode=${xrayNet};host=${currentHost};path=${path};tls;sni=${selectedSNI}`;
-                return `ss://${ssInfo}@${selectedAddr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
+                // Ginagamit ang xrayNet (httpupgrade/xhttp) para sa plugin mode
+                const plugin = `v2ray-plugin;mode=${xrayNet};host=${host};path=${path};tls;sni=${sni}`;
+                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SS-${selectedTrans.toUpperCase()}`;
             default: return '';
         }
     }
-
-    // UI Updates
-    function updateOutput() {
-        const output = document.getElementById('config-output');
-        if (output) output.textContent = buildConfig();
-    }
-
-    // Copy Action
-    document.getElementById('copy-action').onclick = () => {
-        const txt = buildConfig();
-        navigator.clipboard.writeText(txt).then(() => {
-            const btn = document.getElementById('copy-action');
-            btn.textContent = 'COPIED';
-            setTimeout(() => { btn.textContent = 'COPY'; }, 2000);
-        });
-    };
-
-    // Initial Load
-    window.onload = () => {
-        document.getElementById('main-ui').style.opacity = '1';
-        document.getElementById('splash-screen').style.display = 'none';
-        updateOutput();
-    };
-})();
-</script>
