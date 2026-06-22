@@ -1,28 +1,26 @@
-FROM alpine:latest
+FROM ubuntu:latest
 USER root
 
-# 1. I-install ang HAProxy, ca-certificates, curl, at extraction tools direkta sa malinis na Alpine
-RUN apk update && \
-    apk add --no-cache ca-certificates wget unzip tzdata bash curl haproxy && \
-    rm -rf /var/cache/apk/*
+# 1. Pigilan ang mga interactive prompts at i-install ang HAProxy at core utility tools
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates wget unzip tzdata bash curl haproxy && \
+    rm -rf /var/lib/apt/lists/*
 
-# 🔄 CACHE BUSTER LAYER: Pinupwersa nitong basagin ang lumang memory ng GitHub Actions
-ENV LAST_REPOSITORY_SYNC_DATE=2026-06-23
-
-# 2. I-download ang pinakabagong stable Xray Core binary gamit ang tuwid at absolute upstream link
+# 2. I-download ang pinakabagong stable Xray Core binary gamit ang absolute upstream link
 RUN curl -L -s -o /tmp/xray.zip "https://github.com" && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
     rm -f /tmp/xray.zip
 
-# 3. I-customize ang binary execution name patungong 'panares' base sa iyong signature
+# 3. I-rename ang binary execution process patungong 'panares' base sa iyong signature
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
-# 4. Mag-inject ng Ultra-Aggressive Adblocking at Tracking Geo-databases gamit ang tamang absolute links
+# 4. Mag-inject ng Ultra-Aggressive Adblocking at Tracking Geo-databases
 RUN curl -L -s -o /usr/bin/geosite.dat "https://github.com" && \
     curl -L -s -o /usr/bin/geoip.dat "https://github.com"
 
-# Explicitly ideklara ang asset paths para mabasang buo ng 'panares' core ang adblock files mo
+# I-declare ang asset paths para mabasang buo ng 'panares' core ang adblock files mo
 ENV XRAY_LOCATION_ASSET=/usr/bin
 ENV TZ=UTC
 
@@ -34,7 +32,7 @@ COPY config.json /etc/xray/config.json
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/etc/haproxy/index.html
 
-# 7. Ayusin ang structural folder permissions para sa HAProxy isolation security
+# 7. Ayusin ang structural folder permissions para sa HAProxy isolation security sa Ubuntu environment
 RUN chmod 755 /usr/bin/panares /usr/bin/geosite.dat /usr/bin/geoip.dat && \
     chmod 644 /usr/local/etc/haproxy/haproxy.cfg /usr/local/etc/haproxy/index.html /etc/xray/config.json && \
     chown -R haproxy:haproxy /usr/local/etc/haproxy /etc/xray /var/lib/haproxy
@@ -42,6 +40,6 @@ RUN chmod 755 /usr/bin/panares /usr/bin/geosite.dat /usr/bin/geoip.dat && \
 EXPOSE 8080
 
 # 8. THE NATIVE RUN WRAPPER (100% Google Cloud Run at Docker Build Compliant)
-# Pinatatakbo ang 'panares' sa background habang tinatawag ang default alpine haproxy path 
-# sa foreground upang awtomatikong mag-bind sa port 8080 nang walang kahit anong hidden blocks.
+# Gisingin ang panares sa background, at gamitin ang default Ubuntu HAProxy path 
+# sa foreground upang awtomatikong mag-bind sa port 8080 nang walang kahit anong system block.
 CMD ["sh", "-c", "/usr/bin/panares -config /etc/xray/config.json & exec /usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -db"]
