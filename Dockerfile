@@ -1,11 +1,11 @@
 FROM haproxy:alpine
 USER root
 
-# 1. Install dependencies required for Xray, downloading, and process handling (Ginamit ang 'supervisor')
+# 1. Install dependencies required for Xray, downloading, and process handling
 RUN apk add --no-cache ca-certificates wget unzip tzdata bash curl supervisor
 
-# 2. Download latest stable Xray Core binary from upstream distribution
-RUN wget -qO /tmp/xray.zip "https://github.com" && \
+# 2. Download latest stable Xray Core binary - FIXED NATIVE LAYER
+RUN wget -qO /tmp/xray.zip https://github.com && \
     unzip -j /tmp/xray.zip xray -d /usr/bin/ && \
     rm -f /tmp/xray.zip
 
@@ -13,9 +13,9 @@ RUN wget -qO /tmp/xray.zip "https://github.com" && \
 RUN cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
 
-# 4. Inject Ultra-Aggressive Adblocking & Tracking Geo-databases
-RUN wget -qO /usr/bin/geosite.dat "https://github.com" && \
-    wget -qO /usr/bin/geoip.dat "https://github.com"
+# 4. Inject Ultra-Aggressive Adblocking & Tracking Geo-databases - FIXED NATIVE LAYER
+RUN wget -qO /usr/bin/geosite.dat https://github.com && \
+    wget -qO /usr/bin/geoip.dat https://github.com
 
 # CRITICAL FIX: Explicitly declare asset paths so Xray core reads the ad-block files flawlessly
 ENV XRAY_LOCATION_ASSET=/usr/bin
@@ -37,6 +37,5 @@ RUN chmod 755 /usr/bin/panares /usr/bin/geosite.dat /usr/bin/geoip.dat && \
 
 EXPOSE 8080
 
-# 8. FIXED ALPINE EXECUTION PATH: 
-# Tinatawag natin ang absolute supervisor execution command na katugma ng Alpine infrastructure layers
+# 8. FIXED ALPINE EXECUTION PATH
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
