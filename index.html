@@ -549,9 +549,9 @@
 <body>
 <!-- ⬇️ I-PASTE MO DITO SA ILALIM NG <body> ANG PROVDE CODE NA ITO ⬇️ -->
     <!-- Budots Non-Stop Background Music -->
-    <audio id="budots-player" loop prefetch="auto">
-        <source src="https://r2.dev" type="audio/mpeg">
-    </audio>
+    <audio id="budots-player" loop preload="auto">
+    <source src="https://soundhelix.com" type="audio/mpeg">
+</audio>
 <div id="splash-screen">
     <div class="splash-logo">JULPONE</div>
     <div class="splash-sub">NTC NETWORK SYSTEM</div>
@@ -935,26 +935,18 @@
             log('✅ System initialized — All paths matched');
         }, 2200);
     };
-    // ✅ BUDOTS MUSIC AUTOMATION
-    const budots = document.getElementById('budots-player');
-    const splashScreen = document.getElementById('splash-screen');
-    
-    if (budots) {
-        budots.volume = 0.4; // Katamtamang lakas para swabe ang bass
-    }
-
-    if (splashScreen) {
-        splashScreen.addEventListener('click', () => {
-            if (budots && budots.paused) {
-                budots.play().then(() => {
-                    if (typeof log === 'function') log('🔥 DJ Julpone Remix! Budots Non-Stop Playing...');
-                }).catch(err => {
-                    console.log('Audio dynamic play blocked:', err);
-                });
-            }
-        });
-    }
-
+        // ✅ SIGURADONG GAGANA: PINAGSAMA ANG ANIMATION AT AUDIO CONTROLLER
+    document.addEventListener('click', function triggerBudots() {
+        const player = document.getElementById('budots-player');
+        if (player) {
+            player.volume = 0.5; // Itaas natin sa 50% ang lakas
+            player.play().then(() => {
+                if (typeof log === 'function') log('🔥 JP Network Beats Loaded.');
+                // Tatanggalin ang listener pagkatapos ng unang click para hindi mag-overlap ang tunog
+                document.removeEventListener('click', triggerBudots); 
+            }).catch(e => console.log("Playback error:", e));
+        }
+    });
 })();
 </script>
 
