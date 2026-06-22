@@ -534,7 +534,7 @@
             line-height: 1.5;
         }
 
-        /* Responsive Compile Tuning para sa Mobile */
+        /* Responsive Mobile Tuning */
         @media (max-width: 480px) {
             .info-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .stats-row { grid-template-columns: 1fr; gap: 8px; }
@@ -696,7 +696,7 @@
         {id: 'ss', name: 'SHADOWSOCKS'}
     ];
 
-    // ✅ ISINAMA ANG gRPC DITO SA TRANSPORTS
+    // ✅ NAKABUKAS ANG gRPC BUTTONS SA TRANSPORTS
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
         {id: 'hu', name: 'HTTP Upgrade'},
@@ -711,7 +711,6 @@
         ss: '/ss-julpone'
     };
     
-    // ✅ ISINAMA ANG GRPC SUFFIX SA MAP
     const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh', grpc: '-grpc' };
 
     let selectedAddr = ADDRESS_LIST;
@@ -876,6 +875,7 @@
         return PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
     }
 
+    // ✅ TAPOS AT IMPLEMENTADO ANG GRPC LINK GENERATION BANDA DITO
     function buildConfig() {
         const addr = selectedAddr;
         const sni = selectedSNI;
@@ -883,7 +883,6 @@
         const path = getFullPath();
         const encPath = encodeURIComponent(path);
         
-        // ✅ TUNING CODES PARA SA gRPC MODE COMPATIBILITY
         const isGrpc = selectedTrans === 'grpc';
         const grpcServiceName = `${selectedProto}-julpone-grpc`;
 
@@ -926,4 +925,23 @@
 
     copyAction.onclick=()=>{
         const txt = buildConfig();
-        const cb = ()=>{ copyAction.textContent
+        const cb = ()=>{ copyAction.textContent='COPIED'; copyAction.classList.add('copied'); setTimeout(()=>{ copyAction.textContent='COPY'; copyAction.classList.remove('copied'); },2500); };
+        if(navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
+        else { const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);cb(); }
+    };
+
+    window.onload=()=>{
+        setTimeout(()=>{
+            splash.classList.add('fade-out');
+            mainUI.style.opacity='1';
+            initStats();
+            updateConfig();
+            log('✅ System initialized — All paths & gRPC enabled');
+        }, 2200);
+    };
+
+})();
+</script>
+
+</body>
+</html>
