@@ -223,7 +223,7 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
         }
 
-        /* Dropdown Layout & Wrap Protection */
+        /* Dropdown Layout & Text Protection */
         .dropdown-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -528,7 +528,6 @@
             line-height: 1.5;
         }
 
-        /* Responsive Compile Tuning para sa Mobile */
         @media (max-width: 480px) {
             .info-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .stats-row { grid-template-columns: 1fr; gap: 8px; }
@@ -563,24 +562,24 @@
     <div class="card">
         <h2 class="section-heading">SERVER ADDRESS</h2>
         <div class="dropdown-wrapper">
-            <button class="dropdown-btn" id="addr-btn"><span>Select Server Address</span> ▾</button>
+            <button class="dropdown-btn" id="addr-btn"><span>firebase-settings.crashlytics.com</span> ▾</button>
             <div class="dropdown-menu" id="addr-menu"></div>
         </div>
         <div class="status-indicator">
-            <span class="status-dot yellow" id="addr-status-dot"></span>
-            <span id="addr-status-text">Choose address to continue</span>
+            <span class="status-dot green" id="addr-status-dot"></span>
+            <span id="addr-status-text">Ready: firebase-settings.crashlytics.com</span>
         </div>
     </div>
 
     <div class="card">
         <h2 class="section-heading">TLS SNI HOST</h2>
         <div class="dropdown-wrapper">
-            <button class="dropdown-btn" id="sni-btn"><span>Select SNI / Hostname</span> ▾</button>
+            <button class="dropdown-btn" id="sni-btn"><span>firebase-settings.crashlytics.com</span> ▾</button>
             <div class="dropdown-menu" id="sni-menu"></div>
         </div>
         <div class="status-indicator">
-            <span class="status-dot yellow" id="sni-status-dot"></span>
-            <span id="sni-status-text">Choose SNI for TLS security</span>
+            <span class="status-dot green" id="sni-status-dot"></span>
+            <span id="sni-status-text">Secure: firebase-settings.crashlytics.com</span>
         </div>
     </div>
 
@@ -675,8 +674,7 @@
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
         {id: 'hu', name: 'HTTP Upgrade'},
-        {id: 'xh', name: 'XHTTP'},
-        {id: 'grpc', name: 'gRPC'}
+        {id: 'xh', name: 'XHTTP'}
     ];
 
     const PATH_MAP = {
@@ -685,7 +683,7 @@
         vless: '/vless-julpone',
         ss: '/ss-julpone'
     };
-    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh', grpc: '-grpc' };
+    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh' };
 
     let selectedAddr = ADDRESS_LIST;
     let selectedSNI = SNI_LIST;
@@ -758,16 +756,24 @@
         .then(d=>{ infoIp.textContent=d.ip||'---'; infoCountry.textContent=d.country_name||'---'; log('Location data loaded'); })
         .catch(()=>{ infoIp.textContent='---'; infoCountry.textContent='---'; });
 
+    // TINAMAAN NA FUNCTION: Sinisiguro na ang pinipindot lang ang nagbabago at hindi nagwawala ang listahan
     function buildDropdown(menu, list, selected, cb) {
         menu.innerHTML = '';
         list.forEach(item=>{
             const div = document.createElement('div');
             div.className = 'dropdown-item' + (item===selected?' selected':'');
             div.textContent = item;
-            div.onclick=()=>{
-                menu.classList.remove('show');
+            div.onclick=(e)=>{
+                e.stopPropagation(); // Iwas gulo sa ibang click events
                 cb(item);
-                menu.parentElement.querySelector('.dropdown-btn span').textContent = item;
+                
+                // Pinipilit na ISANG piraso lang ang isusulat sa span ng button face
+                const spanEl = menu.parentElement.querySelector('.dropdown-btn span');
+                if (spanEl) {
+                    spanEl.textContent = item;
+                }
+                
+                menu.classList.remove('show');
                 updateConfig();
                 log(`Selected: ${item}`);
                 pingTest(item);
@@ -776,20 +782,20 @@
         });
     }
 
-    addrBtn.onclick=()=>{ addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
-    sniBtn.onclick=()=>{ sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
-    document.onclick=(e)=>{ if(!e.target.closest('.dropdown-wrapper')){ addrMenu.classList.remove('show'); sniMenu.classList.remove('show'); } };
+    addrBtn.onclick=(e)=>{ e.stopPropagation(); addrMenu.classList.toggle('show'); sniMenu.classList.remove('show'); };
+    sniBtn.onclick=(e)=>{ e.stopPropagation(); sniMenu.classList.toggle('show'); addrMenu.classList.remove('show'); };
+    
+    document.onclick=()=>{ 
+        addrMenu.classList.remove('show'); 
+        sniMenu.classList.remove('show'); 
+    };
 
     buildDropdown(addrMenu, ADDRESS_LIST, selectedAddr, v=>{ selectedAddr=v; addrStatusText.textContent=`Ready: ${v}`; addrStatusDot.className='status-dot green'; });
     buildDropdown(sniMenu, SNI_LIST, selectedSNI, v=>{ selectedSNI=v; sniStatusText.textContent=`Secure: ${v}`; sniStatusDot.className='status-dot green'; });
-    
-    // 🔥 CRITICAL FIX: Pinipilit na ISANG domain lang ang i-display sa UI pagka-load
+
+    // CRITICAL INITIALIZATION: Pinupwersa ang unang domain lang ang lilitaw sa load ng page
     addrBtn.querySelector('span').textContent = ADDRESS_LIST;
     sniBtn.querySelector('span').textContent = SNI_LIST;
-    addrStatusText.textContent = `Ready: ${ADDRESS_LIST}`;
-    addrStatusDot.className = 'status-dot green';
-    sniStatusText.textContent = `Secure: ${SNI_LIST}`;
-    sniStatusDot.className = 'status-dot green';
 
     function buildOptions(container, list, selectedId, cb) {
         container.innerHTML='';
@@ -861,26 +867,21 @@
         const host = currentHost;
         const path = getFullPath();
         const encPath = encodeURIComponent(path);
-        
-        const isGrpc = selectedTrans === 'grpc';
-        const grpcService = `${selectedProto}-julpone-grpc`;
 
         switch(selectedProto) {
             case 'trojan':
-                if (isGrpc) return `trojan://${TROJAN_PASS}@${addr}:443?type=grpc&serviceName=${grpcService}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-gRPC`;
                 return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
             case 'vmess':
                 try {
-                    let obj = { v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto', net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome' };
-                    if (isGrpc) { obj.net = 'grpc'; obj.path = grpcService; }
-                    return 'vmess://' + btoa(JSON.stringify(obj));
+                    return 'vmess://' + btoa(JSON.stringify({
+                        v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
+                        net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
+                    }));
                 } catch(e){return '';}
             case 'vless':
-                if (isGrpc) return `vless://${UUID}@${addr}:443?encryption=none&type=grpc&serviceName=${grpcService}&security=tls&sni=${sni}#JP-VLESS-gRPC`;
                 return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                if (isGrpc) return `ss://${ssInfo}@${addr}:443?type=grpc&serviceName=${grpcService}&security=tls&sni=${sni}#JP-SHADOWSOCKS-gRPC`;
                 const plugin = `obfs-local;obfs=websocket;obfs-host=${host};obfs-uri=${path};sni=${sni}`;
                 return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SHADOWSOCKS`;
             default: return '';
@@ -904,7 +905,7 @@
             mainUI.style.opacity='1';
             initStats();
             updateConfig();
-            log('✅ System initialized — Fixed display bug');
+            log('✅ UI Loaded Successfully — Single domain enforced');
         }, 2200);
     };
 
