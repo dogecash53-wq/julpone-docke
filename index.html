@@ -134,6 +134,12 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
         }
 
+        .card:nth-child(2) { animation-delay: 0.05s; }
+        .card:nth-child(3) { animation-delay: 0.1s; }
+        .card:nth-child(4) { animation-delay: 0.15s; }
+        .card:nth-child(5) { animation-delay: 0.2s; }
+        .card:nth-child(6) { animation-delay: 0.25s; }
+
         .header-card {
             text-align: center;
             background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.08) 0%, rgba(11, 19, 41, 0.5) 100%);
@@ -223,7 +229,7 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
         }
 
-        /* Dropdown Layout */
+        /* Dropdown Layout & Text Protection */
         .dropdown-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -342,7 +348,7 @@
         .status-dot.yellow { background: var(--warning); box-shadow: 0 0 10px var(--warning); animation: pulseAccent 1.2s infinite; }
         .status-dot.red { background: var(--danger); box-shadow: 0 0 10px var(--danger); animation: pulseAccent 0.6s infinite; }
 
-        /* Button Groups */
+        /* Protocol / Transport Buttons Layout Grid */
         .btn-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -528,7 +534,7 @@
             line-height: 1.5;
         }
 
-        /* Responsive Compile Tuning para sa Mobile */
+        /* Mobile Tuning */
         @media (max-width: 480px) {
             .info-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .stats-row { grid-template-columns: 1fr; gap: 8px; }
@@ -595,14 +601,6 @@
     </div>
 
     <div class="card">
-        <h2 class="section-heading">GENERATED CONFIG</h2>
-        <div class="config-container">
-            <button class="copy-button" id="copy-action">COPY</button>
-            <div class="config-box" id="config-output"></div>
-        </div>
-    </div>
-
-    <div class="card">
         <h2 class="section-heading">REAL-TIME MONITOR</h2>
         <div class="stats-row">
             <div class="stat-card">
@@ -625,6 +623,14 @@
         <div class="log-view" id="system-log"></div>
     </div>
 
+    <div class="card">
+        <h2 class="section-heading">GENERATED CONFIG</h2>
+        <div class="config-container">
+            <button class="copy-button" id="copy-action">COPY</button>
+            <div class="config-box" id="config-output"></div>
+        </div>
+    </div>
+
     <div class="footer-note">
         JULPONE NETWORK DEPLOYMENT SYSTEM<br>POWERED BY NTC NETWORKS • 2026
     </div>
@@ -640,7 +646,6 @@
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
-    // ✅ ISA-ISA ANG LABAS SA SELECTION
     const ADDRESS_LIST = [
         'firebase-settings.crashlytics.com',
         'run.googleapis.com',
@@ -673,7 +678,7 @@
         {id: 'ss', name: 'SHADOWSOCKS'}
     ];
 
-    // ✅ KASAMA NA ULI ANG gRPC DITO
+    // ✅ NALAGYAN NA ULIT NG gRPC APART SA TATLONG BASIC TRANSPORTS
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
         {id: 'hu', name: 'HTTP Upgrade'},
@@ -784,8 +789,14 @@
 
     buildDropdown(addrMenu, ADDRESS_LIST, selectedAddr, v=>{ selectedAddr=v; addrStatusText.textContent=`Ready: ${v}`; addrStatusDot.className='status-dot green'; });
     buildDropdown(sniMenu, SNI_LIST, selectedSNI, v=>{ selectedSNI=v; sniStatusText.textContent=`Secure: ${v}`; sniStatusDot.className='status-dot green'; });
+    
+    // ✅ FIXING INITIAL OVERLAP TEXT: Tinitiyak na unang domain lang ang lalabas sa startup
     addrBtn.querySelector('span').textContent = selectedAddr;
     sniBtn.querySelector('span').textContent = selectedSNI;
+    addrStatusText.textContent = `Ready: ${selectedAddr}`;
+    addrStatusDot.className = 'status-dot green';
+    sniStatusText.textContent = `Secure: ${selectedSNI}`;
+    sniStatusDot.className = 'status-dot green';
 
     function buildOptions(container, list, selectedId, cb) {
         container.innerHTML='';
@@ -851,7 +862,7 @@
         return PATH_MAP[selectedProto] + SUFFIX_MAP[selectedTrans];
     }
 
-    // ✅ ADVANCED CONFIG LOGIC (May gRPC Integration para sa Lahat)
+    // ✅ NATIVE CONFIG ENCODER WITH FULL gRPC SUPPORT
     function buildConfig() {
         const addr = selectedAddr;
         const sni = selectedSNI;
@@ -901,7 +912,7 @@
             mainUI.style.opacity='1';
             initStats();
             updateConfig();
-            log('✅ System initialized — All paths matched');
+            log('✅ System initialized — Layout matched with gRPC active');
         }, 2200);
     };
 
