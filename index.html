@@ -700,10 +700,11 @@
         {id: 'ss', name: 'SHADOWSOCKS'}
     ];
 
+    // ✅ ITINAMA: Ginamit ang opisyal na pangalan ng Xray Core Network Types
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
-        {id: 'hu', name: 'HTTP Upgrade'},
-        {id: 'xh', name: 'XHTTP'}
+        {id: 'httpupgrade', name: 'HTTP Upgrade'}, 
+        {id: 'xhttp', name: 'XHTTP'}         
     ];
 
     // ✅ MATCHED SA IYONG NGINX LOCATION
@@ -713,7 +714,13 @@
         vless: '/vless-julpone',
         ss: '/ss-julpone'
     };
-    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh' };
+    
+    // ✅ ITINAMA: Binago ang mapping para mag-tugma sa bagong transport IDs mo
+    const SUFFIX_MAP = { 
+        ws: '', 
+        httpupgrade: '-hu', 
+        xhttp: '-xh' 
+    };
 
     let selectedAddr = ADDRESS_LIST[0];
     let selectedSNI = SNI_LIST[0];
