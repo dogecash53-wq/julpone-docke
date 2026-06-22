@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JULPONE NETWORK | JP CONFIG CENTER</title>
-    <!-- Premium Google Fonts para sa Typography at Sakto sa Layout -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
@@ -256,7 +255,6 @@
             gap: 10px;
         }
 
-        /* Nilagyan ng span para sa proteksyon ng mahabang text address */
         .dropdown-btn span {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -662,12 +660,10 @@
 
     const START_TIME = Math.floor(Date.now() / 1000);
     
-    // ✅ MATCHED SA IYONG CONFIG.JSON
     const TROJAN_PASS = 'julpone-freenet';
     const UUID = 'b8a166be-4b9b-449e-8736-22485fb0b04a';
     const SS_PASS = 'julpone-freenet';
 
-    // ✅ EKSAKTO ANG LISTAHAN NA IBINIGAY MO
     const ADDRESS_LIST = [
         'firebase-settings.crashlytics.com',
         'run.googleapis.com',
@@ -700,23 +696,26 @@
         {id: 'ss', name: 'SHADOWSOCKS'}
     ];
 
+    // ✅ ISINAMA ANG gRPC DITO SA TRANSPORTS
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
         {id: 'hu', name: 'HTTP Upgrade'},
-        {id: 'xh', name: 'XHTTP'}
+        {id: 'xh', name: 'XHTTP'},
+        {id: 'grpc', name: 'gRPC'}
     ];
 
-    // ✅ MATCHED SA IYONG NGINX LOCATION
     const PATH_MAP = {
         trojan: '/julpone-freenet',
         vmess: '/vmess-julpone',
         vless: '/vless-julpone',
         ss: '/ss-julpone'
     };
-    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh' };
+    
+    // ✅ ISINAMA ANG GRPC SUFFIX SA MAP
+    const SUFFIX_MAP = { ws: '', hu: '-hu', xh: '-xh', grpc: '-grpc' };
 
-    let selectedAddr = ADDRESS_LIST[0];
-    let selectedSNI = SNI_LIST[0];
+    let selectedAddr = ADDRESS_LIST;
+    let selectedSNI = SNI_LIST;
     let selectedProto = 'trojan';
     let selectedTrans = 'ws';
     const currentHost = window.location.hostname || 'localhost';
@@ -753,7 +752,7 @@
     const mainUI = document.getElementById('main-ui');
 
     function log(text) {
-        const now = new Date().toTimeString().split(' ')[0];
+        const now = new Date().toTimeString().split(' ');
         const el = document.createElement('div');
         el.className = 'log-entry';
         el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
@@ -883,23 +882,40 @@
         const host = currentHost;
         const path = getFullPath();
         const encPath = encodeURIComponent(path);
+        
+        // ✅ TUNING CODES PARA SA gRPC MODE COMPATIBILITY
+        const isGrpc = selectedTrans === 'grpc';
+        const grpcServiceName = `${selectedProto}-julpone-grpc`;
 
         switch(selectedProto) {
             case 'trojan':
+                if (isGrpc) {
+                    return `trojan://${TROJAN_PASS}@${addr}:443?type=grpc&serviceName=${grpcServiceName}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN-gRPC`;
+                }
                 return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
             case 'vmess':
                 try {
-                    return 'vmess://' + btoa(JSON.stringify({
+                    let vmessObj = {
                         v:'2', ps:'JP-VMESS', add:addr, port:'443', id:UUID, aid:'0', scy:'auto',
                         net:selectedTrans, type:'none', host:host, path:path, tls:'tls', sni:sni, fp:'chrome'
-                    }));
+                    };
+                    if (isGrpc) {
+                        vmessObj.net = 'grpc';
+                        vmessObj.path = grpcServiceName;
+                    }
+                    return 'vmess://' + btoa(JSON.stringify(vmessObj));
                 } catch(e){return '';}
             case 'vless':
+                if (isGrpc) {
+                    return `vless://${UUID}@${addr}:443?encryption=none&type=grpc&serviceName=${grpcServiceName}&security=tls&sni=${sni}#JP-VLESS-gRPC`;
+                }
                 return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
             case 'ss':
                 const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                const plugin = `obfs-local;obfs=websocket;obfs-host=${host};obfs-uri=${path};sni=${sni}`;
-                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SHADOWSOCKS`;
+                if (isGrpc) {
+                    return `ss://${ssInfo}@${addr}:443?type=grpc&serviceName=${grpcServiceName}&security=tls&sni=${sni}#JP-SHADOWSOCKS-gRPC`;
+                }
+                return `ss://${ssInfo}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-SHADOWSOCKS`;
             default: return '';
         }
     }
@@ -910,23 +926,4 @@
 
     copyAction.onclick=()=>{
         const txt = buildConfig();
-        const cb = ()=>{ copyAction.textContent='COPIED'; copyAction.classList.add('copied'); setTimeout(()=>{ copyAction.textContent='COPY'; copyAction.classList.remove('copied'); },2500); };
-        if(navigator.clipboard) navigator.clipboard.writeText(txt).then(cb);
-        else { const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);cb(); }
-    };
-
-    window.onload=()=>{
-        setTimeout(()=>{
-            splash.classList.add('fade-out');
-            mainUI.style.opacity='1';
-            initStats();
-            updateConfig();
-            log('✅ System initialized — All paths matched');
-        }, 2200);
-    };
-
-})();
-</script>
-
-</body>
-</html>
+        const cb = ()=>{ copyAction.textContent
