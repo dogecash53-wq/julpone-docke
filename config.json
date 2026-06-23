@@ -1,428 +1,142 @@
 {
-  "log": {
-    "loglevel": "none"
-  },
-  "dns": {
-    "servers": [
-      "8.8.8.8",
-      "1.1.1.1"
-    ],
-    "queryStrategy": "UseIPv4",
-    "disableCache": false,
-    "hosts": {
-      "googlesyndication.com": "127.0.0.1",
-      "doubleclick.net": "127.0.0.1",
-      "googleadservices.com": "127.0.0.1",
-      "google.com": "127.0.0.1",
-      "adsbygoogle.com": "127.0.0.1",
-      "google-analytics.com": "127.0.0.1",
-      "googletagmanager.com": "127.0.0.1",
-      "googletagservices.com": "127.0.0.1",
-      "googleads.g.doubleclick.net": "127.0.0.1",
-      "securepubads.g.doubleclick.net": "127.0.0.1",
-      "stats.g.doubleclick.net": "127.0.0.1",
-      "ad.doubleclick.net": "127.0.0.1",
-      "youtube.com": "127.0.0.1",
-      "ytimg.com": "127.0.0.1",
-      "googlevideo.com": "127.0.0.1",
-      "youtube-nocookie.com": "127.0.0.1",
-      "ggpht.com": "127.0.0.1",
-      "popads.net": "127.0.0.1",
-      "popcash.net": "127.0.0.1",
-      "propellerads.com": "127.0.0.1",
-      "adcash.com": "127.0.0.1",
-      "exoclick.com": "127.0.0.1",
-      "adsterra.com": "127.0.0.1",
-      "popmyads.com": "127.0.0.1",
-      "adultforce.com": "127.0.0.1",
-      "trafficjunky.com": "127.0.0.1",
-      "clickaine.com": "127.0.0.1",
-      "ad-maven.com": "127.0.0.1",
-      "adpushup.com": "127.0.0.1",
-      "adrecover.com": "127.0.0.1",
-      "blockadblock.com": "127.0.0.1",
-      "admiral.com": "127.0.0.1"
-    }
-  },
+  "log": { "loglevel": "none" },
   "inbounds": [
     {
-      "port": 10000,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "trojan",
-      "tag": "trojan-ws",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet" }]
       },
       "streamSettings": {
         "network": "ws",
-        "wsSettings": {
-          "path": "/julpone-freenet"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "wsSettings": { "path": "/julpone-freenet" }
       }
     },
     {
-      "port": 10001,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "trojan",
-      "tag": "trojan-hu",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet" }]
       },
       "streamSettings": {
         "network": "httpupgrade",
-        "httpupgradeSettings": {
-          "path": "/julpone-freenet-hu"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "httpupgradeSettings": { "path": "/julpone-freenet-hu" }
       }
     },
     {
-      "port": 10002,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "trojan",
-      "tag": "trojan-xh",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet" }]
       },
       "streamSettings": {
         "network": "xhttp",
-        "xhttpSettings": {
-          "path": "/julpone-freenet-xh",
-          "mode": "auto"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "xhttpSettings": { "path": "/julpone-freenet-xh", "mode": "auto" }
       }
     },
     {
-      "port": 10003,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vmess",
-      "tag": "vmess-ws",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a",
-            "security": "auto"
-          }
-        ]
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }]
       },
       "streamSettings": {
         "network": "ws",
-        "wsSettings": {
-          "path": "/vmess-julpone"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "wsSettings": { "path": "/vmess-julpone" }
       }
     },
     {
-      "port": 10004,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vmess",
-      "tag": "vmess-hu",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a",
-            "security": "auto"
-          }
-        ]
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }]
       },
       "streamSettings": {
         "network": "httpupgrade",
-        "httpupgradeSettings": {
-          "path": "/vmess-julpone-hu"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "httpupgradeSettings": { "path": "/vmess-julpone-hu" }
       }
     },
     {
-      "port": 10005,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vmess",
-      "tag": "vmess-xh",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a",
-            "security": "auto"
-          }
-        ]
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }]
       },
       "streamSettings": {
         "network": "xhttp",
-        "xhttpSettings": {
-          "path": "/vmess-julpone-xh",
-          "mode": "auto"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "xhttpSettings": { "path": "/vmess-julpone-xh", "mode": "auto" }
       }
     },
     {
-      "port": 10006,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vless",
-      "tag": "vless-ws",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a"
-          }
-        ],
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }],
         "decryption": "none"
       },
       "streamSettings": {
         "network": "ws",
-        "wsSettings": {
-          "path": "/vless-julpone"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "wsSettings": { "path": "/vless-julpone" }
       }
     },
     {
-      "port": 10007,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vless",
-      "tag": "vless-hu",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a"
-          }
-        ],
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }],
         "decryption": "none"
       },
       "streamSettings": {
         "network": "httpupgrade",
-        "httpupgradeSettings": {
-          "path": "/vless-julpone-hu"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "httpupgradeSettings": { "path": "/vless-julpone-hu" }
       }
     },
     {
-      "port": 10008,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "vless",
-      "tag": "vless-xh",
       "settings": {
-        "clients": [
-          {
-            "id": "b8a166be-4b9b-449e-8736-22485fb0b04a"
-          }
-        ],
+        "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }],
         "decryption": "none"
       },
       "streamSettings": {
         "network": "xhttp",
-        "xhttpSettings": {
-          "path": "/vless-julpone-xh",
-          "mode": "auto"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        "xhttpSettings": { "path": "/vless-julpone-xh", "mode": "auto" }
       }
     },
     {
-      "port": 10009,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "shadowsocks",
-      "tag": "ss-ws",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet",
-            "method": "aes-256-gcm"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }]
       },
       "streamSettings": {
         "network": "ws",
-        "wsSettings": {
-          "path": "/ss-julpone"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
+        "wsSettings": { "path": "/ss-julpone" }
       }
     },
     {
-      "port": 10010,
-      "listen": "127.0.0.1",
+      "port": 8080,
       "protocol": "shadowsocks",
-      "tag": "ss-hu",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet",
-            "method": "aes-256-gcm"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }]
       },
       "streamSettings": {
         "network": "httpupgrade",
-        "httpupgradeSettings": {
-          "path": "/ss-julpone-hu"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
+        "httpupgradeSettings": { "path": "/ss-julpone-hu" }
       }
     },
     {
-      "port": 10011,
-      "listen": "127.0.0.1",
+      "port": 8080,
+      "port": 8080,
       "protocol": "shadowsocks",
-      "tag": "ss-xh",
       "settings": {
-        "clients": [
-          {
-            "password": "julpone-freenet",
-            "method": "aes-256-gcm"
-          }
-        ]
+        "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }]
       },
       "streamSettings": {
         "network": "xhttp",
-        "xhttpSettings": {
-          "path": "/ss-julpone-xh",
-          "mode": "auto"
-        },
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
+        "xhttpSettings": { "path": "/ss-julpone-xh", "mode": "auto" }
       }
     }
   ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {
-        "domainStrategy": "UseIPv4"
-      },
-      "streamSettings": {
-        "sockopt": {
-          "tcpFastOpen": true,
-          "tcpNoDelay": true,
-          "tcpKeepAliveInterval": 30
-        }
-      }
-    }
-  ]
+  "outbounds": [{ "protocol": "freedom" }]
 }
