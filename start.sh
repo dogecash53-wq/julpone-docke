@@ -1,7 +1,6 @@
 #!/bin/bash
-# Start Xray
+# Siguraduhin na ang lahat ng folder ay writable
+mkdir -p /tmp/nginx_client_body
 /usr/bin/panares -config /etc/xray/config.json &
-
-# Start Nginx (Direkta sa 8080)
-# Wala nang HAProxy kaya walang port conflict
+# Start Nginx
 nginx -g 'daemon off;'
