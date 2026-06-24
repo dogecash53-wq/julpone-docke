@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 1. Awtomatikong palitan ang listen 8080 ng Nginx tungong 8081
-sed -i 's/listen 8080/listen 8081/g' /etc/nginx/nginx.conf
+# Palitan ang port sa haproxy config bago i-start gamit ang $PORT variable
+sed -i "s/8080/$PORT/g" /etc/haproxy/haproxy.cfg
+haproxy -f /etc/haproxy/haproxy.cfg -db
 
 # 2. I-start ang Xray (panares)
 /usr/bin/panares -config /etc/xray/config.json &
