@@ -1,25 +1,22 @@
 FROM teddysun/xray:latest
 
-# Gamitin ang apt-get para sa Debian base ng teddysun/xray
-RUN apt-get update && apt-get install -y \
-    nginx \
-    bash \
-    && rm -rf /var/lib/apt/lists/*
+# Gamitin ang -y para sa apt-get at siguraduhing hindi ito hihingi ng input
+# Idinagdag ang 'curl' at 'procps' para sa mas maayos na process monitoring
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nginx bash procps && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# I-copy ang files
+# I-copy ang configuration files
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY start.sh /start.sh
 
-# Permission fix: gawing executable ang start.sh
+# Siguraduhin ang tamang permissions at symlink
 RUN chmod +x /start.sh && \
-    # Siguraduhin na ang panares ay nasa tamang path
-    cp /usr/bin/xray /usr/bin/panares && \
-    chmod +x /usr/bin/panares
-
-# Cloud Run requirement: ang Nginx ay kailangang makapagsulat sa /tmp
-RUN mkdir -p /tmp/nginx_client_body && \
-    chown -R nginx:nginx /tmp/nginx_client_body /var/lib/nginx /var/log/nginx
+    ln -sf /usr/bin/xray /usr/bin/panares && \
+    mkdir -p /var/lib/nginx/tmp /var/log/nginx && \
+    chown -R www-data:www-data /var/lib/nginx /var/log/nginx
 
 EXPOSE 8080
 
