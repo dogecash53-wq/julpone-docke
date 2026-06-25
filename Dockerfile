@@ -1,31 +1,29 @@
-# Base image mula sa teddysun/xray
 FROM teddysun/xray:latest
-
-# Gamitin ang root para makapag-install ng extra tools
 USER root
 
-# 1. I-install ang nginx, haproxy, at bash
-RUN apk update && \
-    apk add --no-cache nginx haproxy ca-certificates curl tzdata bash
+# 1. Install dependencies
+RUN apk update && apk add --no-cache nginx bash
 
-# 2. Ihanda ang mga folders na kailangan ng Nginx at Xray
-RUN mkdir -p /etc/nginx/http.d /usr/local/openresty/index/html /run/nginx /etc/xray /etc/haproxy && \
-    rm -rf /etc/nginx/http.d/*
-
-# 3. Kopyahin ang iyong mga configuration files
+# 2. Copy files (Siguraduhing nasa folder mo ang mga ito)
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY haproxy.cfg /etc/haproxy/haproxy.cfg
 COPY index.html /usr/local/openresty/index/html/index.html
-COPY start.sh /start.sh
 
-# 4. Permission fix at paggawa ng alias sa panares
-RUN chmod +x /start.sh && \
-    cp /usr/bin/xray /usr/bin/panares && \
-    chmod +x /usr/bin/panares
+# 3. Setup folders and permissions
+RUN mkdir -p /run/nginx /etc/xray && \
+    cp /usr/bin/xray /usr/bin/panares && chmod +x /usr/bin/panares && \
+    chown -R nginx:nginx /usr/local/openresty/index/html /run/nginx /etc/nginx
 
-# 5. I-expose ang port 8080 (Cloud Run default)
+# 4. Ang "Auto-Tune" at Start script (Pinagsama na natin dito)
+RUN echo '#!/bin/bash' > /start.sh && \
+    echo '# Optimization part' >> /start.sh && \
+    echo 'sed -i "s/worker_connections 1024;/worker_connections 8192;/g" /etc/nginx/nginx.conf' >> /start.sh && \
+    echo 'sed -i "s/sendfile on;/sendfile on; tcp_nopush on; tcp_nodelay on;/g" /etc/nginx/nginx.conf' >> /start.sh && \
+    echo '# Start Xray' >> /start.sh && \
+    echo '/usr/bin/panares -config /etc/xray/config.json &' >> /start.sh && \
+    echo '# Start Nginx' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
+
 EXPOSE 8080
-
-# 6. Patakbuhin ang start.sh bilang main process
 CMD ["/start.sh"]
