@@ -1,11 +1,11 @@
-#!/bin/bash
-
-# 1. Start Xray (Panares)
+#!/bin/sh
+# Start Panares (Xray)
 /usr/bin/panares -config /etc/xray/config.json > /dev/null 2>&1 &
+sleep 2
 
-# 2. Start HAProxy
-# -f ay path ng config, -D ay para sa daemon mode
+# Start HAProxy
 haproxy -f /etc/haproxy/haproxy.cfg -D
+sleep 2
 
-# 3. Start Nginx
+# Start Nginx (Frontend)
 nginx -g "daemon off;"
