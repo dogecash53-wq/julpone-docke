@@ -1,18 +1,18 @@
 {
-  "log": { "loglevel": "none" },
+  "log": { "loglevel": "warning" },
   "inbounds": [
-    { "port": 10000, "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/julpone-freenet" } } },
-    { "port": 10001, "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/julpone-freenet-hu" } } },
-    { "port": 10002, "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/julpone-freenet-xh", "mode": "auto" } } },
-    { "port": 10003, "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/vmess-julpone" } } },
-    { "port": 10004, "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/vmess-julpone-hu" } } },
-    { "port": 10005, "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/vmess-julpone-xh", "mode": "auto" } } },
-    { "port": 10006, "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/vless-julpone" } } },
-    { "port": 10007, "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/vless-julpone-hu" } } },
-    { "port": 10008, "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/vless-julpone-xh", "mode": "auto" } } },
-    { "port": 10009, "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/ss-julpone" } } },
-    { "port": 10010, "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/ss-julpone-hu" } } },
-    { "port": 10011, "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/ss-julpone-xh", "mode": "auto" } } }
+    { "port": 20000, "listen": "127.0.0.1", "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/julpone-freenet" } } },
+    { "port": 20001, "listen": "127.0.0.1", "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/julpone-freenet-hu" } } },
+    { "port": 20002, "listen": "127.0.0.1", "protocol": "trojan", "settings": { "clients": [{ "password": "julpone-freenet" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/julpone-freenet-xh", "mode": "auto" } } },
+    { "port": 20003, "listen": "127.0.0.1", "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/vmess-julpone" } } },
+    { "port": 20004, "listen": "127.0.0.1", "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/vmess-julpone-hu" } } },
+    { "port": 20005, "listen": "127.0.0.1", "protocol": "vmess", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/vmess-julpone-xh", "mode": "auto" } } },
+    { "port": 20006, "listen": "127.0.0.1", "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/vless-julpone" } } },
+    { "port": 20007, "listen": "127.0.0.1", "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/vless-julpone-hu" } } },
+    { "port": 20008, "listen": "127.0.0.1", "protocol": "vless", "settings": { "clients": [{ "id": "b8a166be-4b9b-449e-8736-22485fb0b04a" }], "decryption": "none" }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/vless-julpone-xh", "mode": "auto" } } },
+    { "port": 20009, "listen": "127.0.0.1", "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "ws", "wsSettings": { "path": "/ss-julpone" } } },
+    { "port": 20010, "listen": "127.0.0.1", "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "httpupgrade", "httpupgradeSettings": { "path": "/ss-julpone-hu" } } },
+    { "port": 20011, "listen": "127.0.0.1", "protocol": "shadowsocks", "settings": { "clients": [{ "password": "julpone-freenet", "method": "aes-256-gcm" }] }, "streamSettings": { "network": "xhttp", "xhttpSettings": { "path": "/ss-julpone-xh", "mode": "auto" } } }
   ],
   "outbounds": [{ "protocol": "freedom" }]
 }
