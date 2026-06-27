@@ -1,11 +1,15 @@
 #!/bin/sh
-# Start Panares (Xray)
+
+# 1. Start Xray/Panares sa background
 /usr/bin/panares -config /etc/xray/config.json > /dev/null 2>&1 &
-sleep 2
+echo "Xray started..."
+sleep 3
 
-# Start HAProxy
+# 2. Start HAProxy sa background
 haproxy -f /etc/haproxy/haproxy.cfg -D
+echo "HAProxy started..."
 sleep 2
 
-# Start Nginx (Frontend)
+# 3. Start Nginx sa foreground (HULI ITO!)
+echo "Starting Nginx..."
 nginx -g "daemon off;"
