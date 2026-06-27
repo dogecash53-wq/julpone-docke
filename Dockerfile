@@ -9,8 +9,9 @@ RUN apk update && \
     apk add --no-cache nginx haproxy ca-certificates curl tzdata bash
 
 # 2. Ihanda ang mga folders na kailangan ng Nginx at Xray
-RUN mkdir -p /etc/nginx/http.d /usr/local/openresty/index/html /run/nginx /etc/xray /etc/haproxy && \
-    rm -rf /etc/nginx/http.d/*
+RUN mkdir -p /etc/nginx/http.d /usr/share/nginx/html /run/nginx /etc/xray /etc/haproxy && \
+    rm -rf /etc/nginx/http.d/* && \
+    rm -f /etc/nginx/nginx.conf.default
 
 # 3. Kopyahin ang iyong mga configuration files
 COPY config.json /etc/xray/config.json
