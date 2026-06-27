@@ -20,6 +20,7 @@ COPY index.html /usr/share/nginx/html/index.html
 COPY start.sh /start.sh
 
 # 4. Permission fix
+RUN chmod 644 /usr/share/nginx/html/index.html
 RUN chmod +x /start.sh && \
     cp /usr/bin/xray /usr/bin/panares && \
     chmod +x /usr/bin/panares
