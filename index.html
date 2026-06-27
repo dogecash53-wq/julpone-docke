@@ -908,9 +908,11 @@
             case 'vless':
                 return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
             case 'ss':
-                const ssInfo = btoa(`aes-256-gcm:${SS_PASS}`);
-                const plugin = `obfs-local;obfs=websocket;obfs-host=${host};obfs-uri=${path};sni=${sni}`;
-                return `ss://${ssInfo}@${addr}:443?plugin=${encodeURIComponent(plugin)}#JP-SHADOWSOCKS`;
+                // ✅ ITINAMA: Ginamit ang bagong format na sumusunod sa WebSocket/HTTPUpgrade/XHTTP
+                // Ang Xray core ay mas preferred ang "type" parameter sa URL para sa SS
+                const ssParams = `?security=tls&type=${selectedTrans}&host=${host}&path=${encPath}&sni=${sni}&fp=chrome`;
+                const ssBase64 = btoa(`aes-256-gcm:${SS_PASS}`);
+                return `ss://${ssBase64}@${addr}:443${ssParams}#JP-SHADOWSOCKS`;
             default: return '';
         }
     }
