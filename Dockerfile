@@ -16,7 +16,7 @@ RUN mkdir -p /etc/nginx/http.d /usr/local/openresty/index/html /run/nginx /etc/x
 COPY config.json /etc/xray/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY haproxy.cfg /etc/haproxy/haproxy.cfg
-COPY index.html /usr/local/openresty/index/html/index.html
+COPY index.html /usr/share/nginx/html/index.html
 COPY start.sh /start.sh
 
 # 4. Permission fix at paggawa ng alias sa panares
