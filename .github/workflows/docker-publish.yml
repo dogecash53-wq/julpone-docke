@@ -35,4 +35,4 @@ jobs:
           context: . # Siguraduhing nasa labas/root ng repo ang 'Dockerfile' mo
           file: ./Dockerfile
           push: true
-          tags: julponefreenets/julpone-freenets:latest
+          tags: julponefreenets/julpone-net:latest
