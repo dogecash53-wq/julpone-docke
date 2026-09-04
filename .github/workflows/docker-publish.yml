@@ -9,19 +9,30 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
+      # 1. Kukunin ang code mula sa iyong repository
       - name: Check out the repo
         uses: actions/checkout@v4
 
+      # 2. I-set up ang QEMU (Kailangan para sa multi-platform support)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 3. I-set up ang Docker Buildx (Dito nagkakaroon ng error kapag wala ito)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 4. Mag-log in sa iyong Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }} # Inayos mula sa DOCKERHUB_USERNAME
-          password: ${{ secrets.DOCKER_PASSWORD }} # Inayos mula sa DOCKERHUB_TOKEN
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # 5. I-build at i-push ang image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: . # Siguraduhing nasa labas/root ng repo ang 'Dockerfile' mo
+          file: ./Dockerfile
           push: true
-          # Direkta nating isulat ang username mo para siguradong walang error sa tag
-          tags: julponefreenets/julpone-freenets:latest 
+          tags: julponefreenets/julpone-freenets:latest
