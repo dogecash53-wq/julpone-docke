@@ -23,4 +23,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/julpone-net:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/julpone-freenets:latest
