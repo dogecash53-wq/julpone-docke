@@ -14,9 +14,9 @@
             --primary: #020617;
             --secondary: #0b1329;
             --accent: #ff6b00;
-            --accent-light: #ff9100;
+            --accent-light: #8dcfec;
             --info: #00f0ff;
-            --text: #f1f5f9;
+            --text: #b8e2f4;
             --text-muted: #64748b;
             --border: rgba(255, 255, 255, 0.06);
             --success: #00ff88;
@@ -554,14 +554,14 @@
 </audio>
 <div id="splash-screen">
     <div class="splash-logo">JULPONE</div>
-    <div class="splash-sub">NTC NETWORK SYSTEM</div>
+    <div class="splash-sub">BY: JURELYN PANARES</div>
 </div>
 
 <div class="container" style="opacity:0; transition: opacity 0.8s ease;" id="main-ui">
 
     <div class="card header-card">
         <h1 class="main-title">JULPONE NETWORK</h1>
-        <p class="sub-title">CONFIGURATION GENERATOR & MONITORING CENTER</p>
+        <p class="sub-title">FREE INTERNET CONFIGURATION GENERATOR BY: JURELYN PANARES</p>
         <div class="info-grid">
             <div class="info-item">
                 <div class="info-label">Host</div>
@@ -615,12 +615,12 @@
     </div>
 
     <div class="card">
-        <h2 class="section-heading">⚙️ PROTOCOL TYPE</h2>
+        <h2 class="section-heading">PROTOCOL TYPE</h2>
         <div class="btn-group" id="protocol-group"></div>
     </div>
 
     <div class="card">
-        <h2 class="section-heading">🚀 TRANSPORT MODE</h2>
+        <h2 class="section-heading">TRANSPORT MODE</h2>
         <div class="btn-group" id="transport-group"></div>
     </div>
 
@@ -677,13 +677,6 @@
         'run.googleapis.com',
         'cloud.google.com',
         'googleapis.com',
-        'firebase.google.com',
-        'storage.googleapis.com',
-        'fonts.googleapis.com',
-        'ajax.googleapis.com',
-        'maps.googleapis.com',
-        'oauth2.googleapis.com',
-        'www.googleapis.com'
     ];
     
     const SNI_LIST = [
@@ -692,23 +685,20 @@
         'support.maya.ph',
         'api.paymaya.com',
         'www.maya.ph',
-        'mayabank.ph',
-        'app-analytics-services.com',
-        'saeka-tojirp.googleapis.com'
     ];
 
     const PROTOCOLS = [
         {id: 'trojan', name: 'TROJAN'},
         {id: 'vmess', name: 'VMESS'},
         {id: 'vless', name: 'VLESS'},
-        {id: 'ss', name: 'SHADOWSOCKS'}
+        {id: 'ss', name: 'SS (MAINTENANCE)'}
     ];
 
     // ✅ ITINAMA: Ginamit ang opisyal na pangalan ng Xray Core Network Types
     const TRANSPORTS = [
         {id: 'ws', name: 'WebSocket'},
-        {id: 'httpupgrade', name: 'HTTP Upgrade'}, 
-        {id: 'xhttp', name: 'XHTTP'}         
+        {id: 'httpupgrade', name: 'HTTP Upgrade (MAINTENANCE)'}, 
+        {id: 'xhttp', name: 'XHTTP (MAINTENANCE)'}         
     ];
 
     // ✅ MATCHED SA IYONG NGINX LOCATION
