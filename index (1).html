@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JULPONE NETWORK | JP CONFIG CENTER</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-primary); color: var(--text-main); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: var(--bg-secondary); border-radius: 12px; width: 100%; max-width: 650px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        h1 { font-size: 24px; text-align: center; margin-bottom: 5px; color: var(--accent); letter-spacing: 1px; }
+        .subtitle { font-size: 12px; text-align: center; color: var(--text-muted); margin-bottom: 25px; text-transform: uppercase; }
+        .section-title { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .form-group { margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; background-color: var(--bg-primary); border: 1px solid #475569; border-radius: 6px; color: var(--text-main); font-size: 15px; outline: none; transition: border 0.2s; }
+        input:focus, select:focus { border-color: var(--accent); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .output-box { background-color: var(--bg-primary); border: 1px dashed #475569; border-radius: 6px; padding: 15px; min-height: 100px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; margin-top: 10px; color: #a7f3d0; }
+        .btn { width: 100%; padding: 12px; background-color: var(--accent); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.2s; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:hover { background-color: var(--accent-hover); }
+        .footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 25px; border-top: 1px solid #334155; padding-top: 15px; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background-color: var(--success); color: white; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: transform 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>JULPONE NETWORK</h1>
+    <div class="subtitle">JP Config Center • NTC Network System</div>
+
+    <!-- SERVER ADDRESS -->
+    <div class="form-group">
+        <div class="section-title">🌐 Server Address</div>
+        <input type="text" id="serverAddress" placeholder="e.g., sg1.julponefreenet.me o iyong Cloudflare Domain" value="sg1.julponefreenet.me">
+    </div>
+
+    <!-- TLS SNI HOST -->
+    <div class="form-group">
+        <div class="section-title">🔒 TLS SNI / Bug Host</div>
+        <input type="text" id="sniHost" placeholder="e.g., www.smart.com.ph, viber.com" value="www.smart.com.ph">
+    </div>
+
+    <div class="grid-2">
+        <!-- PROTOCOL TYPE -->
+        <div class="form-group">
+            <div class="section-title">⚙️ Protocol Type</div>
+            <select id="protocolType">
+                <option value="trojan" selected>Trojan</option>
+                <option value="vmess">VMess</option>
+                <option value="vless">VLESS</option>
+                <option value="shadowsocks">Shadowsocks</option>
+            </select>
+        </div>
+
+        <!-- TRANSPORT MODE -->
+        <div class="form-group">
+            <div class="section-title">🚀 Transport Mode</div>
+            <select id="transportMode">
+                <option value="ws" selected>WebSocket (WS)</option>
+                <option value="httpupgrade">HTTP Upgrade (HU)</option>
+                <option value="xhttp">XHTTP (XH)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- GENERATED CONFIG -->
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="section-title">📋 Generated Config URI Link</div>
+        <div class="output-box" id="outputConfig">Pumili ng mga detalye sa itaas para mag-generate...</div>
+        <button class="btn" id="copyBtn">📋 COPY CONFIG LINK</button>
+    </div>
+
+    <div class="footer">
+        JULPONE NETWORK DEPLOYMENT SYSTEM<br>
+        <span style="color: var(--accent);">POWERED BY NTC NETWORKS • 2026</span>
+    </div>
+</div>
+
+<div class="toast" id="toast">📋 Na-copy na sa clipboard!</div>
+
+<script>
+    const serverInput = document.getElementById('serverAddress');
+    const sniInput = document.getElementById('sniHost');
+    const protocolSelect = document.getElementById('protocolType');
+    const transportSelect = document.getElementById('transportMode');
+    const outputBox = document.getElementById('outputConfig');
+    const copyBtn = document.getElementById('copyBtn');
+    const toast = document.getElementById('toast');
+
+    // Ang eksaktong mapping na tugma sa Inbound Ports at Nginx Locations mo
+    const pathMapping = {
+        trojan: {
+            ws: "/julpone-freenet",
+            httpupgrade: "/julpone-freenet-hu",
+            xhttp: "/julpone-freenet-xh"
+        },
+        vmess: {
+            ws: "/vmess-julpone",
+            httpupgrade: "/vmess-julpone-hu",
+            xhttp: "/vmess-julpone-xh"
+        },
+        vless: {
+            ws: "/vless-julpone",
+            httpupgrade: "/vless-julpone-hu",
+            xhttp: "/vless-julpone-xh"
+        },
+        shadowsocks: {
+            ws: "/ss-julpone",
+            httpupgrade: "/ss-julpone-hu",
+            xhttp: "/ss-julpone-xh"
+        }
+    };
+
+    function generateConfig() {
+        const host = serverInput.value.trim() || "iyong-domain.com";
+        const sni = sniInput.value.trim() || "www.smart.com.ph";
+        const protocol = protocolSelect.value;
+        const transport = transportSelect.value;
+        
+        // Kunin ang tamang path base sa kombinasyon
+        const path = pathMapping[protocol][transport];
+        
+        let configUri = "";
+        const remarks = `JP-${protocol.toUpperCase()}-${transport.toUpperCase()}`;
+
+        if (protocol === "trojan") {
+            // Trojan URI format standard format with query components
+            configUri = `trojan://julpone-freenet@${host}:443?security=tls&sni=${sni}&type=${transport}&path=${encodeURIComponent(path)}#${encodeURIComponent(remarks)}`;
+        } 
+        else if (protocol === "vless") {
+            // VLESS Standard format
+            const uuid = "b8a166be-4b9b-449e-8736-22485fb0b04a";
+            configUri = `vless://${uuid}@${host}:443?encryption=none&security=tls&sni=${sni}&type=${transport}&path=${encodeURIComponent(path)}#${encodeURIComponent(remarks)}`;
+        } 
+        else if (protocol === "vmess") {
+            // VMess requires a Base64 encoded JSON scheme string
+            const vmessJson = {
+                "v": "2",
+                "ps": remarks,
+                "add": host,
+                "port": "443",
+                "id": "b8a166be-4b9b-449e-8736-22485fb0b04a",
+                "aid": "0",
+                "scy": "auto",
+                "net": transport,
+                "type": "none",
+                "host": host,
+                "path": path,
+                "tls": "tls",
+                "sni": sni
+            };
+            configUri = "vmess://" + btoa(JSON.stringify(vmessJson));
+        } 
+        else if (protocol === "shadowsocks") {
+            // Shadowsocks SIP002 format setup with plugin options
+            const userInfo = btoa("aes-256-gcm:julpone-freenet");
+            // Plugin string logic structured for v2ray-plugin styles or native xray routing
+            const pluginOpts = `id=julpone-freenet;path=${path};host=${host};server=${sni}`;
+            configUri = `ss://${userInfo}@${host}:443?type=${transport}&path=${encodeURIComponent(path)}&sni=${sni}&security=tls#${encodeURIComponent(remarks)}`;
+        }
+
+        outputBox.textContent = configUri;
+    }
+
+    // Event Listeners para sa real-time updating
+    serverInput.addEventListener('input', generateConfig);
+    sniInput.addEventListener('input', generateConfig);
+    protocolSelect.addEventListener('change', generateConfig);
+    transportSelect.addEventListener('change', generateConfig);
+
+    // Initial load generation execution
+    generateConfig();
+
+    // Clipboard feature integration
+    copyBtn.addEventListener('click', () => {
+        const textToCopy = outputBox.textContent;
+        if(textToCopy && textToCopy.indexOf('Pumili ng') === -1) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            }).catch(err => {
+                alert("Failed to copy text: " + err);
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
