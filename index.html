@@ -561,7 +561,7 @@
 
     <div class="card header-card">
         <h1 class="main-title">JULPONE NETWORK</h1>
-        <p class="sub-title">CONFIGURATION GENERATOR & MONITORING CENTER</p>
+        <p class="sub-title">FREENET CONFIGURATION GENERATOR BY: JURELYN PANARES</p>
         <div class="info-grid">
             <div class="info-item">
                 <div class="info-label">Host</div>
@@ -615,12 +615,12 @@
     </div>
 
     <div class="card">
-        <h2 class="section-heading">⚙️ PROTOCOL TYPE</h2>
+        <h2 class="section-heading">PROTOCOL TYPE</h2>
         <div class="btn-group" id="protocol-group"></div>
     </div>
 
     <div class="card">
-        <h2 class="section-heading">🚀 TRANSPORT MODE</h2>
+        <h2 class="section-heading">TRANSPORT MODE</h2>
         <div class="btn-group" id="transport-group"></div>
     </div>
 
@@ -673,7 +673,7 @@
 
     // ✅ EKSAKTO ANG LISTAHAN NA IBINIGAY MO
     const ADDRESS_LIST = [
-        'firebase-settings.crashlytics.com',
+        'julpone-docke.vercel.app',
         'run.googleapis.com',
         'cloud.google.com',
         'googleapis.com',
@@ -701,7 +701,7 @@
         {id: 'trojan', name: 'TROJAN'},
         {id: 'vmess', name: 'VMESS'},
         {id: 'vless', name: 'VLESS'},
-        {id: 'ss', name: 'SHADOWSOCKS'}
+        {id: 'ss', name: 'SHADOWSOCKS (MAINTENANCE)'}
     ];
 
     // ✅ ITINAMA: Ginamit ang opisyal na pangalan ng Xray Core Network Types
@@ -897,7 +897,7 @@
 
         switch(selectedProto) {
             case 'trojan':
-                return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JP-TROJAN`;
+                return `trojan://${TROJAN_PASS}@${addr}:443?type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&fp=chrome&sni=${sni}#JULPONE-TROJAN`;
             case 'vmess':
                 try {
                     return 'vmess://' + btoa(JSON.stringify({
@@ -906,7 +906,7 @@
                     }));
                 } catch(e){return '';}
             case 'vless':
-                return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JP-VLESS`;
+                return `vless://${UUID}@${addr}:443?encryption=none&type=${selectedTrans}&host=${host}&path=${encPath}&security=tls&sni=${sni}#JULPONE-VLESS`;
             case 'ss':
                 // ✅ ITINAMA: Ginamit ang bagong format na sumusunod sa WebSocket/HTTPUpgrade/XHTTP
                 // Ang Xray core ay mas preferred ang "type" parameter sa URL para sa SS
