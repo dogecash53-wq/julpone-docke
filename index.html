@@ -735,75 +735,71 @@
     let pingCache = {};
 
     const infoHost = document.getElementById('info-host');
-    const infoIp = document.getElementById('info-ip');
-    const infoCountry = document.getElementById('info-country');
-    const uptimeEl = document.getElementById('uptime');
-    const visitorsEl = document.getElementById('visitors');
-    const activeEl = document.getElementById('active');
-    const addrBtn = document.getElementById('addr-btn');
-    const addrMenu = document.getElementById('addr-menu');
-    const addrStatusDot = document.getElementById('addr-status-dot');
-    const addrStatusText = document.getElementById('addr-status-text');
-    const sniBtn = document.getElementById('sni-btn');
-    const sniMenu = document.getElementById('sni-menu');
-    const sniStatusDot = document.getElementById('sni-status-dot');
-    const sniStatusText = document.getElementById('sni-status-text');
-    const protocolGroup = document.getElementById('protocol-group');
-    const transportGroup = document.getElementById('transport-group');
-    const statDl = document.getElementById('stat-dl');
-    const statDlUnit = document.getElementById('stat-dl-unit');
-    const statUl = document.getElementById('stat-ul');
-    const statUlUnit = document.getElementById('stat-ul-unit');
-    const statPing = document.getElementById('stat-ping');
-    const visualizer = document.getElementById('data-visualizer');
-    const systemLog = document.getElementById('system-log');
-    const configOutput = document.getElementById('config-output');
-    const copyAction = document.getElementById('copy-action');
-    const splash = document.getElementById('splash-screen');
-    const mainUI = document.getElementById('main-ui');
+        const infoIp = document.getElementById('info-ip');
+        const infoCountry = document.getElementById('info-country');
+        const uptimeEl = document.getElementById('uptime');
+        const visitorsEl = document.getElementById('visitors');
+        const activeEl = document.getElementById('active');
+        const addrBtn = document.getElementById('addr-btn');
+        const addrMenu = document.getElementById('addr-menu');
+        const addrStatusDot = document.getElementById('addr-status-dot');
+        const addrStatusText = document.getElementById('addr-status-text');
+        const sniBtn = document.getElementById('sni-btn');
+        const sniMenu = document.getElementById('sni-menu');
+        const sniStatusDot = document.getElementById('sni-status-dot');
+        const sniStatusText = document.getElementById('sni-status-text');
+        const protocolGroup = document.getElementById('protocol-group');
+        const transportGroup = document.getElementById('transport-group');
+        const statDl = document.getElementById('stat-dl');
+        const statDlUnit = document.getElementById('stat-dl-unit');
+        const statUl = document.getElementById('stat-ul');
+        const statUlUnit = document.getElementById('stat-ul-unit');
+        const statPing = document.getElementById('stat-ping');
+        const visualizer = document.getElementById('data-visualizer');
+        const systemLog = document.getElementById('system-log');
+        const configOutput = document.getElementById('config-output');
+        const copyAction = document.getElementById('copy-action');
+        const splash = document.getElementById('splash-screen');
+        const mainUI = document.getElementById('main-ui');
 
-    function log(text) {
-        const now = new Date().toTimeString().split(' ')[0];
-        const el = document.createElement('div');
-        el.className = 'log-entry';
-        el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
-        systemLog.appendChild(el);
-        systemLog.scrollTop = systemLog.scrollHeight;
-        while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
-    }
-      if (typeof START_TIME === 'undefined') {
-        var START_TIME = Math.floor(Date.now() / 1000);
-    }
+        function log(text) {
+            if (!systemLog) return; // Depensa para hindi mag-crash kung walang system-log card
+            const now = new Date().toTimeString().split(' ')[0];
+            const el = document.createElement('div');
+            el.className = 'log-entry';
+            el.innerHTML = `<span style="color:#64748b">[${now}]</span> ${text}`;
+            systemLog.appendChild(el);
+            systemLog.scrollTop = systemLog.scrollHeight;
+            while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
+        }
 
-    function updateUptime() {
-        if (!uptimeEl) return;
-        const now = Math.floor(Date.now() / 1000);
-        const diff = now - START_TIME;
-        
-        const hrs = Math.floor(diff / 3600).toString().padStart(2, '0');
-        const mins = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-        const secs = (diff % 60).toString().padStart(2, '0');
-        
-        uptimeEl.textContent = `${hrs}:${mins}:${secs}`;
-    }
-    setInterval(updateUptime, 1000);
+        // Uptime Counter Engine
+        const START_TIME = Math.floor(Date.now() / 1000);
+        function updateUptime() {
+            if (!uptimeEl) return;
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - START_TIME;
+            
+            const hrs = Math.floor(diff / 3600).toString().padStart(2, '0');
+            const mins = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const secs = (diff % 60).toString().padStart(2, '0');
+            
+            uptimeEl.textContent = `${hrs}:${mins}:${secs}`;
+        }
+        setInterval(updateUptime, 1000);
 
-    // Splash Screen Remover + Pinalitaw ang Main UI Opacity
-    document.addEventListener("DOMContentLoaded", () => {
+        // === ITO ANG MAGPAPALAYAS SA BLOCKER AT MAGPAPAKITA NG DASHBOARD ===
         if (splash) {
             setTimeout(() => {
-                splash.classList.add("fade-out");
+                splash.classList.add("fade-out"); // Itatago ang JULPONE panel
                 
-                // KRITIKAL: Dahil naka-style="opacity:0;" ang HTML mo, 
-                // ito ang magpapalabas at magpapakita sa dashboard mo ngayon.
                 if (mainUI) {
-                    mainUI.style.opacity = "1";
+                    mainUI.style.opacity = "1"; // Gagawing visible ang JP CONFIG CENTER
                 }
                 
                 log("JULPONE Network Core Successfully Loaded.");
-            }, 2000); // Maghihintay ng 2 segundo bago pumasok
+            }, 2000); // 2 segundo na splash screen delay
         }
-    });
     
     function initStats() {
         let v = 1, a = Math.floor(Math.random() * 40) + 5;
