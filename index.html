@@ -771,6 +771,14 @@
         systemLog.scrollTop = systemLog.scrollHeight;
         while (systemLog.children.length > 22) systemLog.removeChild(systemLog.firstChild);
     }
+     document.addEventListener("DOMContentLoaded", () => {
+        // May variable ka na sa itaas na: const splash = document.getElementById('splash-screen');
+        if (splash) {
+            setTimeout(() => {
+                splash.classList.add("fade-out");
+            }, 2000); // Maghihintay ng 2 segundo bago mag-fade out ang JULPONE screen
+        }
+    });
 
     function initStats() {
         let v = 1, a = Math.floor(Math.random() * 40) + 5;
